@@ -1,0 +1,44 @@
+digraph concussion_detection {
+    rankdir=LR;
+    nodesep=1.0;
+    bgcolor="#d0d7dd";
+    node [shape=box, style="rounded,filled", fillcolor=lightblue];
+
+    impact [label="Head Impact\n resulting in mTBI"];
+    symptoms [label="Does athlete\nreport symptoms?", shape=diamond, fillcolor=lightyellow];
+    spotted [label="Impact reported\n by bystanders?", shape=diamond, fillcolor=lightyellow];
+    medpro [label="Medical Professional\nPresent?", shape=diamond, fillcolor=lightyellow];
+    crt6 [label="CRT6\nAssessment"];
+    scat6 [label="SCAT6\nAssessment"];
+
+    // Position medpro at same rank as spotted to move it left
+    {rank=same;
+        medpro;
+        spotted;
+        medpro -> spotted [style=invis];
+    }
+
+    // Position outcomes vertically
+    {rank=same;
+        hospital [label="Hospital", fillcolor=lightgreen];
+        missed [label="Missed\nmTBI", fillcolor=lightcoral];
+        hospital -> missed [style=invis];
+    }
+
+    impact -> symptoms;
+
+    symptoms -> medpro [label="Yes"];
+    symptoms -> spotted [label="No"];
+
+    spotted -> medpro [label="Yes", constraint=false];
+    spotted -> missed [label="No"];
+
+    medpro -> scat6 [label="Yes"];
+    medpro -> crt6 [label="No"];
+
+    crt6 -> hospital [label="True Positive"];
+    crt6 -> missed [label="False Negative"];
+
+    scat6 -> hospital [label="True Positive"];
+    scat6 -> missed [label="False Negative"];
+}

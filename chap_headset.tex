@@ -1,0 +1,125 @@
+\chapter{Headset}
+\label{chapter:headset}
+
+The system is conceived as a low-cost, head-mounted device that standardises the geometry between a user's eyes, a stimulus display, and an imaging sensor in order to perform multi-parameter oculomotor assessment using pupillometry. The headset provides:
+
+\begin{itemize}
+    \item A controlled optical pathway from a display to the user's eyes, allowing presentation of pupillary light reflex, smooth pursuit, and vergence stimuli.
+
+    \item A stable, near-frontal view of both eyes for image-based tracking of pupil size and gaze.
+
+    \item A mechanically constrained, repeatable eye--camera distance across users.
+\end{itemize}
+
+To remain compatible with deployment in grassroots sports, the design prioritises minimal custom electronics and leverages consumer hardware wherever possible. The headset therefore acts primarily as an optical and mechanical fixture around a smartphone with only simple ancillary electronics (e.g. LEDs) where required.
+
+A key architectural decision is the use of a partially reflective beamsplitter positioned at 45° between the eyes and a display located above the field of view. This beamsplitter performs two functions simultaneously: it reflects the display image into the eyes, mimicking a compact VR headset, and it transmits light from the eyes to a camera located behind the beamsplitter on the same optical axis as the lenses. By keeping the camera bay dark and the display bright, the user perceives only the reflected display image, whilst the camera looks through the beamsplitter at the illuminated eyes. This arrangement resolves the conflict between the need for a straight-on eye view and the requirement that the camera not intrude into the visual field.
+
+
+\section{Design Criteria}
+
+The hardware must satisfy a set of quantitative and qualitative requirements derived from the clinical use case, the chosen biomarkers, and the intended deployment environment. For clarity, these are grouped into optical, geometric, user-facing, and practical constraints.
+
+\subsection{Optical and Imaging Requirements}
+
+\textbf{Pupil visibility and resolution.} The camera must resolve the pupillary margin sufficiently for accurate segmentation and diameter measurement on each frame. This implies:
+
+\begin{itemize}
+    \item Eye region spanning a substantial fraction of the frame (e.g. > 200--300 pixels across the iris for typical smartphone resolutions).
+
+    \item Sufficient contrast between iris and pupil under controlled illumination.
+\end{itemize}
+
+\textbf{Viewing angle and distortion.} The camera should view each eye approximately along its optical axis, minimising foreshortening and perspective distortion that would complicate gaze estimation.
+
+\textbf{Controlled illumination.} The optical system must:
+
+\begin{itemize}
+    \item Provide enough light to achieve low-noise images at video frame rates.
+
+    \item Avoid large specular glares that obscure the pupil.
+
+    \item Support controlled light stimuli for PLR (rapid change in illumination) without saturating the sensor or causing discomfort.
+\end{itemize}
+
+\textbf{Stimulus--eye relationship.} The geometry between the eye and the display must be known and stable so that the position of a dot or other stimuli on the screen can be related to an expected gaze direction.
+
+\subsection{Geometric and Mechanical Requirements}
+
+\textbf{Fixed eye--camera distance.} The headset must constrain the distance and relative orientation between eyes and camera to within a tight tolerance across users (e.g. variations on the order of a few millimetres), ensuring that calibration performed once is valid for repeated tests.
+
+\textbf{Accommodation comfort.} The virtual distance of the viewed image must fall within a comfortable accommodative range for children and adolescents, and must not induce significant eye strain during testing.
+
+\textbf{Alignment repeatability.} The design should assist users in positioning the headset correctly (e.g. via nose bridge, straps, and padding) so that the eye-box (region where both eyes see the full display and are fully visible to the camera) is easy to locate.
+
+\subsection{User-Facing Requirements}
+
+\textbf{Comfort and safety.} The headset must be lightweight, distribute pressure evenly, avoid sharp edges, and be tolerable for a few minutes of use immediately after a suspected head injury.
+
+\textbf{Low cognitive and visual load.} Optical design should avoid unusual or distracting artefacts (e.g. a visible camera in one eye) that could be unsettling, especially for symptomatic users.
+
+\subsection{Practical and Economic Requirements}
+
+\textbf{Low cost.} The bill of materials (excluding the user's smartphone) should fall in the £30--£80 range, precluding the use of multiple high-speed IR cameras or custom microdisplays.
+
+\textbf{Robustness and manufacturability.} Components should be readily available, mechanically robust, and tolerant of repeated handling in school and club environments.
+
+\textbf{Modularity.} The design should permit substitution of different smartphones (within a size range) and potential future upgrades (e.g. adding IR LEDs) without complete redesign.
+
+These requirements guided the exploration of candidate optical and mechanical configurations.
+
+
+\section{Optics}
+
+\subsection{Direct Viewing Without Lenses}
+
+A natural baseline configuration places the display at a distance where users can focus without additional optics, and positions the camera near the display to observe the eyes. A prototype implementing this concept used a smartphone screen at distances in the range 20--30~cm from the eyes, mounted within an extended headset ``tube''.
+
+Informal testing with multiple users showed that whilst some individuals could accommodate at these distances, others struggled to achieve a clear image or reported rapid onset of eye strain. Reported comfortable focus distances varied substantially between users, and increasing the display distance to accommodate those with poorer near vision produced an impractically large form factor.
+
+This approach failed several requirements:
+
+\begin{itemize}
+    \item \textbf{Accommodation comfort and variability.} The design relied on the user's accommodative ability at relatively close distances, producing an unacceptable spread in user experience and risking exacerbation of symptoms in recently concussed individuals.
+
+    \item \textbf{Form factor.} Achieving a universally comfortable focus distance without optics implied a very deep headset, undermining portability and comfort.
+\end{itemize}
+
+These results motivated the introduction of lenses to decouple the physical display distance from the perceived focus distance.
+
+
+\subsection{Formal Justification for Lenses}
+
+\todo{Need lenses for 3D image, which is needed for convergence testing. Analyse the impact of losing convergence testing.}
+
+\todo{Need lenses to be able to position the display nearer than the user's near point without inducing eye-strain or blurry vision. This is necessary otherwise we get an impractically long headset.}
+
+
+\subsection{Camera Positioning}
+
+\todo{Once the need for lenses has been established, it is useful to consider conventional VR setups, particularly in the context of camera placements. Meta Pro and Apple Vision Pro both have...}
+
+
+\section{Electronics}
+
+% TODO: Describe electronics design
+% - LED illumination
+% - PCB design
+% - Communication protocols
+% - Power management
+
+
+\section{Ergonomics}
+
+% TODO: Describe ergonomic considerations
+% - Weight distribution
+% - Comfort for symptomatic users
+% - Fit across different head sizes
+
+
+\section{Assembly}
+
+% TODO: Describe the headset structure, phone slide-in mechanism, positioning and alignment
+% - 3D printed components / materials used
+% - Assembly process
+% - Phone mounting mechanism
