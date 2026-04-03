@@ -2,47 +2,223 @@
 \label{chapter:software}
 
 
-\section{Design Criteria}
+\section{System Overview}
 
-% TODO: Describe software design criteria
-% - Platform choice (iOS, Android, or both)
-% - Development framework
-% - Performance requirements
-% - User interface requirements for non-expert users
+% TODO: Brief architecture / data flow from hardware to software
+% - How the headset hardware connects to the software pipeline
+% - High-level diagram of data flow: camera → processing → biomarker extraction
 
 
-\section{Data Collection}
+\section{On-Device Deployment}
 
-\subsection{Pupil Width Estimation}
-
-% TODO: Describe pupil detection and width measurement
-% - Image processing pipeline
-% - Pupil segmentation algorithms
-% - Diameter extraction and calibration
-% - Real-time tracking at video frame rates
-
-\subsection{Gaze Estimation}
-
-% TODO: Describe gaze direction estimation
-% - Gaze tracking approach
-% - Smooth pursuit measurement
-% - Vergence / NPC measurement
-% - Calibration procedures
+% TODO: App framework, camera capture, stimulus control
+% - Platform choice (Raspberry Pi 5) and development framework
+% - MobileNetV2 model selection and justification
+% - LiteRT runtime selection and benchmarking
+% - Data collection pipeline (training vs testing modes)
+% - Data retention, synchronisation, and GDPR/HIPAA compliance
+% - Future improvement: INT8 quantisation
 
 
-\section{Robustness}
+\section{Gaze Estimation}
+\label{sec:gaze-estimation}
 
-% TODO: Describe robustness measures
-% - Handling of poor lighting conditions
-% - Dealing with eye occlusions (blinks, lashes)
-% - Frame drop handling
-% - Input validation and error recovery
+% TODO: Smooth pursuit tracking pipeline
+% - MobileNetV2 regression head architecture and training
+% - Loss function (MSELoss), optimiser (Adam/SGD), learning rate scheduling
+% - MPIIGaze benchmark validation
+% - Signal filtering (Gaussian filter, parameter optimisation)
+% - Quality checks: blur/blink detection (Laplacian), glare detection (saturated pixel ratio)
+% - Smooth pursuit metrics: lag, catch-up saccades, RMS tracking error, pursuit gain
+% - Motion validity (IMU gating) and signal confidence
 
 
-\section{Interpretability}
+\section{Pupil Width Estimation}
+\label{sec:pupil-width}
 
-% TODO: Describe how results are interpreted and presented
-% - Biomarker extraction from raw measurements
-% - Classification / scoring approach
-% - Presentation of results to non-expert users
-% - Confidence indicators
+The pupil width estimation pipeline converts raw eye images into calibration-free pupil diameter measurements suitable for \ab{plr} analysis. The pipeline comprises three stages: semantic segmentation of eye structures, ellipse fitting to extract geometric parameters, and temporal processing to derive \ab{plr} biomarkers.
+
+\subsection{Segmentation}
+\label{sec:segmentation}
+
+\subsubsection{Architecture Selection}
+
+\begin{itemize}
+    \item The segmentation task requires classifying each pixel into four classes: background, sclera, iris, and pupil.
+
+    \item We adopt RITnet, a lightweight DenseNet--U-Net hybrid architecture designed for real-time eye segmentation, as our primary model. RITnet comprises five encoder blocks with dense connectivity and four decoder blocks with skip connections, totalling approximately 250K parameters ({<}1\,MB).
+
+    \item RITnet was selected over heavier alternatives for three reasons: (1) its parameter efficiency makes it suitable for embedded deployment on the headset hardware, (2) it achieved the highest mean \ab{iou} (95.3\%) in the OpenEDS 2019 Semantic Segmentation Challenge, and (3) its dense connectivity provides strong gradient flow during training despite the shallow depth.
+
+    \item To validate this choice, we benchmark RITnet against two alternative architectures on the OpenEDS dataset:
+    \begin{itemize}
+        \item A standard U-Net as the canonical segmentation baseline.
+        \item \todo{Third architecture TBD: EllSeg or MobileNetV2-DeepLabV3.}
+    \end{itemize}
+
+    \item All models are compared on: per-class \ab{iou}, Dice coefficient, ellipse centre error, ellipse axis error, parameter count, model size, and inference time.
+
+    \item \todo{Table: Architecture comparison results.}
+\end{itemize}
+
+\subsubsection{Loss Function}
+
+\begin{itemize}
+    \item The original RITnet paper employs a compound loss comprising generalised Dice loss, a boundary-aware term, and a surface loss. Our initial implementation used standard cross-entropy loss; we investigate whether the compound formulation improves performance for our downstream task (ellipse fitting accuracy).
+
+    \item We ablate four loss configurations on RITnet with fixed preprocessing:
+    \begin{itemize}
+        \item Cross-entropy (baseline).
+        \item Generalised Dice loss, which addresses class imbalance by weighting classes inversely by their frequency. The pupil occupies a small fraction of the image; Dice loss prevents the model from ignoring it.
+        \item Cross-entropy + Dice (equal weighting).
+        \item Cross-entropy + Dice + boundary-aware loss, which upweights pixels within a narrow band around the pupil--iris boundary. This directly targets the region most critical for accurate diameter estimation.
+    \end{itemize}
+
+    \item We report both segmentation metrics (\ab{iou}, Dice) and downstream ellipse axis error, since a loss that improves pixel-level \ab{iou} does not necessarily improve the fitted diameter.
+
+    \item \todo{Table: Loss function ablation results.}
+\end{itemize}
+
+\subsubsection{Preprocessing}
+
+\begin{itemize}
+    \item Eye images captured under near-infrared illumination exhibit low contrast between iris and pupil and variable brightness across subjects. Following the RITnet paper, we apply gamma correction ($\gamma = 0.8$) to brighten darker regions and contrast-limited adaptive histogram equalisation (CLAHE; clip limit 1.5, tile size $8 \times 8$) to enhance local contrast at the pupil--iris boundary.
+
+    \item We ablate preprocessing to verify these choices improve downstream performance:
+    \begin{itemize}
+        \item No preprocessing (raw grayscale).
+        \item Gamma correction only.
+        \item CLAHE only.
+        \item Gamma + CLAHE (current configuration).
+    \end{itemize}
+
+    \item \todo{Table: Preprocessing ablation results.}
+\end{itemize}
+
+
+\subsection{Ellipse Fitting and Diameter Extraction}
+\label{sec:ellipse-fitting}
+
+\subsubsection{Standard Ellipse Fitting}
+
+\begin{itemize}
+    \item Given the predicted segmentation mask, we extract the pupil and iris regions independently. For each, we find the largest connected contour and fit an ellipse using OpenCV's \texttt{fitEllipse} (least-squares method). The fitted ellipse yields centre coordinates, major and minor axis diameters, and rotation angle.
+
+    \item We report the mean diameter (average of major and minor axes) rather than the major axis alone. Under non-frontal viewing angles, foreshortening compresses one axis; the mean diameter is more robust to small head rotations within the headset.
+\end{itemize}
+
+\subsubsection{Soft Ellipse Fitting from Probability Maps}
+
+\begin{itemize}
+    \item The standard pipeline applies \texttt{argmax} to the segmentation logits, discarding the model's uncertainty. Pixels near the pupil--iris boundary, where the model is least confident, contribute equally to the fitted ellipse as high-confidence interior pixels.
+
+    \item We propose using the softmax probability map directly: each pixel's contribution to the ellipse fit is weighted by its predicted probability of belonging to the pupil class. Boundary pixels where the model assigns 60\% probability contribute less than interior pixels at 99\%. This yields a probability-weighted ellipse fit that is more robust at the critical boundary region.
+
+    \item \todo{Comparison: hard vs soft ellipse fitting on axis error and centre error.}
+\end{itemize}
+
+\subsubsection{Iris-Normalised Diameter}
+
+\begin{itemize}
+    \item Absolute pupil diameter in pixels depends on the eye--camera distance, which varies slightly across users despite the headset's mechanical constraints. We normalise the pupil diameter by the simultaneously measured iris diameter, producing a dimensionless pupil--iris ratio.
+
+    \item This is justified by the low inter-subject variability of adult iris diameter: approximately 11.7\,mm $\pm$ 0.5\,mm (${\sim}4\%$ coefficient of variation). The ratio therefore reflects true pupil size changes rather than geometric scaling, eliminating the need for per-subject pixel-to-millimetre calibration.
+
+    \item For \ab{plr} analysis, the relevant quantities are relative changes (constriction amplitude as a percentage of baseline), further reducing sensitivity to absolute calibration. The iris-normalised ratio provides an additional cross-subject normalisation for comparing absolute baseline diameters.
+\end{itemize}
+
+
+\subsection{PLR Parameter Extraction}
+\label{sec:plr-extraction}
+
+\subsubsection{Temporal Filtering}
+
+\begin{itemize}
+    \item The raw pupil diameter time series contains frame-to-frame noise from segmentation jitter, partial occlusions, and natural pupil oscillations (hippus, 0.5--2\,Hz). Smoothing is necessary before parameter extraction.
+
+    \item We use a Savitzky--Golay filter rather than the Gaussian filter employed in the gaze estimation pipeline (\Cref{sec:gaze-estimation}). Savitzky--Golay fits a local polynomial to each window, preserving the sharp onset and peak of the constriction phase that a Gaussian kernel would attenuate. This is standard practice in quantitative pupillometry, where accurate peak constriction velocity estimation depends on preserving rapid transitions.
+\end{itemize}
+
+\subsubsection{Blink Detection and Outlier Rejection}
+
+\begin{itemize}
+    \item Blinks cause complete data loss for 100--400\,ms. We detect blinks by identifying frames where the segmented pupil area falls below a threshold fraction of the baseline pupil area, or where the segmentation confidence (mean softmax probability over the predicted pupil region) drops below a minimum value.
+
+    \item Short blinks outside the critical constriction window are interpolated through using cubic spline interpolation. Blinks occurring during the constriction phase (stimulus onset to minimum diameter) invalidate the trial.
+
+    \item We additionally reject frames where the frame-to-frame diameter change exceeds physiological limits. The pupil cannot constrict faster than approximately 8\,mm/s; at 30\,fps, this constrains the maximum per-frame diameter change. Frames violating this constraint are treated as segmentation failures and interpolated.
+
+    \item The segmentation model's confidence score (mean softmax probability over the pupil region) provides an intrinsic per-frame quality measure. Low-confidence frames receive reduced weight in subsequent parameter fitting, analogous to the signal confidence metric used in the smooth pursuit pipeline but derived directly from the segmentation model rather than external heuristics.
+\end{itemize}
+
+\subsubsection{Parametric Curve Fitting}
+
+\begin{itemize}
+    \item Rather than extracting \ab{plr} parameters from local derivatives of the smoothed time series, we fit a parametric model to the entire \ab{plr} waveform. The model describes the constriction--redilation response as:
+    %
+    \[
+        d(t) = d_0 - A \left(1 - e^{-(t - t_{\mathrm{onset}})/\tau_c}\right) e^{-(t - t_{\mathrm{peak}})/\tau_d}
+    \]
+    %
+    where $d_0$ is the baseline diameter, $A$ is the constriction amplitude, $t_{\mathrm{onset}}$ is the latency, $\tau_c$ is the constriction time constant, and $\tau_d$ is the dilation recovery time constant.
+
+    \item Fitting this model to the noisy observations via nonlinear least squares yields robust parameter estimates because: (1) every data point contributes to every parameter, unlike local derivative methods that depend on small neighbourhoods; (2) the model constrains the waveform to be physiologically plausible; and (3) the fit residuals provide uncertainty estimates on each parameter.
+
+    \item The fitted parameters directly yield the clinically relevant \ab{plr} biomarkers:
+    \begin{itemize}
+        \item \textbf{Constriction latency} ($t_{\mathrm{onset}}$): time from stimulus to constriction onset.
+        \item \textbf{Constriction amplitude} ($A / d_0 \times 100\%$): percentage diameter reduction.
+        \item \textbf{Peak constriction velocity}: maximum of $|d'(t)|$ from the fitted curve, analytically derivable from the model parameters.
+        \item \textbf{Recovery time} ($\tau_d$): time constant of redilation toward baseline.
+    \end{itemize}
+
+    \item \todo{Figure: Example fitted PLR curve overlaid on noisy synthetic data, with extracted parameters annotated.}
+\end{itemize}
+
+\subsubsection{Multi-Stimulus Averaging}
+
+\begin{itemize}
+    \item To improve signal-to-noise ratio, the assessment protocol delivers multiple light stimuli per session. Individual \ab{plr} responses are aligned to stimulus onset and averaged, reducing uncorrelated noise by a factor of $\sqrt{n}$ where $n$ is the number of stimuli. Parameters are then extracted from the averaged waveform.
+
+    \item \todo{Confirm number of stimuli in protocol and show SNR improvement.}
+\end{itemize}
+
+\subsubsection{Bilateral Comparison}
+
+\begin{itemize}
+    \item The headset's optical design captures both eyes simultaneously through the beamsplitter, enabling bilateral \ab{plr} comparison. This is a significant advantage over single-eye smartphone pupillometry systems.
+
+    \item The relative afferent pupillary defect (RAPD), the asymmetry in \ab{plr} parameters between left and right eyes, is one of the most clinically significant pupillary findings in neurological assessment. Even when absolute \ab{plr} parameters fall within normal range, inter-eye asymmetry can indicate unilateral injury.
+
+    \item We compute \ab{plr} parameters independently for each eye and report the inter-eye difference for each biomarker. \todo{Confirm bilateral imaging capability with hardware team.}
+\end{itemize}
+
+
+\subsection{Validation on Headset Data}
+\label{sec:headset-validation}
+
+\begin{itemize}
+    \item Models trained on the OpenEDS dataset must generalise to images captured by the headset hardware. The two domains differ in: imaging sensor (OpenEDS uses a dedicated eye tracker; the headset uses a smartphone camera viewed through a beamsplitter), illumination spectrum (near-infrared vs display-reflected visible light), resolution, and viewing geometry.
+
+    \item We evaluate the best model configuration (architecture, loss, and preprocessing selected from the ablation studies) on our collected headset validation dataset. We report:
+    \begin{itemize}
+        \item Qualitative segmentation examples: 2--3 successful cases and 1--2 failure cases with overlaid predicted masks.
+        \item Quantitative metrics where ground truth annotations are available.
+        \item Ellipse fitting success rate (percentage of frames producing valid ellipses).
+    \end{itemize}
+
+    \item \todo{Figures: Example headset segmentation overlays.}
+    \item \todo{Table or metrics: Headset validation results.}
+\end{itemize}
+
+
+\section{Vergence Measurement}
+\label{sec:vergence}
+
+\begin{itemize}
+    \item Vergence measurement builds on the gaze estimation pipeline described in \Cref{sec:gaze-estimation}. During the vergence assessment, a target moves along the depth axis (toward the user's nose), and the system tracks the convergence angle of both eyes.
+
+    \item The \ab{npc} is determined as the target distance at which the eyes can no longer maintain convergence, identified by a sudden divergence in the estimated gaze angles or by the user reporting diplopia (double vision).
+
+    \item \todo{Detail how gaze angle estimates are converted to convergence point and NPC distance.}
+\end{itemize}
