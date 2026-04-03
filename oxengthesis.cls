@@ -37,6 +37,12 @@
     \PassOptionsToClass{\CurrentOption}{memoir}
 }
 
+% Consume kvoptions-handled options so they are not passed to memoir
+\DeclareOption{report}{}
+\DeclareOption{review}{}
+\DeclareOption{chaptertoc}{}
+\DeclareOption{debuglayout}{}
+\DeclareOption{frontabstract}{}
 
 % Pass all other the options to the memoir class
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{memoir}}
@@ -431,7 +437,7 @@
 % ____________________________________________________________________________
 
 
-\RequirePackage[nonumberlist,abbreviations,shortcuts=abbreviations]{glossaries-extra}
+\RequirePackage[nonumberlist,nomain,abbreviations,shortcuts=abbreviations]{glossaries-extra}
 
 
 % The colour of the glossary links
