@@ -1,6 +1,6 @@
 # Flowchart Source Files
 
-Graphviz `.dot` files for thesis flowcharts.
+Graphviz `.dot` files for project report flowcharts.
 
 ## Compile to PDF
 

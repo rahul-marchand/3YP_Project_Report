@@ -29,9 +29,9 @@ Where:
 Example:
 
  
-        compile_document.sh  sample_4yp_report.tex
+        compile_document.sh  3yp_report.tex
 
-    The above command will compile the sample 4YP report.
+    The above command will compile the 3YP report.
 
 EOF
 
