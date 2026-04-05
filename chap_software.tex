@@ -4,33 +4,203 @@
 
 \section{System Overview}
 
-% TODO: Brief architecture / data flow from hardware to software
-% - How the headset hardware connects to the software pipeline
-% - High-level diagram of data flow: camera → processing → biomarker extraction
+The software developed for this project enables operation of the headset hardware, correct collection and processing of data, and training and application of machine learning models for the pupillary light reflex and smooth pursuit biomarkers given the hardware and trial structure described in \Cref{chapter:headset}.
+
+For each biomarker, separate machine learning models were fine-tuned. For smooth pursuit, a convolutional neural network (CNN) determines the gaze angle from an eye image, enabling assessment of whether the user can follow a moving target on the display. For the \ab{plr} biomarker, a segmentation model measures pupil width to assess dilation responses to light stimuli.
+
+The software was designed to ensure a robust trial yielding accurate, repeatable, and reliable results whilst preserving data security in compliance with GDPR~\cite{ico_gdpr_minimisation} and HIPAA~\cite{hhs_hipaa_privacy}, and maintaining simplicity for fast development iterations and low product cost.
 
 
 \section{On-Device Deployment}
 
-% TODO: App framework, camera capture, stimulus control
-% - Platform choice (Raspberry Pi 5) and development framework
-% - MobileNetV2 model selection and justification
-% - LiteRT runtime selection and benchmarking
-% - Data collection pipeline (training vs testing modes)
-% - Data retention, synchronisation, and GDPR/HIPAA compliance
-% - Future improvement: INT8 quantisation
+\subsection{Model Selection}
+
+The CNN used for both gaze estimation and pupil width measurement is MobileNetV2~\cite{sandler2018mobilenetv2}, selected because it is explicitly designed for mobile and embedded vision workloads where inference must be fast and memory-efficient. Its architectural features---linear bottlenecks, inverted residual blocks, and depthwise separable convolutions---reduce parameter count and multiply-accumulate operations compared with heavier alternatives whilst preserving representational capacity sufficient for the feature extraction required by both tasks.
+
+This makes MobileNetV2 well-suited for the Raspberry Pi~5, where the model executes on the CPU whilst simultaneously running camera capture, display update, logging, and Bluetooth/WiFi handling. A plausible alternative would have been ResNet-18~\cite{he2016deep}, which is widely used for computer vision tasks but is computationally heavier. Since the additional capacity was not required for this application, MobileNetV2 was preferred to optimise for faster and more efficient edge deployment.
+
+\subsection{LiteRT Runtime}
+\label{sec:litert}
+
+As the model runs entirely on the Pi~5 with the phone serving only as a user interface, runtime selection critically shapes the system's latency, memory footprint, energy consumption, and operational reliability. The stimulus display, IMU polling loop, Bluetooth communication, and cameras run concurrently, making efficient inference essential.
+
+Three inference backends were evaluated for deploying MobileNetV2 on the Pi~5's Broadcom BCM2712 SoC: PyTorch, ONNX Runtime, and LiteRT (formerly TensorFlow Lite).
+
+PyTorch was not selected as its primary function is as a training and research framework rather than a lightweight inference engine. Although real-time inference on the Pi~5 is feasible, the full framework is heavier than necessary for pure forward inference. ONNX Runtime was engineered as an inference-focused runtime with a documented Raspberry Pi deployment path~\cite{onnxruntime2021}.
+
+Comparative studies of energy consumption show that ONNX Runtime and LiteRT are more energy-efficient than PyTorch for MobileNetV2 CPU workloads, benefiting from XNNPACK-optimised kernels~\cite{malenza2025energy}. However, these benchmarks were conducted on different hardware, requiring task-specific benchmarking on the Pi~5 for definitive conclusions. Benchmarking on Pi ARM hardware confirms that runtime choice affects inference performance, with LiteRT performing strongly, particularly when the model is further quantised to INT8~\cite{baller2021deepedgebench}.
+
+For FP32 inference, the literature does not show a clear advantage between ONNX Runtime and LiteRT, but both outperform PyTorch on MobileNetV2 CPU workloads. The strongest evidence favours LiteRT in quantised settings on the Pi~4. Given the potential for future INT8 quantisation, LiteRT was selected as the more future-proof choice.
+
+\subsection{INT8 Quantisation as Future Improvement}
+\label{sec:int8}
+
+The present software uses FP32 deployment to avoid introducing quantisation errors in the gaze estimation pipeline. A future optimisation is INT8 quantisation, which would reduce model size by approximately $4\times$ and increase CPU inference efficiency. However, in MobileNet architectures, post-training quantisation (PTQ) can cause large accuracy degradation~\cite{yun2021mobilenets}, whereas quantisation-aware training (QAT) preserves accuracy by exposing the model to quantisation effects during training~\cite{google_qat}. Due to the additional effort required, FP32 was used for simplicity and to achieve initial validation, with INT8 QAT planned as a future optimisation. This reflects the engineering philosophy of establishing a simple and reliable baseline before introducing further optimisations.
 
 
 \section{Gaze Estimation}
 \label{sec:gaze-estimation}
 
-% TODO: Smooth pursuit tracking pipeline
-% - MobileNetV2 regression head architecture and training
-% - Loss function (MSELoss), optimiser (Adam/SGD), learning rate scheduling
-% - MPIIGaze benchmark validation
-% - Signal filtering (Gaussian filter, parameter optimisation)
-% - Quality checks: blur/blink detection (Laplacian), glare detection (saturated pixel ratio)
-% - Smooth pursuit metrics: lag, catch-up saccades, RMS tracking error, pursuit gain
-% - Motion validity (IMU gating) and signal confidence
+\subsection{Smooth Pursuit Trial}
+
+Smooth pursuit eye movement impairments following \ab{mtbi}, as detailed in \Cref{chapter:background}, manifest as two primary deficits:
+
+\begin{enumerate}
+    \item \textbf{Saccadic jumps:} the eyes fall behind the tracked object and then jump forward to catch up.
+    \item \textbf{Latency:} a delay between when the object starts moving and when the eyes begin to follow.
+\end{enumerate}
+
+During the smooth pursuit trial, the user follows a marker moving sinusoidally across the display. The camera captures eye images, and the gaze estimation model produces predicted gaze angles that are compared against the ground truth target angle to derive a set of metrics indicating whether underlying pursuit issues are present.
+
+\subsection{Smooth Pursuit Metrics}
+
+The following metrics are extracted from the pursuit signal:
+
+\textbf{Lag.} The temporal delay between the target trajectory and the eye response, calculated via cross-correlation between the gaze estimation signal and the target signal. The time offset maximising the correlation peak gives the pursuit lag, consistent with prior work treating lag as a key parameter~\cite{devillerssidani2023oculomotor}.
+
+\textbf{Catch-up saccade activity.} The number of catch-up saccades in the pursuit signal. The algorithm calculates eye velocity from the gaze estimation signal and detects saccades where velocity exceeds a threshold, retaining only events occurring whilst the eye is behind the target and the jump reduces the tracking error~\cite{devillerssidani2023oculomotor}.
+
+\textbf{RMS tracking error.} The root-mean-square difference between the measured eye angle and the expected target angle, robust to sign cancellation~\cite{kellar2018comparing}.
+
+\textbf{Pursuit gain.} Calculated by taking the FFT of both signals (the target motion is sinusoidal) and analysing the amplitudes at the stimulus frequency. Gain is defined as $\text{Amplitude}_{\text{eye}} / \text{Amplitude}_{\text{target}}$, and should be close to unity, with lower values indicating poor performance~\cite{devillerssidani2023oculomotor}.
+
+The module also outputs two quality-related quantities. \textbf{Motion validity} is derived from IMU-based gating logic and indicates whether excessive head movement compromised the trial. \textbf{Signal confidence} reflects the reliability of the eye-tracking signal, derived from analysis of blur, blinking, and glare.
+
+\subsection{Decision Logic}
+
+The metrics are subject to decision logic that first determines whether the trial was valid. For the IMU signal, trials where acceleration exceeds 1.5\,g for more than 300\,ms at any point are rejected. For signal confidence, if more than 10\% of samples are rejected due to blur, blinking, or glare, the trial is classified as inconclusive. These thresholds are empirically chosen to balance realistic defects with accuracy, and will be refined as more data are collected on the headset.
+
+\subsection{Data Collection Pipeline}
+\label{sec:data-pipeline}
+
+For both \textbf{training and testing}, the data streams recorded are: display angle, timestamps, IMU motion stream, quality indicators of the eye signal, and a signal derived from the eye. This derived signal is the raw eye image when collecting for training, and the predicted gaze angle when testing.
+
+The \textbf{core difference} is that in training mode the goal is to collect eye images with ground truth angles, whilst in testing the goal is to produce estimated gaze angles for comparison against the ground truth display angle to assess smooth pursuit performance.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/data_pipeline}
+    \caption{Data flow in the smooth pursuit trial, showing the training and testing paths.}
+    \label{fig:data-pipeline}
+\end{figure}
+
+The \textbf{data retention} schemes differ between modes. In training, the system retains raw eye imagery together with timeseries, event logs, and session metadata. Data is written locally in buffered chunks of approximately 5~seconds, uploaded via WiFi, and then deleted to manage storage. This chunk duration represents an engineering trade-off: longer buffers risk data loss during upload delays, whilst more frequent transfers incur excessive overhead.
+
+In testing, the system stores the aligned timeseries, extracts pursuit metrics, session metadata, and the final trial result, discarding raw eye video after calculating the image confidence score and estimated gaze angle. Raw imagery is deleted because 120\,fps capture generates approximately 2\,GB per 30-second session, and the raw frames are not required after metric extraction. Deletion also ensures compliance with data minimisation principles under GDPR~\cite{ico_gdpr_minimisation} and HIPAA~\cite{hhs_hipaa_privacy}. The compact 5\,kB result is transmitted to the user's phone via Bluetooth, with session summaries cached locally until successful transfer to handle sparse connectivity. This reflects an edge-computing architecture where sensitive data is processed locally with deferred bulk transfer to reduce real-time bandwidth requirements~\cite{rancea2024edge}.
+
+Both training and testing require \textbf{synchronisation} of the ground truth signal and the gaze estimation or image signal. The monotonic timestamps recorded by the system are not exactly the times of the events: $T_{\text{marker}} = t_{\text{monotonic}} + \Delta t_{\text{screen}}$ and $T_{\text{gaze}} = t_{\text{monotonic}} - \Delta t_{\text{image-to-CPU}}$. In this prototype, synchronisation uses monotonic clock timestamps directly rather than estimating these delays. This simplification avoids introducing additional calibration complexity at an early development stage. A future improvement would estimate these delays through explicit hardware calibration, enabling alignment on event times rather than software timestamps.
+
+\subsection{Signal Quality Checks}
+\label{sec:quality-checks}
+
+During testing, raw data from the sensors and gaze estimation model must be cleaned for accurate inference. Regions of low confidence arise from blur, glare, and blinking. Removing these is essential as they can corrupt metrics and produce misleading results. Filtering is also necessary to remove noise artefacts that imitate poor pursuit performance. This is most critical for saccade count, as catch-up saccade detection is the most noise-sensitive downstream metric~\cite{birawo2022review, leube2017sampling, cheng2026eye}. Unlike gain or RMS tracking error, which are computed over longer temporal windows, saccadic activity depends on brief high-velocity events and is therefore far more vulnerable to noise peaks. Simultaneously, over-filtering must be avoided to preserve genuine pursuit artefacts.
+
+The gaze estimation model outputs only angles without confidence scores. This was a deliberate design decision, as uncertainty-aware models require more accurate training labels and careful calibration~\cite{kendall2017uncertainties, kuleshov2018accurate}. Zheng et al.\ show that uncertainty-aware gaze estimation models can produce inconsistent and unreliable uncertainty estimates, with accuracy improvements being incremental compared to existing external quality check algorithms~\cite{zheng2025improving}.
+
+\textbf{Blur and blink detection.} The variance of the Laplacian of the image is used with a cutoff of 1.6, rejecting all frames with variance $\leq 1.6$. Blinks produce images similar to blur and are detected using the same method.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/blur_blink_detection}
+    \caption{Examples of blur and blink detection using Laplacian variance.}
+    \label{fig:blur-blink}
+\end{figure}
+
+\textbf{Glare detection.} The saturated pixel ratio is used with a threshold of 1\%, allowing some glare whilst preventing metric corruption. This provides a balance of accuracy and practicality.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/glare_detection}
+    \caption{Examples of glare detection using saturated pixel ratio.}
+    \label{fig:glare}
+\end{figure}
+
+All cutoffs are determined empirically and can be updated as more data are collected from the real system using the same methodology.
+
+\subsection{Signal Filtering}
+\label{sec:filtering}
+
+The goal of filtering is to preserve genuine poor pursuit behaviour whilst removing artificial noise artefacts, enabling accurate determination of pursuit issues. To validate the filtering methodology, synthetic pursuit trajectories were generated ranging from ideal (no saccades) to severely impaired (high saccade count). The true saccade count was compared against the count derived from the filtered signal, using $\sigma = 0.6$ noise addition as the test parameter. Saccade count was chosen to guide filter performance as it is the most noise-sensitive downstream metric. This is supported by the eye movement detection literature, where saccades are detected using velocity-threshold algorithms~\cite{birawo2022review}, making them prone to noise after differentiation. The filter was thus tuned against the most fragile part of the metric pipeline, ensuring adequacy for the slower, lower-frequency measures such as gain and RMS tracking error.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}[t]{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/filter_comparison}
+        \caption{Comparison of filter types on saccade count recovery from noisy synthetic signals.}
+        \label{fig:filter-comparison}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/gaussian_filter_optimisation}
+        \caption{Grid search over Gaussian filter parameters.}
+        \label{fig:gaussian-optimisation}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/optimal_gaussian_filter}
+    \caption{Optimal Gaussian filter performance across varying saccade counts.}
+    \label{fig:optimal-gaussian}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/filter_effects}
+    \caption{Effect of filtering on a noisy synthetic pursuit signal with injected saccades.}
+    \label{fig:filter-effects}
+\end{figure}
+
+\Cref{fig:filter-comparison} shows that the Gaussian filter performs best with the lowest saccade prediction error, though it required further optimisation. A grid search (\Cref{fig:gaussian-optimisation}) was performed over Gaussian filter parameters. The original unoptimised parameters ($\sigma = 1.5$, threshold~$= 30$\,deg/s) gave MAE~$= 12.2$. Raising the threshold to 50\,deg/s better captured real saccades, modelled as 120--240\,deg/s velocity peaks. These results validate the methodology.
+
+\textbf{Limitations.} The synthetic saccades were injected with 4--8 degrees of angular amplitude. In real headset data, smaller saccades may be present and harder to detect. The filter parameters can be refined using the same methodology as more data become available. Additionally, more data on glare, blurring, and head movement will be collected to develop more accurate threshold cutoffs using the algorithms described above.
+
+\subsection{Training Pipeline}
+\label{sec:gaze-training}
+
+\subsubsection{Regression Head Architecture}
+
+The MobileNetV2 backbone was adapted for gaze-angle regression by replacing the ImageNet classifier with a custom regression head~\cite{sandler2018mobilenetv2}. The 1280-dimensional feature vector produced by MobileNetV2 is passed through: Dropout ($p = 0.2$), a linear reduction from 1280 to 512 dimensions, ReLU activation, a second Dropout layer ($p = 0.2$), and a final linear projection to a single gaze-angle output.
+
+ReLU introduces non-linearity enabling the head to learn complex mappings, whilst the Dropout layers prevent overfitting to subject-specific appearances~\cite{srivastava2014dropout}, improving generalisation to new users. The 512-dimensional hidden layer represents a trade-off: a larger layer increases overfitting risk on small datasets, whilst a narrower layer may underfit if the mapping is too constrained.
+
+The backbone was fine-tuned from the start of training rather than frozen, as the domain gap between ImageNet photographs and near-infrared eye images is large enough that the pretrained features must adapt beyond the final layers alone. This is consistent with the transfer learning literature, which shows that feature transferability decreases as target tasks and input distributions diverge from the pretraining domain~\cite{yosinski2014transferable}.
+
+\subsubsection{Loss Function and Optimiser}
+
+MSE loss was selected for 1D angular regression, which is optimal for continuous outputs with Gaussian noise. Both Zhang et al.~\cite{zhang2015appearance} and Krafka et al.~\cite{krafka2016eye} use MSE loss for gaze regression, establishing it as a conventional choice for this task.
+
+Adam~\cite{kingma2015adam} with a learning rate of 0.001 was selected for early testing, with SGD with momentum planned for once the hardware design has stabilised. Chugh~\cite{chugh2020eye} found that SGD with momentum outperformed Adam in eye tracking experiments, achieving lower final validation loss despite slower initial convergence. This is consistent with the broader optimisation literature, where Adam tends to converge to sharp minima that generalise poorly, whereas SGD's noisier gradient estimates favour flatter minima with better generalisation~\cite{keskar2017large, wilson2017marginal}.
+
+Adam is used initially because stable and rapid convergence is the immediate need with small initial datasets, where the model and preprocessing pipeline are still being iterated. A linear warmup schedule increases the learning rate from near-zero to the target over the first 5 epochs. This is essential because the regression head is randomly initialised whilst the backbone carries pretrained weights; without warmup, large initial gradients from the head would propagate backward and destroy pretrained features before alignment with the new task. After warmup, a ReduceLROnPlateau scheduler halves the learning rate if validation loss stalls for 5 consecutive epochs.
+
+\subsubsection{MPIIGaze Benchmark Validation}
+
+To validate these architectural choices independently of the headset hardware, the model was evaluated on the MPIIGaze benchmark~\cite{zhang2015appearance}, a public dataset containing 213{,}659 normalised eye patches from 15 subjects with calibrated 3D gaze direction labels. Leave-one-person-out cross-validation was used, keeping all images from one subject for testing and the remaining 14 for training. This protocol ensures that validation accuracy reflects true cross-subject generalisation.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/adam_loss_curves}
+    \caption{Adam optimiser training and validation loss curves on MPIIGaze.}
+    \label{fig:adam-loss}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/sgd_loss_curves}
+    \caption{SGD with momentum training and validation loss curves on MPIIGaze.}
+    \label{fig:sgd-loss}
+\end{figure}
+
+SGD achieved a lower test MAE (2.33\textdegree{} vs 2.80\textdegree{}), demonstrating better generalisation at its optimal learning rate. However, its validation loss was highly sensitive to the learning rate schedule, peaking at 48\,deg$^2$ at the end of the warmup phase. Adam exhibited milder overfitting at 27\,deg$^2$, requiring no momentum or weight-decay tuning. Both results outperform published baselines on the same dataset and protocol, with Cheng et al.~\cite{cheng2018appearance} reporting 4.7\textdegree{} and Zhang et al.~\cite{zhang2015appearance} reporting 6.3\textdegree{}.
+
+These results validate the pipeline choices: competitive accuracy on a standard benchmark demonstrates that errors on headset data can be attributed to domain-specific factors (camera resolution, viewing geometry) rather than the model architecture or optimiser. For the early-stage system where training data characteristics are not yet known, Adam's reliability outweighs SGD's potential for better generalisation after specific tuning. Once the hardware design is finalised, swapping to SGD with a tuned learning rate schedule and momentum is the planned path for improving model accuracy. This two-part strategy---Adam for rapid iteration, SGD for final deployment---balances fast development iterations with high final model quality.
+
+\subsection{Summary}
+
+Overall, we have developed strong software for training and testing the smooth pursuit trial, developing a robust preprocessing and training system with methodologies that can be used further as we acquire more data from the real headset and iterate on the hardware design, achieving a reliable, secure and cheap system with validation from literature and tests we have ran.
 
 
 \section{Pupil Width Estimation}
