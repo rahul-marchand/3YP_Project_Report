@@ -1,19 +1,22 @@
 \chapter{Technical Background}
 \label{chapter:background}
 
+This chapter establishes the scientific and technical foundation for the screening system presented in this report. It begins by defining \ab{mtbi} and the pathological mechanisms that make it difficult to detect with conventional imaging (\Cref{sec:bg-mtbi}). It then reviews existing diagnostic approaches and their limitations for field deployment (\Cref{sec:bg-existing}), before presenting the oculomotor biomarkers that motivate the system design (\Cref{sec:bg-oculomotor}). Finally, it surveys prior engineering work on smartphone-based oculomotor assessment (\Cref{sec:bg-engineering}).
 
 \section{Mild Traumatic Brain Injury}
+\label{sec:bg-mtbi}
 
 Mild traumatic brain injury (\ab{mtbi}), also known as concussion, is clinically defined by the American Congress of Rehabilitation Medicine using three primary criteria: a \ab{gcs} score of 13-15 assessed 30 minutes post-injury, loss of consciousness lasting less than 30 minutes, and post-traumatic amnesia persisting for less than 24 hours~\cite{silverberg2023acrm}. These criteria distinguish mild from moderate (\ab{gcs} 9-12) and severe TBI (\ab{gcs} 3-8), though the term "mild" can be misleading, as patients may experience significant disability despite classification as mild.
 
-The dominant pathological feature of \ab{mtbi} is \ab{dai}, describing widespread microscopic damage to axons throughout the brain~\cite{johnson2013axonal}. Unlike focal contusions visible on conventional imaging, \ab{dai} involves disruption of white matter tracts that is typically invisible on CT or standard MRI. The majority of \ab{mtbi} cases show no visible lesions on conventional neuroimaging, creating a "clinical-radiological paradox" wherein patients with normal structural imaging may exhibit significant symptoms and neurocognitive impairments~\cite{lee2005neuroimaging, palacios2022dti}.
+A characteristic pathological feature of \ab{mtbi} is \ab{dai}, describing widespread microscopic damage to axons throughout the brain~\cite{johnson2013axonal}. Unlike focal contusions visible on conventional imaging, \ab{dai} involves disruption of white matter tracts that is typically invisible on CT or standard MRI. The majority of \ab{mtbi} cases show no visible lesions on conventional neuroimaging, creating a "clinical-radiological paradox" wherein patients with normal structural imaging may exhibit significant symptoms and neurocognitive impairments~\cite{lee2005neuroimaging, palacios2022dti}.
 
 \ab{dai} occurs through rapid acceleration-deceleration and rotational forces applied to the brain during impacts. Axonal microtubules are susceptible to mechanical breaking and misalignment when subjected to shear forces. The white matter tracts most commonly affected include the corpus callosum, internal capsule, corona radiata, and cerebellar peduncles, with advanced imaging techniques such as diffusion tensor imaging (DTI) revealing elevated diffusivity and decreased fractional anisotropy in these regions~\cite{palacios2022dti}.
 
-Brainstem and midbrain structures demonstrate particular susceptibility to \ab{dai} due to their anatomical positioning at the interface between the rigid skull base and mobile cerebral hemispheres. These regions house critical nuclei for autonomic and oculomotor control, including the oculomotor nucleus, Edinger-Westphal nucleus (controlling pupillary constriction), and mesencephalic reticular formation (controlling vergence eye movements). The midbrain's narrow dimensions and differential sensitivity to rotational loading make it particularly vulnerable, with the corticospinal tract at the midbrain level carrying fibers related to oculomotor function. This vulnerability provides the mechanistic basis for the high prevalence of oculomotor dysfunction as a biomarker of \ab{mtbi}~\cite{hirad2019neural}.
+Brainstem and midbrain structures demonstrate particular susceptibility to \ab{dai} due to their anatomical positioning at the interface between the rigid skull base and mobile cerebral hemispheres. These regions house critical nuclei for autonomic and oculomotor control, including the oculomotor nucleus, Edinger-Westphal nucleus (controlling pupillary constriction), and mesencephalic reticular formation (controlling vergence eye movements). The midbrain's narrow dimensions and sensitivity to rotational loading make it particularly vulnerable, with oculomotor nerve fibres and the medial longitudinal fasciculus traversing this region. This vulnerability provides the basis for the high prevalence of oculomotor dysfunction following \ab{mtbi}~\cite{hirad2019neural}.
 
 
 \section{Existing Diagnostic Approaches}
+\label{sec:bg-existing}
 
 When an individual presents to medical care following head injury, clinicians employ a multi-modal diagnostic approach combining clinical assessment, neuroimaging, and specialised testing. Understanding this clinical pathway establishes the context for point-of-injury screening tools: not as replacements for clinical diagnosis, but as accessible triage mechanisms to identify individuals requiring medical evaluation.
 
@@ -35,8 +38,9 @@ Clinical diagnostic pathways function effectively once patients enter medical ev
 
 
 \section{Oculomotor Biomarkers}
+\label{sec:bg-oculomotor}
 
-Oculomotor dysfunction represents a hallmark feature of \ab{mtbi}, with prevalence rates of 65-90\% across multiple studies~\cite{mcdonald2022eye}. This high prevalence reflects the vulnerability of oculomotor control networks to diffuse axonal injury. The distributed neuroanatomical architecture underlying eye movements, spanning from cortex through brainstem to cerebellum, creates multiple points of potential disruption following traumatic injury.
+Oculomotor dysfunction is a commonly observed consequence of \ab{mtbi}, with prevalence rates of 65--90\% across multiple studies~\cite{mcdonald2022eye}. This high prevalence reflects the vulnerability of oculomotor control networks to diffuse axonal injury. The distributed neuroanatomical architecture underlying eye movements, spanning from cortex through brainstem to cerebellum, creates multiple points of potential disruption following traumatic injury.
 
 Oculomotor biomarkers offer several advantages over conventional symptom-based approaches. First, oculomotor responses are largely involuntary and autonomic, providing objective measurement independent of patient effort or malingering. Second, oculomotor parameters are quantifiable as continuous metrics amenable to statistical analysis and machine learning. Third, oculomotor testing provides rapid assessment capability (3-4 seconds for pupillary testing, 20-30 seconds for smooth pursuit). Finally, recent technological advances have made oculomotor assessment accessible via smartphone cameras~\cite{maxin2024smartphone}.
 
@@ -50,11 +54,11 @@ The extensive anatomical distribution of \ab{plr} pathways creates multiple poin
 
 \subsubsection{Research Evidence}
 
-Master and colleagues conducted a landmark study examining \ab{plr} metrics in 98 adolescent athletes with sport-related concussion compared to 134 healthy controls. Using quantitative pupillometry at a median of 12 days post-injury, they found that eight of nine \ab{plr} parameters differed significantly between groups. Concussed athletes demonstrated larger maximum pupil diameter (4.83 mm vs 4.01 mm), faster peak constriction velocity (4.88 mm/s vs 3.91 mm/s), and prolonged recovery time. Maximum pupil diameter and peak constriction velocity achieved \ab{auc} values of 0.78 for discrimination~\cite{master2020pupillary}.
+Master and colleagues examined \ab{plr} metrics in 98 adolescent athletes with sport-related concussion compared to 134 healthy controls. Using quantitative pupillometry at a median of 12 days post-injury, they found that eight of nine \ab{plr} parameters differed significantly between groups. Concussed athletes demonstrated larger maximum pupil diameter (4.83 mm vs 4.01 mm), faster peak constriction velocity (4.88 mm/s vs 3.91 mm/s), and prolonged recovery time. Maximum pupil diameter and peak constriction velocity achieved \ab{auc} values of 0.78 for discrimination~\cite{master2020pupillary}.
 
 Ciuffreda and colleagues found that 5-8 of 9 \ab{plr} parameters showed statistical differences between \ab{mtbi} and control groups for any given test condition. The most diagnostically useful parameters included constriction latency (194-214 ms in \ab{mtbi} vs 182-199 ms in controls), baseline diameter, response amplitude, and recovery times~\cite{ciuffreda2017plr}.
 
-Recent advances in smartphone-based pupillometry with machine learning have demonstrated diagnostic accuracy approaching specialised medical devices. A study of 93 Division I football players achieved 91\% overall accuracy, 98\% sensitivity, and 84.2\% specificity with \ab{auc} of 0.91 using seven \ab{plr} parameters analysed with machine learning models~\cite{maxin2024smartphone}. These results demonstrate the feasibility of accessible, smartphone-based \ab{mtbi} screening with research-grade diagnostic performance.
+Recent advances in smartphone-based pupillometry with machine learning have demonstrated diagnostic accuracy approaching specialised medical devices. A study of 93 Division I football players achieved 91\% overall accuracy, 98\% sensitivity, and 84.2\% specificity with \ab{auc} of 0.91 using seven \ab{plr} parameters analysed with machine learning models~\cite{maxin2024smartphone}. These results demonstrate the feasibility of accessible, smartphone-based \ab{mtbi} screening.
 
 \subsection{Smooth Pursuit Eye Movements}
 
@@ -68,7 +72,7 @@ This extensive pathway traverses multiple white matter tracts susceptible to \ab
 
 Within 24-48 hours post-concussion, Division I athletes demonstrated significantly reduced smooth pursuit velocity (14.24±2.31 degrees/second vs 17.86±5.75 degrees/second in controls, p=0.019, Cohen's d=0.83), with increased saccadic amplitude and velocity to compensate for reduced pursuit. These large effect sizes demonstrate clinically meaningful impairment~\cite{murray2019smooth}.
 
-An important enhancement to smooth pursuit assessment involves dual-task paradigms combining eye tracking with concurrent cognitive load. Studies using concurrent working memory tasks (n-back paradigms) have shown substantial improvements in diagnostic discrimination. Baseline smooth pursuit identified 58\% of patients, but adding a concurrent 2-back working memory task increased identification to 79\%. The \ab{auc} for radial variability increased from 0.88 at baseline to 0.946 with cognitive load, achieving excellent discrimination~\cite{stubbs2018working}.
+An important enhancement to smooth pursuit assessment involves dual-task paradigms combining eye tracking with concurrent cognitive load. Studies using concurrent working memory tasks (n-back paradigms) have shown substantial improvements in diagnostic discrimination. Baseline smooth pursuit identified 58\% of patients, but adding a concurrent 2-back working memory task increased identification to 79\%. The \ab{auc} for radial variability increased from 0.88 at baseline to 0.946 with cognitive load~\cite{stubbs2018working}.
 
 Smooth pursuit within 7 days of injury shows robust discriminative ability, establishing it as a valuable component of multi-modal assessment~\cite{hunfalvay2021smooth}.
 
@@ -82,7 +86,7 @@ Vergence dysfunction in \ab{mtbi} reflects disruption across this distributed ne
 
 \subsubsection{Research Evidence}
 
-The dramatic increase in convergence insufficiency prevalence following \ab{mtbi} represents one of the most robust findings in concussion research. Baseline prevalence in the general population ranges from 2-8\%. Post-concussion acute prevalence (<1 month) increases to 35-49\%, representing an 8-84 fold elevation over baseline. Among athletes with chronic concussion-related symptoms, 89\% demonstrate abnormal \ab{npc}~\cite{mucha2014voms, pearce2015npc}.
+Convergence insufficiency prevalence increases substantially following \ab{mtbi}. Baseline prevalence in the general population ranges from 2-8\%. Post-concussion acute prevalence (<1 month) increases to 35-49\%, representing an 8-84 fold elevation over baseline. Among athletes with chronic concussion-related symptoms, 89\% demonstrate abnormal \ab{npc}~\cite{mucha2014voms, pearce2015npc}.
 
 Clinical assessment using \ab{npc} measurement shows robust diagnostic utility. In concussed patients, \ab{npc} averaged 5.9±7.7 cm compared to 1.9±3.2 cm in controls (mean difference 4.0 cm, p<0.001). Using a clinical threshold of \ab{npc} ≥5 cm, identification rate reached 84\% with \ab{auc} of 0.73. Multivariate models combining \ab{npc} with vestibular-ocular reflex testing and visual motion sensitivity achieved \ab{auc} of 0.89 (95\% CI: 0.84-0.95)~\cite{mucha2014voms}.
 
@@ -96,13 +100,10 @@ While each oculomotor biomarker demonstrates diagnostic utility independently, m
 
 
 \section{Engineering Lit Review}
+\label{sec:bg-engineering}
 
 Recent academic research has demonstrated the technical feasibility of smartphone-based pupillometry and oculomotor assessment for \ab{mtbi}, leveraging the high-resolution cameras present in modern consumer devices.
 
-The most extensively studied smartphone pupillometry platform, PupilScreen, achieved 91\% overall accuracy, 98\% sensitivity, and 84\% specificity with \ab{auc} of 0.91 in Division I football players assessed within 24 hours of injury~\cite{maxin2024smartphone}. Alternative analysis methods using PLR curve interpretation achieved 93\% accuracy, 94\% sensitivity, and 92\% specificity with balanced positive and negative predictive values. Additional studies employing machine learning on seven \ab{plr} parameters achieved 93.5\% accuracy, 96.2\% sensitivity, 90.9\% specificity, and \ab{auc} of 0.936 in acute \ab{mtbi} (<36 hours post-injury).
+Multiple studies have demonstrated diagnostic accuracy comparable to or exceeding conventional clinical tools (see \Cref{sec:bg-oculomotor} for specific results). Modern smartphone front-facing cameras provide 8--12 megapixel resolution at 30--60 fps, sufficient for tracking pupil diameter with sub-millimetre precision and measuring constriction velocities.
 
-These results establish that smartphone cameras provide sufficient spatial and temporal resolution for diagnostic-quality pupillometry. Modern smartphones provide front-facing cameras with resolution of 8-12 megapixels and frame rates of 30-60 fps, sufficient for tracking pupil diameter with sub-millimeter precision and measuring constriction velocities. Infrared cameras implemented for facial recognition in some devices offer additional capability for pupillometry with minimal ambient light interference.
-
-Most published research has focused primarily on pupillary light reflex alone, not implementing the multi-parameter oculomotor assessment (PLR, smooth pursuit, vergence) that clinical evidence suggests provides optimal diagnostic performance~\cite{mcdonald2022eye}. Furthermore, translation from research validation to systems accessible for untrained users at the point of injury requires additional development in user interface design, automated analysis algorithms, and validation for lay-user operation.
-
-Smartphone-based multi-parameter oculomotor assessment addresses the unmet need identified in Section 2.2: providing accessible, objective, quantitative screening for untrained users at the point of injury. By combining research-validated biomarkers with ubiquitous smartphone hardware, automated analysis algorithms, and a user interface designed for non-experts, such a system could enable objective screening in precisely the contexts where it is most needed.
+Most published research has focused on pupillary light reflex alone, rather than implementing the multi-parameter oculomotor assessment (PLR, smooth pursuit, vergence) that clinical evidence suggests provides superior diagnostic performance~\cite{mcdonald2022eye}. Furthermore, translating from research validation to systems usable by untrained personnel at the point of injury requires additional work in user interface design, automated analysis, and lay-user validation.

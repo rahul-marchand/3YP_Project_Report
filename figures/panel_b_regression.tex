@@ -1,0 +1,32 @@
+% Panel (b): Regression — content only, no tikzpicture
+
+% CNN label above
+\node[font=\scriptsize\sffamily, text=regamber!70!black]
+  at (0.4*\panelW, -0.5*\panelH + 0.75) {CNN};
+
+% CNN block
+\node[regblock, minimum width=1.8cm, minimum height=1cm]
+  at (0.4*\panelW, -0.5*\panelH) (cnn) {};
+
+% Mini CNN layers: 3D-ish slices (parallelograms, shrinking)
+\begin{scope}[shift={($(cnn.center)+(-0.5, 0)$)}]
+  % Layer 1 (largest)
+  \fill[regamber!20] (0, -0.35) rectangle ++(0.14, 0.7);
+  \fill[regamber!30] (0, 0.35) -- ++(0.14, 0) -- ++(0.06, 0.06) -- ++(-0.14, 0) -- cycle;
+  \fill[regamber!25] (0.14, -0.35) -- ++(0, 0.7) -- ++(0.06, 0.06) -- ++(0, -0.7) -- cycle;
+  % Layer 2
+  \fill[regamber!30] (0.28, -0.28) rectangle ++(0.14, 0.56);
+  \fill[regamber!40] (0.28, 0.28) -- ++(0.14, 0) -- ++(0.06, 0.06) -- ++(-0.14, 0) -- cycle;
+  \fill[regamber!35] (0.42, -0.28) -- ++(0, 0.56) -- ++(0.06, 0.06) -- ++(0, -0.56) -- cycle;
+  % Layer 3
+  \fill[regamber!40] (0.56, -0.20) rectangle ++(0.13, 0.40);
+  \fill[regamber!50] (0.56, 0.20) -- ++(0.13, 0) -- ++(0.05, 0.05) -- ++(-0.13, 0) -- cycle;
+  \fill[regamber!45] (0.69, -0.20) -- ++(0, 0.40) -- ++(0.05, 0.05) -- ++(0, -0.40) -- cycle;
+  % Layer 4
+  \fill[regamber!50] (0.82, -0.12) rectangle ++(0.11, 0.24);
+  \fill[regamber!60] (0.82, 0.12) -- ++(0.11, 0) -- ++(0.04, 0.04) -- ++(-0.11, 0) -- cycle;
+  \fill[regamber!55] (0.93, -0.12) -- ++(0, 0.24) -- ++(0.04, 0.04) -- ++(0, -0.24) -- cycle;
+\end{scope}
+
+\node[regoutlabel] at (0.75*\panelW, -0.5*\panelH) (reg_pupil) {Pupil diameter};
+\draw[regarr] (cnn) -- (reg_pupil);

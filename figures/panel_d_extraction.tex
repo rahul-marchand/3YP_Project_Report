@@ -1,0 +1,78 @@
+% Panel (d): Biomarker extraction — content only, no tikzpicture
+% Flow: frame stack → time series → PLR curve fit → Biomarkers
+
+\pgfmathsetmacro{\midy}{-0.5*\panelH}
+
+% === Frame stack ===
+\coordinate (stackorigin) at (0.10*\panelW, \midy - 0.22);
+\begin{scope}[shift={(stackorigin)}]
+  \draw[semithick, fill=sharedfill!4, draw=sharedfill!30!black, rounded corners=1pt]
+    (0.08, 0.08) rectangle ++(0.7, 0.44);
+  \draw[semithick, fill=sharedfill!4, draw=sharedfill!30!black, rounded corners=1pt]
+    (0.04, 0.04) rectangle ++(0.7, 0.44);
+  \draw[semithick, fill=sharedfill!6, draw=sharedfill!40!black, rounded corners=1pt]
+    (0, 0) rectangle ++(0.7, 0.44);
+\end{scope}
+\node[font=\tiny\sffamily, text=sharedfill!55!black, below=1pt]
+  at ($(stackorigin)+(0.39, 0)$) {$N$ frames};
+% Stack right anchor at midy for horizontal arrow
+\coordinate (stackright) at ($(stackorigin)+(0.78, 0.22)$);
+
+% === Time series scatter plot — shifted right ===
+\pgfmathsetmacro{\tsoriginx}{0.30*\panelW}
+\coordinate (tspos) at (\tsoriginx, \midy - 0.45);
+\begin{scope}[shift={(tspos)}]
+  \draw[semithick, stemgrey!60!black] (0,0) -- (1.3,0);
+  \draw[semithick, stemgrey!60!black] (0,0) -- (0,0.95);
+  \node[font=\tiny\sffamily, text=stemgrey!50, below=1pt] at (0.65, 0) {Time};
+  \node[font=\tiny\sffamily, text=stemgrey!50, rotate=90, above=2pt] at (0, 0.47) {Diameter};
+
+  \foreach \x/\y in {
+    0.05/0.75, 0.10/0.78, 0.15/0.72, 0.20/0.76, 0.25/0.74,
+    0.30/0.77, 0.35/0.73, 0.40/0.70, 0.45/0.62,
+    0.52/0.45, 0.58/0.32, 0.64/0.22, 0.70/0.18,
+    0.76/0.16, 0.82/0.19, 0.88/0.24, 0.94/0.30,
+    1.00/0.36, 1.06/0.41, 1.12/0.46, 1.18/0.50, 1.24/0.53} {
+    \fill[sharedfill!50!black] (\x, \y) circle (1pt);
+  }
+
+  \draw[red!60, thin, dashed] (0.38, 0) -- (0.38, 0.95);
+  \node[font=\tiny\sffamily, text=red!50, anchor=south] at (0.38, 0.95) {stimulus};
+\end{scope}
+% Anchors at midy for horizontal arrows
+\coordinate (tsleft) at (\tsoriginx - 0.28, \midy);
+\coordinate (tsright) at (\tsoriginx + 1.3, \midy);
+
+% === PLR curve fit ===
+\node[sharedblock] at (0.68*\panelW, \midy) (plr) {Curve\\Fit};
+
+% === Biomarker outputs ===
+\tikzset{
+  biomarker/.style={
+    rectangle, rounded corners=1.5pt,
+    minimum width=1.3cm, minimum height=0.4cm,
+    font=\tiny\sffamily, align=center, thick,
+    draw=sharedfill!60!black, fill=sharedfill!12,
+    text width=1.1cm,
+  },
+  smallarr2/.style={-{Stealth[length=2.5pt,width=2pt]}, thin, color=sharedfill!60!black},
+}
+
+\pgfmathsetmacro{\bmx}{0.9*\panelW}
+\pgfmathsetmacro{\bmsp}{0.44}
+
+\node[font=\scriptsize\sffamily\bfseries, text=sharedfill!70!black]
+  at (\bmx, \midy + 2.4*\bmsp) {Biomarkers};
+
+\node[biomarker] at (\bmx, \midy + 1.5*\bmsp) (bm_lat) {Latency};
+\node[biomarker] at (\bmx, \midy + 0.5*\bmsp) (bm_amp) {Amplitude};
+\node[biomarker] at (\bmx, \midy - 0.5*\bmsp) (bm_vel) {Peak velocity};
+\node[biomarker] at (\bmx, \midy - 1.5*\bmsp) (bm_tau) {Recovery $\tau$};
+
+% === Arrows (all horizontal at midy) ===
+\draw[sharedarr] (stackright) -- (tsleft);
+\draw[sharedarr] (tsright) -- (plr.west);
+\draw[smallarr2] (plr.east) -- ++(0.1,0) |- (bm_lat.west);
+\draw[smallarr2] (plr.east) -- ++(0.1,0) |- (bm_amp.west);
+\draw[smallarr2] (plr.east) -- ++(0.1,0) |- (bm_vel.west);
+\draw[smallarr2] (plr.east) -- ++(0.1,0) |- (bm_tau.west);
