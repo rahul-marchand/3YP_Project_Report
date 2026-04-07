@@ -34,33 +34,27 @@ In summary, accessible tools lack objectivity and depend on patient cooperation 
 
 \section{Project Objectives}
 
-This project addresses the identified gap by developing a headset-based oculomotor assessment system designed to \textbf{supplement, not replace,} existing non-expert screening tools such as the CRT6 with objective, quantitative measurement. Rather, it strengthens the non-expert screening pathway by adding an automated, cooperation-independent measurement where currently only subjective observation is available.
-
-The approach is motivated by evidence that oculomotor dysfunction is a commonly observed consequence of \ab{mtbi}, with the majority of affected individuals exhibiting abnormalities in eye movements and pupillary responses~\cite{mcdonald2022eye}. This prevalence reflects the vulnerability of distributed oculomotor control networks, spanning cortex, brainstem, and cerebellum, to the diffuse axonal injury that characterises \ab{mtbi} (detailed pathophysiology in \Cref{chapter:background}). Importantly, these responses are involuntary and cannot be consciously suppressed, making them robust to the patient cooperation problem identified in \Cref{chapter:introduction:limitations}.
-
-The system implements three complementary oculomotor assessments: \ab{plr}, smooth pursuit eye movements, and vergence (\ab{npc}). Each provides independent diagnostic information, and multi-parameter assessment achieves superior performance compared to any single measure. Recent smartphone-based pupillometry research has demonstrated the technical feasibility of this approach, with published systems achieving diagnostic accuracy comparable to or exceeding conventional clinical tools~\cite{maxin2024smartphone}.
-
-The system is designed to meet the following requirements:
+The analysis in \Cref{chapter:introduction:limitations} establishes four requirements that any effective point-of-injury screening tool must meet:
 
 \begin{itemize}
-    \item \textbf{Accessible deployment:} Smartphone-based implementation using consumer device cameras eliminates the cost barrier of specialised equipment and enables deployment in any setting where smartphones are available.
+    \item \textbf{Accessible:} Deployable in grassroots sport settings without specialised medical equipment or infrastructure.
 
-    \item \textbf{Usability by non-experts:} Automated stimulus delivery and analysis eliminate the need for medical training or subjective interpretation.
+    \item \textbf{Usable by non-experts:} Operable by parents, coaches, and referees without medical training or subjective interpretation.
 
-    \item \textbf{Objective measurement:} Quantitative tracking of involuntary physiological responses provides assessment independent of patient self-reporting or cooperation.
+    \item \textbf{Objective and cooperation-independent:} Provides quantitative measurement that does not depend on patient self-reporting or effort.
 
-    \item \textbf{High sensitivity:} The design prioritises detection of true \ab{mtbi} cases, accepting higher false positive rates as preferable to missed diagnoses in a screening context where positive results prompt medical referral rather than definitive diagnosis.
-
-    \item \textbf{Rapid assessment:} Total assessment time targets under 10 minutes, enabling practical deployment during sports events, in school settings, or as routine post-game screening to help identify concussions not recognised during play.
+    \item \textbf{Rapid:} Completable within 10 minutes, enabling use during or after sporting events.
 \end{itemize}
+
+This project develops a headset-based automated pupillometry system designed to \textbf{supplement, not replace,} existing non-expert screening tools such as the CRT6. The rationale for pupillometry as a screening modality is presented in \Cref{chapter:background}; the headset and software design are detailed in \Cref{chapter:headset} and \Cref{chapter:software} respectively.
 
 
 \section{Scope and Ethical Considerations}
 
-\textbf{Screening, not diagnosis.} The tool is designed as a screening instrument: it identifies individuals who may require further medical evaluation, but does not provide a clinical diagnosis of \ab{mtbi}. A positive result should prompt referral to a healthcare professional, not be treated as a definitive assessment.
+\textbf{Intended use.} The system is a screening instrument, not a diagnostic tool. It identifies individuals who may require further medical evaluation but does not provide a clinical diagnosis of \ab{mtbi}. A negative result does not constitute medical clearance to return to play.
 
-\textbf{A negative result does not constitute clearance.} The system cannot reliably rule out concussion, and users must be made aware of this. The risk of over-reliance by non-expert users, who may interpret a negative screening result as permission to return to play, must be mitigated through clear communication in the application interface and accompanying guidance.
+\textbf{Design principles.} In a screening context, the cost of a false negative (a missed concussion) far exceeds the cost of a false positive (an unnecessary referral). The system therefore prioritises sensitivity, and rejects uncertain measurements rather than risks an incorrect result. Hardware and software must be robust to the uncontrolled conditions of field deployment, and application messaging must be clear to non-expert users about what results do and do not mean. The design decisions made to fulfil these criteria are discussed in \Cref{chapter:headset,chapter:software}.
 
-The system has not been validated on a clinical \ab{mtbi} population. The work presented in this report demonstrates technical feasibility and measurement accuracy on healthy participants, but establishing diagnostic sensitivity and specificity requires future clinical trials with confirmed concussion cases. This limitation is inherent to the project scope and timeline, and any claims regarding diagnostic performance are drawn from the existing literature rather than from our own clinical data.
+\textbf{Validation limitations.} The system has not been validated on a clinical \ab{mtbi} population. The work presented in this report demonstrates technical feasibility and measurement accuracy on healthy participants. Establishing diagnostic sensitivity and specificity requires future clinical trials with confirmed concussion cases, and any claims regarding diagnostic performance in this report are drawn from the existing literature rather than from our own clinical data.
 
-Finally, the system collects oculomotor and biometric data, potentially from minors in sport settings. This carries data privacy obligations under UK GDPR, particularly regarding informed consent, data minimisation, and secure storage. The ethical implications of biometric data collection from vulnerable populations were considered throughout the design process, and all data collected during testing was handled in accordance with the University's ethical approval procedures. \todo{Detail specific data protection measures implemented (anonymisation, on-device processing, storage protocols).}
+\textbf{Data privacy.} The system collects oculomotor and biometric data, potentially from minors in sport settings. This carries data privacy obligations under UK GDPR, particularly regarding informed consent, data minimisation, and secure storage. All data collected during testing was handled in accordance with the University's ethical approval procedures. \todo{Detail specific data protection measures implemented (anonymisation, on-device processing, storage protocols).}

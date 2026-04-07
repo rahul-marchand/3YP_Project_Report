@@ -1,7 +1,7 @@
 \chapter{Technical Background}
 \label{chapter:background}
 
-This chapter establishes the scientific and technical foundation for the screening system presented in this report. It begins by defining \ab{mtbi} and the pathological mechanisms that make it difficult to detect with conventional imaging (\Cref{sec:bg-mtbi}). It then reviews existing diagnostic approaches and their limitations for field deployment (\Cref{sec:bg-existing}), before presenting the oculomotor biomarkers that motivate the system design (\Cref{sec:bg-oculomotor}). Finally, it surveys prior engineering work on smartphone-based oculomotor assessment (\Cref{sec:bg-engineering}).
+This chapter establishes the scientific and technical foundation for the screening system presented in this report. It begins by defining \ab{mtbi} and the pathological mechanisms that make it difficult to detect with conventional imaging (\Cref{sec:bg-mtbi}). It then reviews existing diagnostic approaches and their limitations for field deployment (\Cref{sec:bg-existing}), before presenting the oculomotor biomarkers that motivate the system design (\Cref{sec:bg-oculomotor}). Finally, it surveys prior engineering work on automated oculomotor assessment (\Cref{sec:bg-engineering}).
 
 \section{Mild Traumatic Brain Injury}
 \label{sec:bg-mtbi}
@@ -42,7 +42,7 @@ Clinical diagnostic pathways function effectively once patients enter medical ev
 
 Oculomotor dysfunction is a commonly observed consequence of \ab{mtbi}, with prevalence rates of 65--90\% across multiple studies~\cite{mcdonald2022eye}. This high prevalence reflects the vulnerability of oculomotor control networks to diffuse axonal injury. The distributed neuroanatomical architecture underlying eye movements, spanning from cortex through brainstem to cerebellum, creates multiple points of potential disruption following traumatic injury.
 
-Oculomotor biomarkers offer several advantages over conventional symptom-based approaches. First, oculomotor responses are largely involuntary and autonomic, providing objective measurement independent of patient effort or malingering. Second, oculomotor parameters are quantifiable as continuous metrics amenable to statistical analysis and machine learning. Third, oculomotor testing provides rapid assessment capability (3-4 seconds for pupillary testing, 20-30 seconds for smooth pursuit). Finally, recent technological advances have made oculomotor assessment accessible via smartphone cameras~\cite{maxin2024smartphone}.
+Oculomotor biomarkers offer several advantages over conventional symptom-based approaches. First, oculomotor responses are largely involuntary and autonomic, providing objective measurement independent of patient effort or malingering. Second, oculomotor parameters are quantifiable as continuous metrics amenable to statistical analysis and machine learning. Third, oculomotor testing provides rapid assessment capability (3-4 seconds for pupillary testing, 20-30 seconds for smooth pursuit). Finally, recent technological advances have made oculomotor assessment accessible via low-cost camera systems~\cite{maxin2024smartphone}.
 
 \subsection{Pupillary Light Reflex}
 
@@ -58,7 +58,7 @@ Master and colleagues examined \ab{plr} metrics in 98 adolescent athletes with s
 
 Ciuffreda and colleagues found that 5-8 of 9 \ab{plr} parameters showed statistical differences between \ab{mtbi} and control groups for any given test condition. The most diagnostically useful parameters included constriction latency (194-214 ms in \ab{mtbi} vs 182-199 ms in controls), baseline diameter, response amplitude, and recovery times~\cite{ciuffreda2017plr}.
 
-Recent advances in smartphone-based pupillometry with machine learning have demonstrated diagnostic accuracy approaching specialised medical devices. A study of 93 Division I football players achieved 91\% overall accuracy, 98\% sensitivity, and 84.2\% specificity with \ab{auc} of 0.91 using seven \ab{plr} parameters analysed with machine learning models~\cite{maxin2024smartphone}. These results demonstrate the feasibility of accessible, smartphone-based \ab{mtbi} screening.
+Recent advances in automated pupillometry with machine learning have demonstrated diagnostic accuracy approaching specialised medical devices. A study of 93 Division I football players achieved 91\% overall accuracy, 98\% sensitivity, and 84.2\% specificity with \ab{auc} of 0.91 using seven \ab{plr} parameters analysed with machine learning models~\cite{maxin2024smartphone}. These results demonstrate the feasibility of accessible, automated \ab{mtbi} screening.
 
 \subsection{Smooth Pursuit Eye Movements}
 
@@ -96,14 +96,10 @@ Prognostic value has been established in multiple studies. Athletes with converg
 
 \subsection{Rationale for Multi-Modal Assessment}
 
-While each oculomotor biomarker demonstrates diagnostic utility independently, multi-parameter assessment combining PLR, smooth pursuit, and vergence provides superior performance. Different biomarkers may be differentially affected depending on the specific white matter tracts and neural structures damaged in a given patient's injury. Multi-modal assessment increases sensitivity by detecting abnormality when any single parameter is impaired, while maintaining specificity through algorithms that integrate information across parameters. Video-oculography assessment of combined oculomotor parameters achieved 91\% accuracy with 90\% sensitivity and 89\% specificity, while smartphone-based multi-parameter pupillometry achieved 91\% accuracy with 98\% sensitivity and 84\% specificity~\cite{kelly2019combined, maxin2024smartphone}.
+While each oculomotor biomarker demonstrates diagnostic utility independently, multi-parameter assessment combining PLR, smooth pursuit, and vergence provides superior performance. Different biomarkers may be differentially affected depending on the specific white matter tracts and neural structures damaged in a given patient's injury. Multi-modal assessment increases sensitivity by detecting abnormality when any single parameter is impaired, while maintaining specificity through algorithms that integrate information across parameters. Video-oculography assessment of combined oculomotor parameters achieved 91\% accuracy with 90\% sensitivity and 89\% specificity, while automated multi-parameter pupillometry achieved 91\% accuracy with 98\% sensitivity and 84\% specificity~\cite{kelly2019combined, maxin2024smartphone}.
 
 
 \section{Engineering Lit Review}
 \label{sec:bg-engineering}
 
-Recent academic research has demonstrated the technical feasibility of smartphone-based pupillometry and oculomotor assessment for \ab{mtbi}, leveraging the high-resolution cameras present in modern consumer devices.
-
-Multiple studies have demonstrated diagnostic accuracy comparable to or exceeding conventional clinical tools (see \Cref{sec:bg-oculomotor} for specific results). Modern smartphone front-facing cameras provide 8--12 megapixel resolution at 30--60 fps, sufficient for tracking pupil diameter with sub-millimetre precision and measuring constriction velocities.
-
-Most published research has focused on pupillary light reflex alone, rather than implementing the multi-parameter oculomotor assessment (PLR, smooth pursuit, vergence) that clinical evidence suggests provides superior diagnostic performance~\cite{mcdonald2022eye}. Furthermore, translating from research validation to systems usable by untrained personnel at the point of injury requires additional work in user interface design, automated analysis, and lay-user validation.
+\todo{Engineering literature review to be completed.}
