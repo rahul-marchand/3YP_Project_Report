@@ -31,9 +31,9 @@ Three inference backends were evaluated for deploying MobileNetV2 on the Pi~5's 
 
 PyTorch was not selected as its primary function is as a training and research framework rather than a lightweight inference engine. Although real-time inference on the Pi~5 is feasible, the full framework is heavier than necessary for pure forward inference. ONNX Runtime was engineered as an inference-focused runtime with a documented Raspberry Pi deployment path~\cite{onnxruntime2021}.
 
-Comparative studies of energy consumption show that ONNX Runtime and LiteRT are more energy-efficient than PyTorch for MobileNetV2 CPU workloads, benefiting from XNNPACK-optimised kernels~\cite{malenza2025energy}. However, these benchmarks were conducted on different hardware, requiring task-specific benchmarking on the Pi~5 for definitive conclusions. Benchmarking on Pi ARM hardware confirms that runtime choice affects inference performance, with LiteRT performing strongly, particularly when the model is further quantised to INT8~\cite{baller2021deepedgebench}.
+Comparative studies of energy consumption show that ONNX Runtime and LiteRT are more energy-efficient than PyTorch for MobileNetV2 CPU workloads, benefiting from XNNPACK-optimised kernels~\cite{malenza2025energy}. This is also important for \textbf{environmental reasons}, making sure that our carbon footprint is under check. However, these benchmarks were conducted on different hardware, requiring task-specific benchmarking on the Pi~5 for definitive conclusions which is a \textbf{limitation} and something we will do on our prototype to ensure of. Benchmarking on Pi ARM hardware confirms that runtime choice affects inference performance, with LiteRT performing strongly, particularly when the model is further quantised to INT8~\cite{baller2021deepedgebench}.
 
-For FP32 inference, the literature does not show a clear advantage between ONNX Runtime and LiteRT, but both outperform PyTorch on MobileNetV2 CPU workloads. The strongest evidence favours LiteRT in quantised settings on the Pi~4. Although exact Pi~5 benchmarking was not available, we benchmarked the three runtimes on an Apple Silicon ARM CPU using four threads and FP32 precision to compare relative performance. The Pi also uses the ARM instruction set, so relative performance rankings should transfer even though absolute latencies will differ. Over 200 inference passes with a 30-iteration warmup, LiteRT achieved the lowest mean latency at 2.68\,ms, followed by ONNX Runtime at $1.21\times$ slower, and PyTorch at $8.34\times$ slower. LiteRT also exhibited the most consistent inference times with a standard deviation of 0.12\,ms (\Cref{tab:runtime-benchmark}).
+For FP32 inference, the literature does not show a clear advantage between ONNX Runtime and LiteRT, but both outperform PyTorch on MobileNetV2 CPU workloads. The strongest evidence favours LiteRT in quantised settings on the Pi~4. Although exact Pi~5 benchmarking was not available, we benchmarked the three runtimes on an Apple Silicon ARM CPU using four threads and FP32 precision to compare relative performance. The Pi also uses the ARM instruction set, so relative performance rankings should transfer even though absolute latencies will differ. Over 200 inference passes with a 30-iteration warmup, LiteRT achieved the lowest mean latency at 2.68\,ms, followed by ONNX Runtime at $1.21\times$ slower, and PyTorch at $8.34\times$ slower. LiteRT also exhibited the most consistent inference times with a standard deviation of 0.12\,ms. The memory difference also isn't a concern as its negligible compared to  (\Cref{tab:runtime-benchmark}).
 
 \begin{table}[htbp]
     \centering
@@ -50,7 +50,7 @@ For FP32 inference, the literature does not show a clear advantage between ONNX 
     \end{tabular}
 \end{table}
 
-Given these results and the potential for future INT8 quantisation, LiteRT was selected as the more future-proof choice.
+Given these results and the potential for future INT8 quantisation, LiteRT was selected as the more future-proof choice. We should benchmark 
 
 \subsection{INT8 Quantisation as Future Improvement}
 \label{sec:int8}
@@ -90,7 +90,7 @@ The module also outputs two quality-related quantities. \textbf{Motion validity}
 
 The metrics are subject to decision logic that first determines whether the trial was valid. For the IMU signal, trials where acceleration exceeds 1.5\,g for more than 300\,ms at any point are rejected. For signal confidence, if more than 10\% of samples are rejected due to blur, blinking, or glare, the trial is classified as inconclusive. These thresholds are empirically chosen to balance realistic defects with accuracy, and will be refined as more data are collected on the headset.
 
-Pursuit gain is used as the primary metric for detecting smooth pursuit dysfunction, as it is the most clinically established measure~\cite{leigh2015neurology}. The remaining metrics (lag, saccade count, RMS tracking error) are reported as metadata to provide clinicians with additional context for informed decision-making. A pursuit gain below 0.85 at a stimulus frequency of 0.16\,Hz is used as the threshold for flagging potential impairment, based on the observation that healthy individuals typically achieve gains of 0.9--1.0 at frequencies $\leq 0.4$\,Hz~\cite{meyer2020smoothpursuit}, placing the threshold at approximately two standard deviations below the mean.
+Pursuit gain is used as the primary metric for detecting smooth pursuit dysfunction, as it is the most clinically established measure~\cite{leigh2015neurology}. The remaining metrics (lag, saccade count, RMS tracking error) are reported as metadata to provide clinicians with additional context for informed decision-making. A pursuit gain below 0.85 at a stimulus frequency of 0.16\,Hz is used as the threshold for flagging potential impairment, based on the observation that healthy individuals typically achieve gains of 0.9--1.0 at frequencies $\leq 0.4$\,Hz~\cite{meyer2020smoothpursuit}, placing the threshold below the normal range whilst accounting for measurement uncertainty in the gaze hardware.
 
 \subsection{Data Collection Pipeline}
 \label{sec:data-pipeline}
@@ -149,14 +149,14 @@ The goal of filtering is to preserve genuine poor pursuit behaviour whilst remov
     \begin{minipage}[t]{0.47\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/filter_comparison}
-        \caption{Comparison of filter types on saccade count recovery from noisy synthetic signals.}
+        \caption{Optimising the Gaussian filter.}
         \label{fig:filter-comparison}
     \end{minipage}
     \hfill
     \begin{minipage}[t]{0.47\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/gaussian_filter_optimisation}
-        \caption{Grid search over Gaussian filter parameters.}
+        \caption{Comparison of the different filters .}
         \label{fig:gaussian-optimisation}
     \end{minipage}
 \end{figure}
