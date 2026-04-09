@@ -101,12 +101,278 @@ These results motivated the introduction of lenses to decouple the physical disp
 
 
 \section{Electronics}
+\label{sec:electronics}
 
-% TODO: Describe electronics design
-% - LED illumination
-% - PCB design
-% - Communication protocols
-% - Power management
+
+\subsection{System Requirements and Objectives}
+\label{sec:electronics-requirements}
+
+\subsubsection{Purpose of the Electronics Subsystems}
+
+The purpose of the electronic subsystem within the headset is to enable precise, repeatable and time-stamped pupillometry data collection and inference, since quantitative pupil and eye-movement metrics have been reported as relevant markers of neurological dysfunction~\cite{mcdonald2022eye}. In order to meet its objectives, the subsystem must include devices which are able to (i)~present visual stimuli, (ii)~provide stable near-eye IR illumination, (iii)~capture synchronised binocular eye video, (iv)~timestamp and store recorded data points and (v)~process and run inference on recorded video.
+
+\subsubsection{Measurement Requirements}
+
+Having covered the purpose of the electronics subsystems, the next step is to highlight the overarching specification requirements based on the biological features of the chosen biomarkers.
+
+In order to capture pupillary constriction dynamics, vergence response latency, and smooth pursuit tracking behaviour, which occur at short time intervals, the electronics system must support high frame-rate eye measurement of ${\sim}120$\,Hz~\cite{bergamin2003pupil}.
+
+Identifying the vergence biomarker also requires an analysis of the coordinated behaviour of both eyes~\cite{yaramothu2019vergence}. Therefore, the design must include binocular capture with balanced near-eye IR illumination.
+
+\subsubsection{Use-Case Driven System Requirements}
+
+The electronics architecture must reflect the device's use case, which is that of a portable screening tool for pitch-side use in amateur sport. Therefore, the prototype must be (i)~battery-powered, (ii)~self-contained and (iii)~wearable, (iv)~intuitive enough to be operated by a user without a medical/technology background (v)~basic resistance to sweat and rain.
+
+This introduces the following practical and safety system requirements. The system must be capable of (i)~operating locally without continuous internet connectivity, (ii)~managing connectivity interruptions, (iii)~interrupting sessions in the case of head-movement (iv)~activating guard-rail procedures to protect user in the event of illumination, battery, and overheating mishaps.
+
+From a design criteria perspective, the project requires the device to adhere to (i)~accessibility (ii)~accuracy and (iii)~convenience.
+
+
+\subsection{System Architecture and Data Flow}
+
+\subsubsection{Architecture Overview}
+
+After having outlined the system requirements in \Cref{sec:electronics-requirements}, the next step is highlighting the system-level organisation of the headset electronics. The headset is represented as a combination of multiple subsystems with distinct roles in stimulus delivery, sensing, embedded processing, communication, and power delivery/protection. This architectural view is helpful communicating the complete measurement chain before a detailed design of each subsystem is considered in later sections~\cite{blanchard2011systems}.
+
+\subsubsection{Functional Subsystems Decomposition}
+
+The layout and interactions of the subsystems within the headset is highlighted in \Cref{fig:electronics-subsystems}. It consists of 4 principal internal subsystems: Stimulus and Illumination; Sensing; Compute, Storage and Communications; Power and Protection. Outside the headset boundary, a Mobile App + Backend Cloud Infrastructure is shown. The system diagram distinguishes the flow of information/control interfaces (black arrow) with the flow of power (red arrow). The decomposition shown in \Cref{fig:electronics-subsystems} is a functional diagram and does not imply PCB co-location of all elements within a given subsystem. \todo{The PCB arrangement is discussed further in Section 7.2 --- update cross-reference.}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/electronics_image1}
+    \caption{Functional subsystems decomposition of the headset electronics. Black arrows represent information and control interfaces; red arrows represent power flow.}
+    \label{fig:electronics-subsystems}
+\end{figure}
+
+The Compute, Storage and Communications Subsystem is the central coordination block of the device. It consists of an embedded computer, local session storage and Integrated Circuits required for wireless communication. The responsibilities of the subsystem include issuing control actions to the sensing and stimulus hardware, receiving test data streams, storing captured data locally, carrying out post-capture inference and handling wireless communications with the external Mobile App + Backend Cloud Infrastructure.
+
+The Sensing Subsystem consists of electronics that record measurement data from the user, which is then sent to the central computational block. These include a binocular camera pair and an IMU (Inertial Measurement Unit). The camera provides eye-imaging capabilities used for the extraction of pupil and eye-movement features and the IMU provides head motion related information used for a session validity assessment.
+
+The Stimulus and Illumination Subsystem contains the hardware responsible for producing adequate optical conditions for \ab{plr}, \ab{npc} and smooth pursuit tests as outlined in \Cref{sec:bg-oculomotor}. These include an internal display to present the visual stimulus to the subject as well as near-eye IR illumination to ensure reliable eye imaging. Together, these form an ideal measurement environment.
+
+The Power and Protection Subsystem is not only responsible for supply distribution but also for housing vital monitoring and protection systems. It contains the battery source, charging paths, monitoring electronics, and protective mechanisms associated with illumination control, low-battery handling, electrical safety and fault response.
+
+\subsubsection{Operating Modes and Data Flow}
+
+The headset supports two operating modes: a data collection mode (non-concussed user) and a pitch side inference mode (potentially concussed user). The difference in these operating modes lies primarily in the timing, volume and method of external data transfer. The software aspect associated with these operating modes is highlighted in \Cref{chapter:software}.
+
+Both modes start with the compute, storage and communications subsystem coordinating stimulus presentation, sensing activity and event logging during the capture window. The binocular eye video and IMU data are captured locally and written to on-device storage alongside any associated session metadata.
+
+In the data collection mode, the complete session data is retained for future off-device use. This includes the binocular video, IMU data, event logs and timestamps and extracted features. Instead of transferring the data alongside inference, the headset stores the session data locally and then uploads it to backend cloud storage over Wi-Fi at a later time. Wi-Fi was chosen for this model due to heavy bandwidth requirement for transmission and the flexibility of being able to achieve a deferred upload once a strong Wi-Fi connection is achieved.
+
+In the pitch side inference mode, the headset performs local inference from the captured session data. The headset then sends a compact results packet to the mobile app over Bluetooth. Bluetooth was chosen as the transmission medium for this mode due to the small data packet being transferred and the mobile app is required to be in close proximity to headset anyway. If the connection is interrupted, the headset retains the inference results locally and transmits it when the link is restored.
+
+
+\subsection{Camera and I/O Systems}
+
+\subsubsection{Role and Design of the Camera Subsystem}
+
+\Cref{sec:electronics-requirements} highlighted that the headset must be able to support binocular eye imaging at 120\,Hz. The role of this section is to resolve the following practical questions associated with the camera subsystem and outline the well-reasoned camera module choice.
+
+At a subsystem level, there are 4 main design choices that will be addressed in the following subsections:
+
+\begin{enumerate}
+    \item Whether the operating point should be VGA or 720p?
+    \item Whether to opt for fixed focus or auto-focus?
+    \item Whether to incorporate rolling shutter or global shutter?
+    \item Whether to use an embedded or general purpose camera?
+\end{enumerate}
+
+Answering these questions will further help determine the bandwidth, storage and packaging requirements for the headset.
+
+\subsubsection{Camera Subsystem Architecture}
+
+This subsection justifies the camera-subsystem design choices introduced above.
+
+The imaging task is not a full-face capture but reliable localisation of the pupil boundary and eye position under near-eye geometry. The required frame rate has already been established as 120\,Hz. More broadly, eye-tracking literature has justified a lower spatial resolution as a baseline when temporal fidelity is prioritised in near-eye eye tracking, as it enables higher frame rates with sufficient eye-region detail~\cite{morimoto2005eye, chugh2020eye}. Therefore, to minimise load on the processing unit, a VGA operating point can be justified over a 720p resolution.
+
+A fixed-focus optical solution is also preferred. The headset geometry fixes the camera-to-eye spacing, with minimal variation from user-to-user. Under these conditions, auto-focus would introduce additional control complexity, power burden and software overhead with limited practical benefits. Fixed-focus optics therefore align best with the previously outlined design criteria of ease of use, accessible and robust.
+
+The next choice concerns shutter behaviour within the camera. In a global-shutter sensor, all pixels are exposed to light simultaneously, whereas in a rolling-shutter sensor, the image is read line by line over a short time interval (\Cref{fig:shutter-comparison}). When trying to capture eye motion using a rolling-shutter sensor, intra-frame temporal skews and geometric distortion become present~\cite{farivar2016eyetracker}. Considering this, a global-shutter sensor is an appropriate choice.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/electronics_image2}
+    \caption{Comparison of global shutter and rolling shutter capture of a rotating fan, illustrating the geometric distortion introduced by rolling shutter readout.}
+    \label{fig:shutter-comparison}
+\end{figure}
+
+The final design choice is that of the camera interface. The choice lies between an embedded camera module, a compact PCB-level imaging module, and a general purpose camera, an externally packaged device connected to the headset via USB. For a self-contained headset, the embedded approach is preferred due to its low integration risk, manageable wiring and suitable data path.
+
+\subsubsection{Camera Module Selection}
+
+Having established the required subsystem features, the next step is to compare practical camera modules that fit the criteria. Three candidates were shortlisted, ranked on the aforementioned design criteria and were weighted based on importance to the project.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Camera module comparison against design criteria. Scores are weighted by importance to the project. The Arducam OV9281 was selected as the best overall fit.}
+    \label{tab:camera-comparison}
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Criterion} & \textbf{Weight} & \textbf{Arducam OV9281} & \textbf{\todo{Module 2}} & \textbf{\todo{Module 3}} \\
+        \midrule
+        Resolution (VGA at 120\,Hz) & \todo{} & \todo{} & \todo{} & \todo{} \\
+        Global shutter              & \todo{} & \todo{} & \todo{} & \todo{} \\
+        Fixed focus                 & \todo{} & \todo{} & \todo{} & \todo{} \\
+        Embedded interface (MIPI/CSI) & \todo{} & \todo{} & \todo{} & \todo{} \\
+        Power consumption           & \todo{} & \todo{} & \todo{} & \todo{} \\
+        Physical size               & \todo{} & \todo{} & \todo{} & \todo{} \\
+        Cost                        & \todo{} & \todo{} & \todo{} & \todo{} \\
+        Pi~5 compatibility          & \todo{} & \todo{} & \todo{} & \todo{} \\
+        \midrule
+        \textbf{Weighted total}     &        & \todo{} & \todo{} & \todo{} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\todo{Add selection justification text explaining why the Arducam OV9281 was chosen based on the weighted comparison.}
+
+
+\subsection{Illumination and Driver Electronics}
+
+\subsubsection{Role of the Illumination Subsystem}
+
+The illumination subsystem within the headset must be designed to satisfy 3 principal design requirements. First, it must provide sufficient iris-to-pupil contrast to support image segmentation. Second, it must minimise sensitivity to facial shadowing and headset fitting variance, allowing for repeatable measurements across sessions. Finally, it must provide uniform and symmetric illumination across both eyes, so binocular differences arise mainly from pupillary differences rather than lighting conditions.
+
+\subsubsection{Wavelength Selection and Optical Arrangement}
+
+The near-eye illumination must be selected such that the lighting does not interfere with the eye tracking process when the visual stimulus is presented on the internal display. To achieve this, near-infrared illumination must be used. It has been widely accepted in camera-based eye tracking as it improves pupil visibility at no cost of stimulus hindrance~\cite{hansen2010eye}. An appropriate wavelength of light must be chosen with regard to sensor sensitivity, cost and cornea exposure safety. 850\,nm was chosen as appropriate based on its prior use in eye-imaging as well as it being invisible to the eye, therefore suppressing the dazzling light effect.
+
+The physical arrangement adopted was that of an LED illumination ring around each camera. This geometry allows for symmetric distribution of light across the eye, reduces local shadowing and helps maintain a consistent pupil appearance across the tests.
+
+\subsubsection{Driver Topology and Electrical Implementation}
+
+This subsection justifies the operational and driver choices associated with the illumination subsystem. The main electrical criterion is the need for a stable illumination output whilst minimising power loss and heat generation. Since LED optical output is primarily determined by drive current, and a small change in forward voltage can result in a large change in forward current, a constant-current driver is preferred~\cite{ti2007an1656}.
+
+A specific current can be delivered to the LED via a linear current regulator or a switched buck current driver. While a linear current regulator is a simple solution, any excess voltage between the battery rail and the LED would be dissipated as heat. This is undesirable within the headset so a buck regulator becomes the more efficient choice~\cite{ti2007an1656}.
+
+Finally, the 2 LED rings will comprise of parallel components as opposed to a single series chain. This means that a single branch failure will not disable a full ring thus allowing for the device to continue operating. This improves robustness and practical integration of the headset.
+
+The device adopts a fixed brightness level during capture which is established by a one-time calibration prior to the data collection. \todo{Complete: original text appears truncated here.}
+
+\subsubsection{Safety and Fail-Safe Behaviour}
+
+As the illumination subsystem operates close to the eye, safety frameworks such as IEC~62471 must be incorporated~\cite{iec62471}. This evaluates the photobiological safety of light systems using exposure limits depending on intensity, viewing distance and exposure duration. Specifically, the corneal irradiance and retinal thermal hazard tests must be carried out.
+
+For the proposed headset, the maximum continued IR exposure duration is ${\sim}30$\,s, where the lights are positioned ${\sim}7$\,cm from the eye. The corneal exposure test requires us to follow the sub-1000\,s IEC relation~\cite{osram2017iec62471}, which states the upper bound on W/sr that the LED can safely emit.
+
+We first find the exposure limit of the eye by:
+%
+\begin{equation}
+    E_{\text{IR,lim}} = 18000 \, t^{-3/4} = 18000 \times 30^{-3/4} \approx 1404 \; \text{W/m}^{2}
+\end{equation}
+
+From which we can find the upper bound on the power that the source sends per unit solid angle by:
+%
+\begin{equation}
+    I_{\max} = E_{\text{IR,lim}} \times d^{2} \approx 1404 \times 0.07^{2} \approx 6.88 \; \text{W/sr}
+\end{equation}
+
+This shows that the total radiant intensity directed towards each eye must be below 6.88\,W/sr.
+
+The headset must also satisfy the weak-stimulus retinal thermal hazard criterion as an 850\,nm IR source is used and the exposure times are greater than 10\,s.
+
+The 850\,nm source has a wavelength hazard weighting of:
+%
+\begin{equation}
+    R(\lambda) = 0.501
+\end{equation}
+
+Which we use comparing the weighted source radiance against the allowable limit by:
+%
+\begin{equation}
+    L \approx \frac{I}{l \cdot b} \; R(\lambda) < \frac{6000}{\alpha} = \frac{6000}{0.011} = 545.5 \; \text{kW/m}^{2}\text{sr}
+\end{equation}
+%
+where $l$, $b$ are dimensions of the LED and $\alpha = 0.011$\,rad.
+
+For example, an LED with $l, b = 1$\,mm and radiant intensity $I = 0.25$\,W/sr gives a weighted source radiance of 125\,kW/m\textsuperscript{2}sr which lies below the long exposure limit of 545.5\,kW/m\textsuperscript{2}sr, indicating a safe and attainable safety requirement.
+
+
+\subsection{Power System Design}
+
+\subsubsection{Power Subsystem Requirements}
+
+Given the project brief outlined in \Cref{sec:electronics-requirements}, the power subsystem must satisfy 4 requirements: (i)~provide main supply for the compute subsystem (ii)~distribute secondary rails for lower power peripherals (iii)~support rechargeable operation with safety considerations (iv)~remain practically sized for headset mounting.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/electronics_image3}
+    \caption{Power distribution architecture of the headset, showing the 2S LiPo battery, charging path, and split rail distribution to subsystems.}
+    \label{fig:power-distribution}
+\end{figure}
+
+An obvious choice for the main power source was a LiPo battery, which is known for its versatility and use in portable electronics~\cite{tarascon2001lithium}. However, a 2-cell (2S) LiPo configuration is preferred over the single cell as its higher voltage provides more efficient conversion to the supply rails (\Cref{fig:power-distribution}). Additionally, a split rail architecture has been adopted as the headset contains components with different electrical load requirements. The compute subsystem requires a high current 5\,V rail and IMUs are better suited to a 3.3\,V rail.
+
+\subsubsection{Power Budget and Battery Sizing}
+
+The size of the battery is approximated by the headset's energy consumption per test then scaled to the number of tests per charge. At this stage, published figures are used for subsystem power demands instead of measured values in \Cref{tab:power-budget}. The Arducam OV9281 is the chosen camera module and the Raspberry Pi~5 is the compute platform, which are used for the power calculations.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Estimated power budget by subsystem and operating state.}
+    \label{tab:power-budget}
+    \begin{tabular}{lcl}
+        \toprule
+        \textbf{Subsystem / operating state} & \textbf{Representative power} & \textbf{Operating times} \\
+        \midrule
+        Compute subsystem during active capture/control & 6.0\,W [reference] & Pre-Capture, Capture \\
+        Compute subsystem during local inference         & 9.8\,W              & Inference \\
+        Two OV9281 camera modules                        & 0.4\,W [reference]  & Capture \\
+        Internal display                                 & 2.0\,W [estimated]  & Capture \\
+        IMU + battery telemetry                          & 0.01\,W [estimated] & Capture \\
+        IR illumination subsystem                        & 2.0\,W [estimated]  & Pre-Capture, Capture \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The test for each biomarker (\ab{plr}, smooth pursuit, vergence) was timed to be 30\,s pre-test IR illumination, 30\,s active capture with stimulus and 30\,s post-capture inference.
+
+The energy consumption per test is therefore approximated as:
+%
+\begin{equation}
+    E_{\text{test}} = P_{\text{pre}} \, t_{\text{pre}} + P_{\text{cap}} \, t_{\text{cap}} + P_{\text{inf}} \, t_{\text{inf}}
+\end{equation}
+%
+where
+%
+\begin{align}
+    P_{\text{pre}} &\approx 6.0 + 2.0 = 8 \; \text{W} \notag \\
+    P_{\text{cap}} &\approx 6.0 + 0.4 + 2.0 + 0.01 + 2.0 = 10.41 \; \text{W} \notag \\
+    P_{\text{inf}} &\approx 9.8 \; \text{W} \notag
+\end{align}
+
+Therefore:
+%
+\begin{equation}
+    E_{\text{test}} \approx 8.0 \times \frac{30}{3600} + 10.41 \times \frac{30}{3600} + 9.8 \times \frac{30}{3600} \approx 0.24 \; \text{Wh}
+\end{equation}
+
+The design target set was to achieve 30 tests, which amounts to about 10 users tested across all 3 biomarkers. Therefore:
+%
+\begin{equation}
+    E_{\text{total}} \approx 30 \times 0.24 = 7.2 \; \text{Wh}
+\end{equation}
+
+Allowing for a practical margin of 25\% to account for losses, gives a design target of 10\,Wh. For a 7.4\,V 2S LiPo battery, this gives a capacity of:
+%
+\begin{equation}
+    C \approx \frac{10}{7.4} \approx 1.35 \; \text{Ah}
+\end{equation}
+
+\subsubsection{Charging and Safety Considerations}
+
+The principal risks associated with the battery are (i)~protected battery charging, (ii)~over-current and under-voltage protection and (iii)~controlled low-battery shutdown. To meet these, a designated charge management path is used for the 2S LiPo battery. The battery will be charged via USB-C and the device will stay turned off during charging.
+
+The headset will also include battery-state monitoring via a fuel-gauge IC connected to the compute subsystem. This allows for battery state to be logged and a shut-down procedure to be initiated when a lower operating limit is reached.
+
+
+\subsection{Control Electronics and IMU}
+
+\subsubsection{Role of Compute Subsystem}
+
+\todo{Complete: this section was incomplete in the original document.}
 
 
 \section{Ergonomics and Assembly}

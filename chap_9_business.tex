@@ -1,199 +1,98 @@
 \chapter{Business Plan}
 \label{chapter:ent-business}
 
-% Owner: Rahul
-% Sections: Business model & strategy, MVP definition & prototyping roadmap, Supply chain & operations
-
-This chapter defines the commercial structure of the venture: how revenue is generated, what the first deployable product includes, and how the supply chain and operations scale from prototype to production. The analysis draws on the hardware and software design presented in \Cref{chapter:headset,chapter:software} and the market context established in \Cref{chapter:ent-market}. Financial projections derived from these assumptions are presented in \Cref{chapter:ent-financial}.
+This chapter defines the commercial structure of the venture: how revenue is generated, what the first deployable product includes, how the supply chain scales from prototype to production, and how operations are structured. The analysis draws on the hardware and software design presented in \Cref{chapter:headset,chapter:software} and the market context established in \Cref{chapter:ent-market}. Financial projections derived from these assumptions are presented in \Cref{chapter:ent-financial}.
 
 
-% ============================================================================
-% SECTION 5 — Business Model & Strategy
-% ============================================================================
-
-\section{Business Model and Strategy}
-\label{sec:ent-business-model}
-
-The commercial viability of the headset depends not only on the technical performance validated in \Cref{chapter:results}, but on whether the product can generate sustainable revenue at volumes that justify continued development. This section defines who pays, what they pay for, and how value is created and captured across different customer segments.
+\section{Revenue Model and Pricing}
+\label{sec:ent-revenue}
 
 \subsection{Revenue Model}
 
-Four candidate revenue models were evaluated against the product's characteristics and target markets.
-
-\textbf{Hardware sale with software subscription.} The headset is sold as a one-off purchase and paired with a recurring annual subscription for the companion app, cloud data storage, analytics dashboard, and software updates including improved inference models. This model aligns incentives: the hardware sale covers manufacturing cost and margin, whilst the subscription funds ongoing software development and clinical validation. It is the preferred model for sports organisations and clinics, where annual budgets accommodate subscription line items more readily than large capital purchases.
-
-\textbf{Hardware lease.} For institutional buyers such as \ab{nhs} trusts or university sports departments, a monthly or annual lease bundles the headset and full software access into a single operating expenditure. Leasing lowers the adoption barrier by eliminating upfront capital approval and allows the organisation to return or upgrade hardware as the product iterates. The lease model also retains ownership of the hardware, simplifying fleet management, calibration, and replacement.
-
-\textbf{Research package.} Universities and clinical research groups require raw data export, configurable stimulus protocols, and integration with existing data pipelines. A research-tier licence provides these features alongside priority support and co-authorship or data-sharing agreements where appropriate. Revenue per unit is higher but volumes are lower; critically, research deployments generate the clinical evidence that enables regulatory progress and broader commercial adoption.
-
-\textbf{Per-test pricing.} A pay-per-use model was considered but rejected for the primary use case. Sideline screening must not introduce hesitation about whether to test an athlete, and a per-test charge creates exactly this friction. Per-test pricing may however be appropriate for high-volume institutional screening programmes (e.g.\ pre-season baseline testing across an entire league), where it reduces commitment relative to a full subscription.
-
-The recommended model combines hardware sale with tiered software subscription as the default, with lease and research variants for institutional and academic segments respectively.
+\todo{Define candidate revenue models and justify the preferred approach. Consider:
+\begin{itemize}
+    \item Hardware sale + software subscription
+    \item Hardware lease (institutional buyers)
+    \item Research licence tier
+    \item Per-test pricing (and why it may be inappropriate for the primary use case)
+\end{itemize}
+State the recommended model and why.}
 
 \subsection{Pricing Strategy}
 
-Pricing must balance accessibility in grassroots settings against the need to fund regulatory validation and iterative hardware development.
-
-\textbf{Hardware.} The target retail price for the headset is \pounds150--250 at launch, yielding a gross margin of approximately 50--60\% at low volumes (see \Cref{sec:ent-financial} for unit economics). This positions the device well below clinical pupilometers (\pounds3{,}000--10{,}000) and commercial eye-tracking headsets (\pounds500--2{,}000), whilst remaining above commodity consumer electronics. The price point is comparable to existing sideline assessment equipment budgets for semi-professional and professional sports clubs.
-
-\textbf{Software subscription.} Three tiers are proposed:
+\todo{Define pricing for hardware, software tiers, and lease options. Justify against:
 \begin{itemize}
-    \item \textbf{Standard} (\pounds20--30/month): companion app, test execution, result display, local data storage, software updates.
-    \item \textbf{Professional} (\pounds50--80/month): adds cloud upload, multi-device fleet management, analytics dashboard, historical trend tracking, and multi-operator accounts.
-    \item \textbf{Research} (\pounds100--150/month): adds raw data export, configurable stimulus parameters, API access, and dedicated support.
-\end{itemize}
-
-\textbf{Lease.} Institutional leases bundle hardware and Professional-tier software at \pounds80--120/month, with minimum 12-month terms.
-
-\subsection{Value Creation and Capture}
-
-The product creates value at three levels, each enabling a distinct revenue stream:
-
-\begin{enumerate}
-    \item \textbf{Immediate clinical value.} Objective screening result within minutes of injury, captured through hardware sale and standard subscription.
-    \item \textbf{Longitudinal data value.} Trend tracking across repeated assessments (baseline, post-injury, recovery), captured through professional subscription.
-    \item \textbf{Population-level data value.} Aggregated, anonymised datasets that improve inference models and contribute to clinical evidence, captured indirectly through improved product performance and directly through research partnerships.
-\end{enumerate}
-
-This layered model ensures that value capture scales with the depth of customer engagement, rather than relying solely on hardware margin.
-
-\subsection{Role of the Companion App}
-
-The phone app is not an optional accessory but a core component of the value proposition. In the pitchside use case, the operator never interacts with the headset's Pi directly; the app provides test initiation, real-time status, result display, and data management. Without the app, the product is a research instrument rather than a deployable screening tool. The app therefore functions as the primary customer touchpoint and the natural vehicle for subscription revenue.
+    \item Competitor pricing (clinical pupillometers, sideline assessment equipment)
+    \item Target customer willingness to pay (from market analysis)
+    \item Required margins to fund regulatory and development costs
+\end{itemize}}
 
 
-% ============================================================================
-% SECTION 6 — MVP Definition & Prototyping Roadmap
-% ============================================================================
-
-\section{MVP Definition and Prototyping Roadmap}
+\section{MVP Definition and Roadmap}
 \label{sec:ent-mvp}
 
-Translating the prototype described in \Cref{chapter:headset,chapter:software} into a commercially deployable product requires a phased approach that sequences technical capability against market readiness. This section defines the \ab{mvp}, distinguishes it from the current prototype, and outlines the development roadmap.
+\subsection{Current Prototype vs MVP}
 
-\subsection{Current Prototype Capabilities}
-
-The 3YP prototype, as detailed in the preceding chapters, provides:
-
-\begin{itemize}
-    \item Binocular imaging via beamsplitter optics at 120\,fps per eye.
-    \item Stimulus presentation for \ab{plr} and smooth pursuit via the integrated display.
-    \item On-device CNN inference for pupil segmentation and gaze estimation using LiteRT on the Raspberry Pi~5.
-    \item IMU-based motion detection for quality gating of measurements.
-    \item Bluetooth connectivity to a companion phone app for test control and result display.
-    \item Wi-Fi data upload capability for post-session transfer.
-    \item 3D-printed PETG enclosure with three-point strap system.
-\end{itemize}
-
-This prototype demonstrates technical feasibility but is not yet a product. It lacks the reliability, usability, and regulatory standing required for deployment outside a supervised research setting.
-
-\subsection{MVP Scope}
-
-The MVP is defined as the minimum configuration sufficient to deliver validated screening results in a controlled real-world setting --- specifically, a supervised research deployment with a sports medicine partner. The MVP must include:
-
-\begin{itemize}
-    \item \textbf{Reliable binocular PLR measurement} with automated quality scoring and rejection of invalid trials. PLR is the best-evidenced biomarker for \ab{mtbi} screening in the literature and the most technically mature modality in the current system.
-    \item \textbf{Companion app} providing guided test workflow, clear result display with confidence indication, and local data storage.
-    \item \textbf{Operator-facing usability} sufficient for a trained sports physiotherapist to conduct a test without developer assistance, including guided setup, automated calibration checks, and clear error messaging.
-    \item \textbf{Data pipeline} for secure upload of anonymised trial data to a research database, enabling model improvement and clinical evidence generation.
-    \item \textbf{Enclosure and ergonomics} robust enough for repeated use across multiple participants over a multi-week study period.
-\end{itemize}
-
-\subsection{Deferred Features}
-
-The following are explicitly excluded from the MVP to manage scope and development risk:
-
-\begin{itemize}
-    \item \textbf{Smooth pursuit and vergence modalities.} These are retained as data collection capabilities but are not included in the screening decision logic until sufficient clinical validation data are available.
-    \item \textbf{Multimodal decision fusion.} The MVP reports individual biomarker metrics rather than a composite screening score. Fusion requires a validated clinical dataset that does not yet exist.
-    \item \textbf{Fleet management and multi-device administration.} Not required for single-site research deployments.
-    \item \textbf{Production-grade enclosure.} The PETG prototype is adequate for research use; transition to injection-moulded PA12 or polycarbonate is deferred to the productisation phase.
-    \item \textbf{Regulatory submission.} The MVP operates under research ethics approval, not as a regulated medical device.
-\end{itemize}
+\todo{Distinguish between the 3YP prototype and a deployable MVP. What does the MVP include? What is explicitly deferred?}
 
 \subsection{Development Roadmap}
 
-Development is structured in three phases, each expanding the product's capability and market reach.
-
-\textbf{Phase~1: Research validation (months 0--12).} Deploy the MVP with 2--3 sports medicine research partners. Objectives: collect clinical pupilometry data from concussed and healthy populations, validate measurement repeatability, refine the operator workflow based on real-world feedback, and establish baseline sensitivity and specificity estimates. Revenue: research licence fees. Key milestone: peer-reviewed publication of validation results.
-
-\textbf{Phase~2: Pitchside deployment (months 9--24).} Informed by Phase~1 clinical data, harden the software for unsupervised operator use. Add smooth pursuit to the screening logic if validation supports it. Transition the enclosure to a production material and process. Develop fleet management features. Begin regulatory engagement for UK market (see \Cref{sec:ent-regulatory}). Revenue: hardware sales and standard/professional subscriptions to early-adopter sports organisations. Key milestone: regulatory classification confirmed and first non-research customer.
-
-\textbf{Phase~3: Clinical and institutional scale (months 18--36).} Expand to emergency department and concussion clinic use cases. Integrate with electronic health record systems. Submit for regulatory clearance based on accumulated clinical evidence. Revenue: institutional leases and professional subscriptions. Key milestone: regulatory clearance and first \ab{nhs} or equivalent institutional deployment.
-
-These phases overlap deliberately: Phase~2 hardware development begins during Phase~1 deployments, and Phase~3 regulatory engagement starts during Phase~2.
+\todo{Define phased development:
+\begin{itemize}
+    \item Phase 1: Research validation
+    \item Phase 2: Pitchside deployment
+    \item Phase 3: Clinical and institutional scale
+\end{itemize}
+Key milestones, timeline, and what de-risks each phase.}
 
 
-% ============================================================================
-% SECTION 7 — Supply Chain & Operations
-% ============================================================================
-
-\section{Supply Chain and Operations}
+\section{Supply Chain}
 \label{sec:ent-supply-chain}
-
-Scaling from a single hand-assembled prototype to repeatable production introduces supply chain, manufacturing, and operational challenges that must be anticipated in the business model. This section analyses the major subsystems, manufacturing strategy, and operational requirements at each production volume.
 
 \subsection{Bill of Materials}
 
-The headset comprises five major subsystems. \Cref{tab:bom-breakdown} summarises the estimated unit cost at prototype (1--10 units), low-volume (100--500 units), and medium-volume (1{,}000--5{,}000 units) scales.
-
-\begin{table}[htbp]
-    \centering
-    \caption{Estimated bill of materials by subsystem and production volume. All costs in GBP excluding VAT.}
-    \label{tab:bom-breakdown}
-    \begin{tabular}{lccc}
-        \toprule
-        \textbf{Subsystem} & \textbf{Prototype} & \textbf{Low Volume} & \textbf{Medium Volume} \\
-        & \textbf{(1--10)} & \textbf{(100--500)} & \textbf{(1k--5k)} \\
-        \midrule
-        Compute (Raspberry Pi~5, SD card)  & \pounds65  & \pounds55  & \pounds45  \\
-        Imaging (2$\times$ camera modules)  & \pounds20  & \pounds15  & \pounds10  \\
-        Optics (beamsplitter, lenses)       & \pounds10  & \pounds7   & \pounds5   \\
-        Electronics (PCB, LEDs, IMU, connectors) & \pounds15 & \pounds10 & \pounds7 \\
-        Enclosure and ergonomics            & \pounds15  & \pounds10  & \pounds6   \\
-        Battery and power management        & \pounds10  & \pounds8   & \pounds6   \\
-        Miscellaneous (cables, fasteners, packaging) & \pounds5 & \pounds4 & \pounds3 \\
-        \midrule
-        \textbf{Total BOM}                 & \textbf{\pounds140} & \textbf{\pounds109} & \textbf{\pounds82} \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-The largest single cost driver is the compute module. At medium volume, the Raspberry Pi~5 represents over half the \ab{bom} cost. A future hardware revision could evaluate a custom SBC or a more cost-effective ARM module (e.g.\ Radxa, Orange Pi) once the software is stable and the inference pipeline's hardware requirements are fully characterised. However, the Pi~5 ecosystem provides development speed, community support, and supply chain predictability that justify the cost premium during early production.
+\todo{BOM breakdown by subsystem at prototype, low-volume, and medium-volume scales. Include a table.}
 
 \subsection{Manufacturing Strategy}
 
-Manufacturing complexity and strategy evolve with volume.
-
-\textbf{Prototype and pilot (1--50 units).} Assembly is performed in-house. Enclosures are 3D-printed in PETG using FDM. PCBs are ordered from a prototype fabrication service (e.g.\ JLCPCB, PCBWay) with manual through-hole soldering. Optical components are sourced individually and aligned manually. This approach supports rapid iteration but does not scale: manual optical alignment takes approximately 30 minutes per unit and introduces variability.
-
-\textbf{Low volume (100--500 units).} Enclosures transition to batch 3D printing using SLS in PA12, providing better mechanical properties, consistent surface finish, and elimination of post-processing. PCB assembly is outsourced to a contract electronics manufacturer with surface-mount capability, including automated pick-and-place and reflow soldering. Optical alignment is guided by precision-moulded mounting features in the enclosure, reducing manual adjustment. Final assembly and quality control remain in-house.
-
-\textbf{Medium volume (1{,}000+ units).} Enclosures transition to injection moulding in polycarbonate or ABS, requiring tooling investment (\pounds15{,}000--30{,}000 per mould) but reducing per-unit enclosure cost to under \pounds3. Full assembly is outsourced to a contract manufacturer, with incoming quality inspection and outgoing functional testing defined by a standardised test protocol. The compute module, cameras, and optics are procured in bulk with negotiated pricing.
+\todo{How manufacturing evolves with volume:
+\begin{itemize}
+    \item Prototype (in-house, 3D printed)
+    \item Low volume (batch SLS, outsourced PCB assembly)
+    \item Medium volume (injection moulding, contract manufacturer)
+\end{itemize}
+Discuss turnkey vs tolling tradeoffs.}
 
 \subsection{Quality Control and Calibration}
 
-Optical alignment is the primary quality-critical operation. The beamsplitter angle, lens positioning, and camera focal distance must be consistent across units to ensure that the software's calibration assumptions hold. Two approaches mitigate this:
-
-\begin{enumerate}
-    \item \textbf{Mechanical precision.} Enclosure design incorporates datum features that constrain component positions within tolerance. As manufacturing transitions from FDM to SLS to injection moulding, positional accuracy improves from $\pm$0.3\,mm to $\pm$0.1\,mm.
-    \item \textbf{Software calibration.} Each unit undergoes an automated calibration routine at the end of assembly, using a printed target to verify imaging geometry and adjust software parameters. This compensates for residual mechanical variation and provides a per-unit quality record.
-\end{enumerate}
+\todo{Optical alignment as the primary quality-critical operation. Mechanical precision vs software calibration approach.}
 
 \subsection{Sourcing Risks}
 
-\textbf{Raspberry Pi availability.} The 2021--2023 Pi shortage demonstrated supply chain fragility for single-board computers. Mitigation: maintain a 3--6 month buffer stock at low volumes, and evaluate alternative compute platforms as a contingency once the software architecture is sufficiently abstracted.
+\todo{Key supply chain risks: compute module availability, camera module continuity, optical component sourcing.}
 
-\textbf{Camera module continuity.} The specific camera modules used in the prototype may be discontinued or revised. The software's camera interface is abstracted through a hardware abstraction layer, allowing module substitution with a recalibration cycle rather than a software rewrite.
 
-\textbf{Optical components.} Beamsplitters and lenses are commodity optics available from multiple suppliers (Thorlabs, Edmund Optics, Chinese optical component manufacturers). No single-source risk exists for these components.
+\section{Unit Economics}
+\label{sec:ent-unit-economics}
 
-\subsection{Field Operations}
+\todo{Bridge between supply chain and financial projections:
+\begin{itemize}
+    \item Hardware cost vs retail price, gross margin
+    \item Assembly, testing, packaging, fulfilment costs
+    \item Contribution margin per unit
+    \item Subscription revenue per customer (blended across tiers)
+    \item Lifetime value per customer
+\end{itemize}}
 
-\textbf{Maintenance and cleaning.} The detachable facial interface is the primary consumable, requiring replacement every 50--100 uses or when visibly worn. Replacement interfaces are sold as accessories. The optical surfaces (beamsplitter, lenses) require periodic cleaning with supplied microfibre cloths and lens solution. A maintenance schedule is provided in the companion app.
 
-\textbf{Battery management.} The integrated battery supports approximately 20--30 full test cycles per charge. Charging uses USB-C. Battery health monitoring is handled in software, with alerts when capacity degrades below 80\% of nominal. Battery replacement is a service operation requiring partial disassembly.
+\section{Operations}
+\label{sec:ent-operations}
 
-\textbf{Software updates.} Firmware and model updates are delivered over Wi-Fi through the companion app. Updates are staged: downloaded in the background, verified, and applied on next power cycle. Rollback capability ensures that a failed update does not brick the device.
-
-\textbf{Warranty and support.} A 12-month hardware warranty covers manufacturing defects. Software support is included with active subscriptions. Out-of-warranty repairs are offered at a fixed fee for common failure modes (battery replacement, facial interface mechanism, camera module replacement).
+\todo{Operational structure of the venture:
+\begin{itemize}
+    \item Org structure and headcount plan (by phase/year)
+    \item Key roles and estimated compensation
+    \item Office/facilities requirements
+    \item Insurance (product liability, professional indemnity, clinical trial insurance)
+    \item Field operations: maintenance, cleaning protocols, battery management, software updates, warranty and support
+\end{itemize}}
