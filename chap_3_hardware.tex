@@ -109,15 +109,15 @@ These results motivated the introduction of lenses to decouple the physical disp
 
 \subsubsection{Purpose of the Electronics Subsystems}
 
-The purpose of the electronic subsystem within the headset is to enable precise, repeatable and time-stamped pupillometry data collection and inference, since quantitative pupil and eye-movement metrics have been reported as relevant markers of neurological dysfunction~\cite{mcdonald2022eye}. In order to meet its objectives, the subsystem must include devices which are able to (i)~present visual stimuli, (ii)~provide stable near-eye IR illumination, (iii)~capture synchronised binocular eye video, (iv)~timestamp and store recorded data points and (v)~process and run inference on recorded video.
+The purpose of the electronic subsystem within the headset is to enable precise, repeatable and time-stamped pupillometry data collection and inference, since quantitative pupil and eye-movement metrics have been reported as relevant markers of neurological dysfunction~\cite{mcdonald2022eye}\todo{Verify citation: original had [1] --- replaced with McDonald et al.\ 2022 (eye movement biomarkers review)}. In order to meet its objectives, the subsystem must include devices which are able to (i)~present visual stimuli, (ii)~provide stable near-eye IR illumination, (iii)~capture synchronised binocular eye video, (iv)~timestamp and store recorded data points and (v)~process and run inference on recorded video.
 
 \subsubsection{Measurement Requirements}
 
 Having covered the purpose of the electronics subsystems, the next step is to highlight the overarching specification requirements based on the biological features of the chosen biomarkers.
 
-In order to capture pupillary constriction dynamics, vergence response latency, and smooth pursuit tracking behaviour, which occur at short time intervals, the electronics system must support high frame-rate eye measurement of ${\sim}120$\,Hz~\cite{bergamin2003pupil}.
+In order to capture pupillary constriction dynamics, vergence response latency, and smooth pursuit tracking behaviour, which occur at short time intervals, the electronics system must support high frame-rate eye measurement of ${\sim}120$\,Hz~\cite{bergamin2003pupil}\todo{Verify citation: original had [2] --- replaced with Bergamin \& Kardon 2003 (PLR sample rate study)}.
 
-Identifying the vergence biomarker also requires an analysis of the coordinated behaviour of both eyes~\cite{yaramothu2019vergence}. Therefore, the design must include binocular capture with balanced near-eye IR illumination.
+Identifying the vergence biomarker also requires an analysis of the coordinated behaviour of both eyes~\cite{yaramothu2019vergence}\todo{Verify citation: original had [3] --- replaced with Yaramothu et al.\ 2019 (vergence endurance as concussion biomarker)}. Therefore, the design must include binocular capture with balanced near-eye IR illumination.
 
 \subsubsection{Use-Case Driven System Requirements}
 
@@ -132,7 +132,7 @@ From a design criteria perspective, the project requires the device to adhere to
 
 \subsubsection{Architecture Overview}
 
-After having outlined the system requirements in \Cref{sec:electronics-requirements}, the next step is highlighting the system-level organisation of the headset electronics. The headset is represented as a combination of multiple subsystems with distinct roles in stimulus delivery, sensing, embedded processing, communication, and power delivery/protection. This architectural view is helpful communicating the complete measurement chain before a detailed design of each subsystem is considered in later sections~\cite{blanchard2011systems}.
+After having outlined the system requirements in \Cref{sec:electronics-requirements}, the next step is highlighting the system-level organisation of the headset electronics. The headset is represented as a combination of multiple subsystems with distinct roles in stimulus delivery, sensing, embedded processing, communication, and power delivery/protection. This architectural view is helpful communicating the complete measurement chain before a detailed design of each subsystem is considered in later sections~\cite{blanchard2011systems}\todo{Verify citation: original had [referenceSystems Engineering] --- replaced with Blanchard \& Fabrycky 2011 (systems engineering textbook)}.
 
 \subsubsection{Functional Subsystems Decomposition}
 
@@ -185,11 +185,11 @@ Answering these questions will further help determine the bandwidth, storage and
 
 This subsection justifies the camera-subsystem design choices introduced above.
 
-The imaging task is not a full-face capture but reliable localisation of the pupil boundary and eye position under near-eye geometry. The required frame rate has already been established as 120\,Hz. More broadly, eye-tracking literature has justified a lower spatial resolution as a baseline when temporal fidelity is prioritised in near-eye eye tracking, as it enables higher frame rates with sufficient eye-region detail~\cite{morimoto2005eye, chugh2020eye}. Therefore, to minimise load on the processing unit, a VGA operating point can be justified over a 720p resolution.
+The imaging task is not a full-face capture but reliable localisation of the pupil boundary and eye position under near-eye geometry. The required frame rate has already been established as 120\,Hz. More broadly, eye-tracking literature has justified a lower spatial resolution as a baseline when temporal fidelity is prioritised in near-eye eye tracking, as it enables higher frame rates with sufficient eye-region detail~\cite{morimoto2005eye, chugh2020eye}\todo{Verify citations: original had [Chugh 2020, other one(2004)] --- replaced with Morimoto \& Mimica 2005 + Chugh 2020}. Therefore, to minimise load on the processing unit, a VGA operating point can be justified over a 720p resolution.
 
 A fixed-focus optical solution is also preferred. The headset geometry fixes the camera-to-eye spacing, with minimal variation from user-to-user. Under these conditions, auto-focus would introduce additional control complexity, power burden and software overhead with limited practical benefits. Fixed-focus optics therefore align best with the previously outlined design criteria of ease of use, accessible and robust.
 
-The next choice concerns shutter behaviour within the camera. In a global-shutter sensor, all pixels are exposed to light simultaneously, whereas in a rolling-shutter sensor, the image is read line by line over a short time interval (\Cref{fig:shutter-comparison}). When trying to capture eye motion using a rolling-shutter sensor, intra-frame temporal skews and geometric distortion become present~\cite{farivar2016eyetracker}. Considering this, a global-shutter sensor is an appropriate choice.
+The next choice concerns shutter behaviour within the camera. In a global-shutter sensor, all pixels are exposed to light simultaneously, whereas in a rolling-shutter sensor, the image is read line by line over a short time interval (\Cref{fig:shutter-comparison}). When trying to capture eye motion using a rolling-shutter sensor, intra-frame temporal skews and geometric distortion become present~\cite{farivar2016eyetracker}\todo{Verify citation: original had \{ref2 (paper)\} --- replaced with Farivar \& Michaud-Landry 2016 (global shutter requirement for eye tracking)}. Considering this, a global-shutter sensor is an appropriate choice.
 
 \begin{figure}[htbp]
     \centering
@@ -237,15 +237,15 @@ The illumination subsystem within the headset must be designed to satisfy 3 prin
 
 \subsubsection{Wavelength Selection and Optical Arrangement}
 
-The near-eye illumination must be selected such that the lighting does not interfere with the eye tracking process when the visual stimulus is presented on the internal display. To achieve this, near-infrared illumination must be used. It has been widely accepted in camera-based eye tracking as it improves pupil visibility at no cost of stimulus hindrance~\cite{hansen2010eye}. An appropriate wavelength of light must be chosen with regard to sensor sensitivity, cost and cornea exposure safety. 850\,nm was chosen as appropriate based on its prior use in eye-imaging as well as it being invisible to the eye, therefore suppressing the dazzling light effect.
+The near-eye illumination must be selected such that the lighting does not interfere with the eye tracking process when the visual stimulus is presented on the internal display. To achieve this, near-infrared illumination must be used. It has been widely accepted in camera-based eye tracking as it improves pupil visibility at no cost of stimulus hindrance~\cite{hansen2010eye}\todo{Verify citation: original had [kim et al.] --- replaced with Hansen \& Ji 2010 (definitive eye/gaze survey; ``kim et al.'' not identifiable)}. An appropriate wavelength of light must be chosen with regard to sensor sensitivity, cost and cornea exposure safety. 850\,nm was chosen as appropriate based on its prior use in eye-imaging as well as it being invisible to the eye, therefore suppressing the dazzling light effect.
 
 The physical arrangement adopted was that of an LED illumination ring around each camera. This geometry allows for symmetric distribution of light across the eye, reduces local shadowing and helps maintain a consistent pupil appearance across the tests.
 
 \subsubsection{Driver Topology and Electrical Implementation}
 
-This subsection justifies the operational and driver choices associated with the illumination subsystem. The main electrical criterion is the need for a stable illumination output whilst minimising power loss and heat generation. Since LED optical output is primarily determined by drive current, and a small change in forward voltage can result in a large change in forward current, a constant-current driver is preferred~\cite{ti2007an1656}.
+This subsection justifies the operational and driver choices associated with the illumination subsystem. The main electrical criterion is the need for a stable illumination output whilst minimising power loss and heat generation. Since LED optical output is primarily determined by drive current, and a small change in forward voltage can result in a large change in forward current, a constant-current driver is preferred~\cite{ti2007an1656}\todo{Verify citation: original had [bridgelux] --- replaced with TI AN-1656 (LED driver design challenges)}.
 
-A specific current can be delivered to the LED via a linear current regulator or a switched buck current driver. While a linear current regulator is a simple solution, any excess voltage between the battery rail and the LED would be dissipated as heat. This is undesirable within the headset so a buck regulator becomes the more efficient choice~\cite{ti2007an1656}.
+A specific current can be delivered to the LED via a linear current regulator or a switched buck current driver. While a linear current regulator is a simple solution, any excess voltage between the battery rail and the LED would be dissipated as heat. This is undesirable within the headset so a buck regulator becomes the more efficient choice~\cite{ti2007an1656}\todo{Verify citation: original had [Texas instruments] --- same TI AN-1656 covers both constant-current and buck topology}.
 
 Finally, the 2 LED rings will comprise of parallel components as opposed to a single series chain. This means that a single branch failure will not disable a full ring thus allowing for the device to continue operating. This improves robustness and practical integration of the headset.
 
@@ -253,9 +253,9 @@ The device adopts a fixed brightness level during capture which is established b
 
 \subsubsection{Safety and Fail-Safe Behaviour}
 
-As the illumination subsystem operates close to the eye, safety frameworks such as IEC~62471 must be incorporated~\cite{iec62471}. This evaluates the photobiological safety of light systems using exposure limits depending on intensity, viewing distance and exposure duration. Specifically, the corneal irradiance and retinal thermal hazard tests must be carried out.
+As the illumination subsystem operates close to the eye, safety frameworks such as IEC~62471 must be incorporated~\cite{iec62471}\todo{Verify citation: original referenced IEC 62471 inline --- added formal standard reference}. This evaluates the photobiological safety of light systems using exposure limits depending on intensity, viewing distance and exposure duration. Specifically, the corneal irradiance and retinal thermal hazard tests must be carried out.
 
-For the proposed headset, the maximum continued IR exposure duration is ${\sim}30$\,s, where the lights are positioned ${\sim}7$\,cm from the eye. The corneal exposure test requires us to follow the sub-1000\,s IEC relation~\cite{osram2017iec62471}, which states the upper bound on W/sr that the LED can safely emit.
+For the proposed headset, the maximum continued IR exposure duration is ${\sim}30$\,s, where the lights are positioned ${\sim}7$\,cm from the eye. The corneal exposure test requires us to follow the sub-1000\,s IEC relation~\cite{osram2017iec62471}\todo{Verify citation: original had [Luxecon] --- likely meant Luxeon/Lumileds; replaced with OSRAM AN050 (IEC 62471 application guide)}, which states the upper bound on W/sr that the LED can safely emit.
 
 We first find the exposure limit of the eye by:
 %
@@ -303,7 +303,7 @@ Given the project brief outlined in \Cref{sec:electronics-requirements}, the pow
     \label{fig:power-distribution}
 \end{figure}
 
-An obvious choice for the main power source was a LiPo battery, which is known for its versatility and use in portable electronics~\cite{tarascon2001lithium}. However, a 2-cell (2S) LiPo configuration is preferred over the single cell as its higher voltage provides more efficient conversion to the supply rails (\Cref{fig:power-distribution}). Additionally, a split rail architecture has been adopted as the headset contains components with different electrical load requirements. The compute subsystem requires a high current 5\,V rail and IMUs are better suited to a 3.3\,V rail.
+An obvious choice for the main power source was a LiPo battery, which is known for its versatility and use in portable electronics~\cite{tarascon2001lithium}\todo{Verify citation: original had [LiPo doc] --- replaced with Tarascon \& Armand 2001 (Nature review on rechargeable lithium batteries)}. However, a 2-cell (2S) LiPo configuration is preferred over the single cell as its higher voltage provides more efficient conversion to the supply rails (\Cref{fig:power-distribution}). Additionally, a split rail architecture has been adopted as the headset contains components with different electrical load requirements. The compute subsystem requires a high current 5\,V rail and IMUs are better suited to a 3.3\,V rail.
 
 \subsubsection{Power Budget and Battery Sizing}
 
