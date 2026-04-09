@@ -1,0 +1,125 @@
+\chapter{Market Analysis}
+\label{chapter:ent-market}
+
+% Owner: Suleiman (market segmentation, stakeholders) + Victor (value proposition, PMF)
+
+This chapter analyses the market opportunity for a headset-based pupillometry system for \ab{mtbi} screening, identifies the key stakeholders and users, and articulates the value proposition for each target segment.
+
+
+\section{Market Segmentation}
+\label{sec:ent-market-analysis}
+
+\todo{Suleiman: Draft this section. Frame the product as a portable pupillometry-based headset for rapid concussion/mTBI assessment, aimed at settings where quick triage matters and access to specialist neurodiagnostics is limited.}
+
+\subsection{Unmet Need in Concussion Assessment}
+
+\todo{Why concussion assessment is a real unmet need — draw on the clinical need established in \Cref{chapter:introduction} but reframe for a commercial audience. Quantify the problem: incidence rates, costs of missed diagnosis, liability exposure for sports organisations.}
+
+\subsection{Market Segmentation}
+
+\todo{Define target markets in layers:
+\begin{itemize}
+    \item Primary beachhead: sports concussion assessment (elite and semi-professional rugby, football, contact sports)
+    \item Adjacent clinical: emergency departments, urgent care, concussion clinics
+    \item Future expansion: military, schools/universities, amateur sports organisations, remote/rural healthcare
+\end{itemize}
+Segment along four axes:
+\begin{itemize}
+    \item Use case: pitchside screening vs clinic/research use
+    \item Buyer type: sports organisations, clinics, hospitals, research institutions
+    \item Geography: UK first, then EU/US depending on regulatory logic
+    \item Customer sophistication: expert clinical user vs non-technical operator
+\end{itemize}
+Avoid generic ``the healthcare market is big'' framing. Be specific about where the headset is valuable and realistically adoptable first.}
+
+\subsection{Market Sizing}
+
+\todo{Provide \ab{tam}/\ab{sam}/\ab{som} estimates with explicit assumptions. Include rough sales logic grounded in actual buyer counts (e.g.\ number of Premiership rugby clubs, number of UK EDs, number of university sports programmes), not abstract percentages of trillion-pound markets.}
+
+\subsection{Adoption Dynamics}
+
+\todo{Discuss likely early adopters vs later adopters. Why would research institutions and elite sports be first? What triggers broader adoption — regulatory endorsement, clinical evidence, insurance incentives, high-profile incidents?}
+
+
+\section{Stakeholder Analysis and User Research}
+\label{sec:ent-stakeholders}
+
+\todo{Suleiman: Draft this section.}
+
+\subsection{Stakeholder Map}
+
+\todo{Identify all actors around the device:
+\begin{itemize}
+    \item Primary users: athlete/patient, sideline operator (physio, sports medic, coach)
+    \item Clinical users: ED clinician, concussion specialist, researcher
+    \item Decision-makers: team/club/school administrator, hospital procurement, \ab{nhs} buyer
+    \item Influencers: parent/guardian (especially youth sport), insurer, regulator
+\end{itemize}
+Map influence vs interest for key stakeholders.}
+
+\subsection{User Personas}
+
+\todo{Produce 2--4 strong personas, e.g.:
+\begin{enumerate}
+    \item Sideline physiotherapist for a semi-professional rugby club
+    \item ED clinician triaging mild head injuries in a busy department
+    \item Concussion researcher collecting longitudinal pupilometry data
+    \item School sports staff member with minimal technical training
+\end{enumerate}
+Each persona should include: role, goals, pain points, technical comfort, context of use, and what success looks like.}
+
+\subsection{User Journeys}
+
+\todo{Build user journeys covering:
+\begin{enumerate}
+    \item Pre-test: device setup, patient preparation, app connection
+    \item Test execution: conducting assessment after suspected impact
+    \item Result interpretation: receiving and understanding the result
+    \item Post-test decision: repeat test, referral, return-to-play decision
+    \item Data management: storing, uploading, reviewing historical data
+\end{enumerate}
+Connect tightly to product features: quick setup, non-technical operation, local inference, Bluetooth result to phone, Wi-Fi upload, motion quality flags, repeat-test recommendation.}
+
+
+\section{Value Proposition}
+\label{sec:ent-value-prop}
+
+\todo{Victor: Draft this section.}
+
+\subsection{Engineering Decisions as Buyer Value}
+
+\todo{Translate design choices into buyer value:
+\begin{itemize}
+    \item Local inference on Pi $\rightarrow$ immediate result without cloud dependency
+    \item Bluetooth result to phone $\rightarrow$ usable on sidelines without bulky equipment
+    \item Wi-Fi deferred upload $\rightarrow$ research and model retraining value without slowing the test
+    \item Fixed-focus optics and integrated display $\rightarrow$ simpler, more robust workflow
+    \item IMU gating and quality flags $\rightarrow$ better trust in results
+    \item Non-technical usability $\rightarrow$ broader adoption beyond specialist labs
+\end{itemize}}
+
+\subsection{Segment-Specific Value Propositions}
+
+\todo{Write separate value propositions for each customer segment:
+\begin{itemize}
+    \item Sports medic: fast, portable, operator-friendly decision support
+    \item Clinic: objective repeatable measure and digital record
+    \item Researcher: standardised data capture and exportable dataset
+    \item Organisation buyer: scalable screening workflow, reduced dependence on expert interpretation
+\end{itemize}}
+
+
+\section{Product-Market Fit}
+\label{sec:ent-pmf}
+
+\todo{Victor: Draft this section.}
+
+\subsection{Problem-Solution Fit}
+
+\todo{Test PMF by asking:
+\begin{itemize}
+    \item What painful problem does it solve better than the status quo?
+    \item Is it urgent enough for buyers to act?
+    \item Who pays, and through what budget line?
+    \item Does the workflow fit actual practice, or does it require behaviour change?
+\end{itemize}}

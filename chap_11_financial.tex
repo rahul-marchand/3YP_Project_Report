@@ -1,0 +1,168 @@
+\chapter{Financial Plan}
+\label{chapter:ent-financial}
+
+% Owner: Rahul (unit economics, P&L, balance sheet, cash flow) + Eesh (funding & investment)
+
+This chapter presents the financial projections for the venture and the funding strategy required to reach profitability. Unit economics and operational projections draw on the supply chain analysis in \Cref{sec:ent-supply-chain}; the funding model addresses how the venture is capitalised through to breakeven.
+
+
+\section{Unit Economics}
+\label{sec:ent-unit-economics}
+
+At the target retail price of \pounds200 and medium-volume \ab{bom} cost of \pounds82 (\Cref{tab:bom-breakdown}), the gross margin per hardware unit is approximately \pounds118 (59\%). Including assembly, testing, packaging, and fulfilment costs estimated at \pounds15--20 per unit, the contribution margin is approximately \pounds98--103 per unit (49--52\%).
+
+Software subscription revenue adds \pounds240--960 per customer per year depending on tier (Standard to Research), with near-zero marginal cost per additional subscriber. Blended across the expected customer mix (60\% Standard, 30\% Professional, 10\% Research), the weighted average annual subscription revenue per customer is approximately \pounds460.
+
+
+\section{Profit and Loss Projection}
+\label{sec:ent-pnl}
+
+\Cref{tab:pnl-projection} presents the projected profit and loss over five years, based on the adoption assumptions in \Cref{sec:ent-scenarios}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Projected profit and loss statement (five-year horizon). All figures in \pounds thousands.}
+    \label{tab:pnl-projection}
+    \begin{tabular}{lccccc}
+        \toprule
+        & \textbf{Year 1} & \textbf{Year 2} & \textbf{Year 3} & \textbf{Year 4} & \textbf{Year 5} \\
+        \midrule
+        \textit{Revenue} \\
+        \quad Hardware sales        & 10  & 50  & 200  & 500  & 800  \\
+        \quad Software subscriptions & 5  & 30  & 120  & 350  & 700  \\
+        \quad Research licences      & 15 & 30  & 40   & 50   & 60   \\
+        \textbf{Total revenue}       & \textbf{30} & \textbf{110} & \textbf{360} & \textbf{900} & \textbf{1{,}560} \\
+        \midrule
+        \textit{Cost of goods sold} \\
+        \quad Hardware \ab{cogs}     & 6  & 25  & 85   & 200  & 300  \\
+        \quad Fulfilment \& support  & 3  & 10  & 30   & 60   & 90   \\
+        \textbf{Gross profit}        & \textbf{21} & \textbf{75} & \textbf{245} & \textbf{640} & \textbf{1{,}170} \\
+        \midrule
+        \textit{Operating expenses} \\
+        \quad R\&D (staff, materials) & 120 & 150 & 180 & 200 & 220 \\
+        \quad Sales \& marketing      & 10  & 30  & 60  & 100 & 140 \\
+        \quad Regulatory \& legal      & 20  & 30  & 40  & 30  & 20  \\
+        \quad General \& admin         & 20  & 25  & 35  & 45  & 55  \\
+        \textbf{Total opex}            & \textbf{170} & \textbf{235} & \textbf{315} & \textbf{375} & \textbf{435} \\
+        \midrule
+        \textbf{\ab{ebitda}}         & \textbf{(149)} & \textbf{(160)} & \textbf{(70)} & \textbf{265} & \textbf{735} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The venture is cash-negative through Year~3, reflecting the front-loaded investment in R\&D, regulatory clearance, and market development. Breakeven is projected during Year~3 on a monthly basis, with cumulative profitability reached in Year~4 as subscription revenue compounds and hardware volumes benefit from reduced unit costs.
+
+
+\section{Balance Sheet Projection}
+\label{sec:ent-balance-sheet}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Projected balance sheet summary (five-year horizon). All figures in \pounds thousands.}
+    \label{tab:balance-sheet}
+    \begin{tabular}{lccccc}
+        \toprule
+        & \textbf{Year 1} & \textbf{Year 2} & \textbf{Year 3} & \textbf{Year 4} & \textbf{Year 5} \\
+        \midrule
+        \textit{Assets} \\
+        \quad Cash \& equivalents      & 351  & 171  & 71   & 296  & 981  \\
+        \quad Inventory                 & 10   & 20   & 40   & 60   & 80   \\
+        \quad Accounts receivable       & 5    & 15   & 45   & 110  & 190  \\
+        \quad Fixed assets (tooling, equipment) & 15 & 40 & 65 & 75 & 80 \\
+        \textbf{Total assets}           & \textbf{381} & \textbf{246} & \textbf{221} & \textbf{541} & \textbf{1{,}331} \\
+        \midrule
+        \textit{Liabilities} \\
+        \quad Accounts payable          & 10   & 15   & 25   & 40   & 55   \\
+        \quad Deferred revenue          & 3    & 10   & 30   & 80   & 140  \\
+        \textbf{Total liabilities}      & \textbf{13}  & \textbf{25}  & \textbf{55}  & \textbf{120} & \textbf{195} \\
+        \midrule
+        \textit{Equity} \\
+        \quad Share capital              & 500  & 500  & 500  & 500  & 500  \\
+        \quad Retained earnings          & (132) & (279) & (334) & (79) & 636 \\
+        \textbf{Total equity}           & \textbf{368} & \textbf{221} & \textbf{166} & \textbf{421} & \textbf{1{,}136} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The projections assume an initial equity investment of \pounds500{,}000, sufficient to fund the venture through to cash-flow breakeven without further external capital. Inventory levels are kept lean, reflecting a build-to-order model during early phases transitioning to modest buffer stock at medium volume. Deferred revenue reflects annual subscriptions recognised monthly.
+
+
+\section{Cash Flow Projection}
+\label{sec:ent-cash-flow}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Projected cash flow statement (five-year horizon). All figures in \pounds thousands.}
+    \label{tab:cash-flow}
+    \begin{tabular}{lccccc}
+        \toprule
+        & \textbf{Year 1} & \textbf{Year 2} & \textbf{Year 3} & \textbf{Year 4} & \textbf{Year 5} \\
+        \midrule
+        \textit{Operating activities} \\
+        \quad \ab{ebitda}                & (149) & (160) & (70)  & 265   & 735   \\
+        \quad Change in working capital  & (8)   & (17)  & (35)  & (40)  & (25)  \\
+        \textbf{Net operating cash flow} & \textbf{(157)} & \textbf{(177)} & \textbf{(105)} & \textbf{225} & \textbf{710} \\
+        \midrule
+        \textit{Investing activities} \\
+        \quad Capital expenditure (tooling) & (7) & (25) & (25) & (10) & (5) \\
+        \quad Software capitalisation       & (5) & (8)  & (10) & (10) & (10) \\
+        \textbf{Net investing cash flow}    & \textbf{(12)} & \textbf{(33)} & \textbf{(35)} & \textbf{(20)} & \textbf{(15)} \\
+        \midrule
+        \textit{Financing activities} \\
+        \quad Equity injection           & 500  & 30   & 40   & 20   & 10   \\
+        \textbf{Net financing cash flow} & \textbf{500} & \textbf{30} & \textbf{40} & \textbf{20} & \textbf{10} \\
+        \midrule
+        \textbf{Net change in cash}      & \textbf{331} & \textbf{(180)} & \textbf{(100)} & \textbf{225} & \textbf{705} \\
+        \textbf{Closing cash balance}    & \textbf{351} & \textbf{171} & \textbf{71} & \textbf{296} & \textbf{981} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The cash flow projection highlights Year~3 as the tightest point, with a closing cash balance of \pounds71{,}000. This thin margin underscores the importance of either securing additional funding or achieving commercial traction earlier than projected. Sensitivity to this constraint is explored in \Cref{sec:ent-scenarios}.
+
+
+\section{Funding and Investment Strategy}
+\label{sec:ent-funding}
+
+\todo{Eesh: Draft this section.}
+
+\subsection{Development Cost Estimate}
+
+\todo{Estimate total development costs across phases:
+\begin{itemize}
+    \item Phase 1 (research validation): staff, prototype materials, clinical study costs, ethics and regulatory consultancy
+    \item Phase 2 (pitchside deployment): hardware engineering, app development, tooling, regulatory submission fees
+    \item Phase 3 (clinical scale): manufacturing scale-up, quality management system, clinical evaluation, sales and marketing
+\end{itemize}
+Include a table of estimated costs by category and phase.}
+
+\subsection{Funding Requirements}
+
+\todo{Based on the cash flow projection in \Cref{tab:cash-flow}, define:
+\begin{itemize}
+    \item Total capital required to reach cash-flow breakeven
+    \item Timing and staging of funding rounds
+    \item How much runway each round provides
+    \item What milestones de-risk the next raise
+\end{itemize}}
+
+\subsection{Funding Sources}
+
+\todo{Evaluate candidate funding sources for each stage:
+\begin{itemize}
+    \item Pre-seed / seed: university spin-out programmes, Innovate UK grants (e.g.\ Biomedical Catalyst), angel investors with medtech experience
+    \item Series A: venture capital with healthtech or medtech focus
+    \item Non-dilutive: SBRI Healthcare, NIHR i4i, Horizon Europe, charitable grants (e.g.\ Wellcome Trust)
+    \item Revenue-based: early research licence revenue reinvested
+\end{itemize}
+Discuss the trade-offs between dilutive and non-dilutive funding for a medical device start-up.}
+
+\subsection{Investor Proposition}
+
+\todo{Summarise the investment case:
+\begin{itemize}
+    \item Return profile: projected \ab{npv} or IRR under base-case assumptions
+    \item Key value inflection points (clinical validation, regulatory clearance, first commercial customer)
+    \item Comparable exits in the concussion/neurodiagnostics space
+    \item Why the team and IP position justify investment
+\end{itemize}}

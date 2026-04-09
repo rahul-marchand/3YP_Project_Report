@@ -1,0 +1,98 @@
+\chapter{Risk Analysis and Ethics}
+\label{chapter:ent-risk}
+
+% Owner: Eesh
+
+This chapter evaluates the risks facing the venture across technical, regulatory, commercial, and operational dimensions, stress-tests the financial projections under alternative scenarios, and addresses ethical and sustainability considerations.
+
+
+\section{Scenario Analysis}
+\label{sec:ent-scenarios}
+
+\todo{Eesh: Draft this section.}
+
+\subsection{Key Assumptions and Variables}
+
+\todo{Identify the variables to stress-test:
+\begin{itemize}
+    \item Selling price (hardware and subscription)
+    \item Adoption rate and customer acquisition timeline
+    \item Time-to-market and regulatory delay
+    \item Development cost overruns
+    \item Manufacturing cost at different volumes
+    \item Clinical evidence strength and its effect on adoption
+\end{itemize}}
+
+\subsection{Scenarios}
+
+\todo{Define at least three scenarios:
+\begin{itemize}
+    \item \textbf{Base case:} as projected in \Cref{chapter:ent-financial}
+    \item \textbf{Optimistic:} faster adoption, earlier regulatory clearance, stronger clinical evidence
+    \item \textbf{Pessimistic:} regulatory delay, slower adoption, higher development costs, weaker clinical evidence
+\end{itemize}
+Present each scenario's impact on revenue, breakeven timing, and cash position. Clearly show which assumptions matter most commercially (i.e.\ tornado chart or similar sensitivity analysis).}
+
+\subsection{Critical Sensitivity}
+
+\todo{Identify the single most important variable. For this project, it is likely the speed at which clinical evidence accumulates, as this gates both regulatory progress and evidence-led adoption. Discuss what happens if clinical validation takes 18 months longer than projected.}
+
+
+\section{Risk Management}
+\label{sec:ent-risk-mgmt}
+
+\todo{Eesh: Draft this section.}
+
+\subsection{Risk Register}
+
+\todo{Present a risk register covering:
+\begin{itemize}
+    \item \textbf{Technical:} synchronisation limits between cameras, image quality under field conditions, false positive/negative rates, motion artefacts degrading measurement quality
+    \item \textbf{Regulatory:} classification more stringent than expected, evidence requirements exceeding projections, \ab{samd}-specific obligations
+    \item \textbf{Commercial:} buyer reluctance without strong evidence base, reimbursement uncertainty, workflow resistance from clinicians comfortable with existing tools
+    \item \textbf{Operational:} supply chain fragility (Pi availability), manufacturing variability in optical alignment, key person dependency during early stages
+    \item \textbf{Reputational/clinical:} overclaiming diagnostic capability, misuse by untrained operators, adverse outcome attributed to device result
+\end{itemize}
+For each risk: likelihood, impact, and specific mitigation.}
+
+\subsection{Risk Mitigation Strategy}
+
+\todo{Group mitigations thematically. Highlight which risks are addressed by design choices already made (e.g.\ quality gating, conservative claims language, local inference for data privacy) vs which require ongoing management.}
+
+
+\section{Ethics, Sustainability, and Life-Cycle}
+\label{sec:ent-ethics}
+
+\todo{Eesh: Draft this section.}
+
+\subsection{Ethical Considerations}
+
+\todo{Address:
+\begin{itemize}
+    \item Concussion decisions affect real people's return-to-play and return-to-work outcomes --- consequences of false negatives and false positives
+    \item Risk of over-reliance on device outputs by non-expert operators
+    \item Inclusivity: has the system been validated across demographics, skin tones, eye colours, and physiological variability?
+    \item Data governance and consent, particularly for minors in youth sport
+    \item Algorithmic transparency: can the operator understand why the device gave a particular result?
+\end{itemize}}
+
+\subsection{Environmental Sustainability}
+
+\todo{Address:
+\begin{itemize}
+    \item Battery and electronics disposal --- \ab{weee} compliance
+    \item Material choice: PETG/PA12/polycarbonate lifecycle comparison
+    \item Repairability and modular replacement (e.g.\ replaceable battery, facial interface, camera module) vs sealed disposable design
+    \item Cloud vs local inference energy trade-offs --- local-first architecture reduces data centre energy use
+    \item Packaging and shipping considerations
+\end{itemize}}
+
+\subsection{Product Life-Cycle}
+
+\todo{Address:
+\begin{itemize}
+    \item Expected product lifetime and end-of-life strategy
+    \item Upgrade path: can components be replaced incrementally or does the whole unit need replacing?
+    \item Refurbishment and second-life potential for research or training use
+    \item Responsible disposal and take-back programme
+\end{itemize}}
