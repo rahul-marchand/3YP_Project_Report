@@ -125,7 +125,7 @@
 
 % TODO tags
 
-\newcommand{\todo}[1]{\textcolor{red}{@TODO: #1}}
+\newcommand{\todo}[1]{{\color{red}@TODO: #1}}
 
 
 % Font configuration

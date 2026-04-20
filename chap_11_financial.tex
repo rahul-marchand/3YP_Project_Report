@@ -1,82 +1,127 @@
 \chapter{Financial Plan}
 \label{chapter:ent-financial}
 
-This chapter presents the financial projections for the venture. Unit economics and operational cost assumptions draw on the supply chain analysis in \Cref{sec:ent-supply-chain} and the adoption scenarios in \Cref{chapter:ent-gtm}. The first four sections cover the core financial model; the funding strategy in \Cref{sec:ent-funding} addresses how the venture is capitalised through to breakeven.
-
+This chapter translates the cost, pricing, and operational assumptions of \Cref{chapter:ent-business} into a seven-year financial projection, and uses that projection to assess the venture's attractiveness as a business. The horizon spans venture inception in 2026 through regulatory validation and first commercial deployment to the beginning of scaled operation in 2032. The analysis addresses two questions: given the assumed unit economics, cost base, and sales trajectory, how large is the cash trough to be bridged and when does the business reach break-even; and which features of the resulting financial profile are structural strengths or binding weaknesses of this specific business model.
 
 \section{Key Assumptions}
 \label{sec:ent-assumptions}
 
-\todo{Present a clear assumptions table covering:
-\begin{itemize}
-    \item Unit cost and retail price (by volume tier)
-    \item Subscription pricing and churn rate
-    \item Customer acquisition timeline (from GTM chapter)
-    \item Headcount and compensation schedule (from operations)
-    \item Regulatory and development cost estimates
-    \item Working capital assumptions (inventory, receivables, payables)
-\end{itemize}
-This table should be the single source of truth for all subsequent projections. The reader should be able to change an assumption and understand how it flows through.}
+\subsection{Year-varying drivers}
+\label{sec:ent-fin-operational-drivers}
+
+\input{figures/financial/tab_assumptions.tex}
+
+Three brief notes anchor the derived rows of \Cref{tab:ent-fin-assumptions}.
+
+\textbf{Active subscribers} evolve by attrition on the existing base plus attach on new units,
+\[ A_t = A_{t-1}(1-c) + n_t \times a, \]
+where $c$ is annual churn, $a$ the subscription attach rate, and $n_t$ new units sold in year $t$.
+
+\textbf{Blended ARPU} is the tier-mix weighted mean of Standard (\pounds 360/yr) and Pro (\pounds 600/yr) institutional subscriptions.
+
+\textbf{Loaded payroll} is base payroll (role base salaries times role FTE) multiplied by 1.19, the 19\% on-cost covering NI, pension, and benefits.
+
+\subsection{Scalar assumptions}
+\label{sec:ent-fin-conventions}
+
+\input{figures/financial/tab_conventions.tex}
+
+Two scalar assumptions are load-bearing. First, annual-in-advance subscription billing creates a deferred-revenue balance equal to approximately half of each new customer's first-year subscription, a cash-timing effect traced in \Cref{sec:ent-projection}. Second, cumulative trading losses through the regulatory investment phase are carried forward indefinitely under UK rules and shelter taxable income in the first profitable year; the SME R\&D credit separately generates a cash refund during the loss-making period.
 
 
-\section{Profit and Loss Projection}
+\section{Base-Case Projection}
+\label{sec:ent-projection}
+
+\subsection{Unit economics}
+\label{sec:ent-unit-economics}
+
+The venture's financial case rests first on whether a single institutional customer pays back. If the unit does not work, no amount of scale repairs the business. \Cref{tab:ent-fin-unit-econ} builds the per-customer economics from the hardware and subscription contributions derived in \Cref{chapter:ent-business}.
+
+\input{figures/financial/tab_unit_economics.tex}
+
+At Phase~3 steady state, hardware contribution of \pounds126 per unit plus \pounds347 per-customer per-year subscription contribution compound into a three-year institutional LTV of \pounds1{,}066, with a perpetuity equivalent of \pounds3{,}594 at 10\% churn. Against a CAC of \pounds79 per new customer (marketing plus sales commission divided by new units), the 3-year LTV:CAC of 13.5$\times$ sits comfortably above the 3$\times$ benchmark commonly cited in the subscription-business literature~\cite{gupta2004valuing}, and the 2.7-month payback falls well inside the 12-month capital-efficiency heuristic. The ratios presume institutional attach; on the individual segment without subscription, LTV collapses to the one-off hardware contribution, which is why the individual segment cannot sustain the venture on its own.
+
+
+\subsection{Profit and loss trajectory}
 \label{sec:ent-pnl}
 
-\todo{5-year P\&L with:
-\begin{itemize}
-    \item Revenue breakdown (hardware, subscriptions, research licences)
-    \item Cost of goods sold
-    \item Gross profit and margin
-    \item Operating expenses by category (R\&D, sales, regulatory, G\&A)
-    \item EBITDA
-\end{itemize}
-Include a table and a chart showing revenue vs costs over time. Explain the path to breakeven.}
+Aggregated across the seven-year horizon, the unit economics of \Cref{sec:ent-unit-economics} produce the profit-and-loss trajectory of \Cref{tab:ent-fin-pnl}, visualised in \Cref{fig:ent-fin-pnl-overview}. The early years are pre-revenue in all but name: Phase~1 is a research validation deployment, and commercial sales proper begin only once UKCA certification is in hand.
+
+\input{figures/financial/tab_pnl.tex}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/financial/fig_pnl_overview.pdf}
+    \caption[Profit and loss overview, four-panel summary]{Four-panel summary of the base-case profit and loss across the seven-year horizon. Panel (a) shows the revenue build-up by source, with the hardware-to-subscription crossover visible as the teal column overtakes blue from Phase 3 onwards. Panel (b) plots gross margin, showing the structural compression at commercial launch and the subsequent recovery as the Phase 3 unit cost takes effect. Panel (c) shows the operating-expense composition, visualising the R\&D-led to commercial-led rotation as the venture matures. Panel (d) plots the EBITDA trajectory with phase boundaries marked: the medtech valley of death gives way to a sharp inflection in Phase 3 as subscription revenue compounds and the cost base stabilises.}
+    \label{fig:ent-fin-pnl-overview}
+\end{figure}
+
+\textbf{Revenue mix and gross margin.} Once commercial selling begins, hardware revenue grows with new unit shipments whilst institutional subscription revenue compounds on the cumulative installed base, with the recurring share reaching 50\% by Y7 (\Cref{fig:ent-fin-pnl-overview}\,a). Gross margin (\Cref{fig:ent-fin-pnl-overview}\,b) compresses sharply at commercial launch in Y4 when thin Phase~2 hardware margins dominate the mix, then recovers to 63\% by Y7 as the Phase~3 unit cost of \Cref{tab:unit-cost-stack} takes effect and the higher-margin subscription line grows. Operating expenses rotate from R\&D-led to commercial-led over the same window (\Cref{fig:ent-fin-pnl-overview}\,c), the structural signature of a medtech venture maturing from product development to commercial execution.
+
+\textbf{EBITDA trajectory and tax.} The EBITDA line (\Cref{fig:ent-fin-pnl-overview}\,d) traces the textbook medtech \emph{valley of death}: a plateau of losses through Y2--Y5, where each year's burn is roughly constant because incremental subscription revenue is too small to offset regulatory and payroll commitments, followed by a sharp climb-out in Y6--Y7 as the cumulative installed base passes critical mass and the cost base stabilises. Y7 reaches a \pounds518 thousand positive EBITDA at a 12\% margin, delivering break-even within the modelled horizon. No corporation tax is owed across the seven years: cumulative trading losses of approximately \pounds3.5 million through Y6 exceed Y7 pre-tax profit, and the SME R\&D credit generates a \pounds50--80 thousand cash refund each year during the loss-making period.
 
 
-\section{Cash Flow Projection}
+\subsection{Cash flow}
 \label{sec:ent-cash-flow}
 
-\todo{5-year cashflow with:
-\begin{itemize}
-    \item Operating cashflow (EBITDA adjusted for working capital changes)
-    \item Investing cashflow (capex, tooling, software capitalisation)
-    \item Financing cashflow (equity injections)
-    \item Closing cash balance
-\end{itemize}
-Highlight the minimum cash point and what it implies for funding requirements.}
+Translated into cash, the P\&L of \Cref{sec:ent-pnl} produces the trajectory of \Cref{tab:ent-fin-cashflow} and \Cref{fig:ent-fin-cash-overview}.
+
+\input{figures/financial/tab_cashflow.tex}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/financial/fig_cash_overview.pdf}
+    \caption[Cash overview, two-panel summary]{Two-panel summary of the cash position across the seven-year horizon. Panel (a) plots two cash trajectories: closing cash including the illustrative equity injections (solid blue) and the cumulative cash position from operations and investing only (dashed red). The latter is the operating reality independent of how the venture is financed, and its lowest point is the binding funding requirement. Panel (b) shows the working-capital contribution to cash by year: bars give the annual inflow, the line gives the cumulative running total, and both are positive throughout, the structural consequence of the annual-in-advance subscription billing convention.}
+    \label{fig:ent-fin-cash-overview}
+\end{figure}
+
+\textbf{Cash trajectory and capital requirement.} The unfunded cash trajectory (\Cref{fig:ent-fin-cash-overview}\,a, dashed) strips out the illustrative staged equity injections to give the operating-and-investing reality of the venture's capital need. It descends monotonically through the regulatory investment phase, bottoms at approximately \pounds3.3 million in Y6, and climbs back in Y7 as net cash from operations turns positive. This trough is the gross capital requirement the venture must bridge from inception to self-funding.
+
+\textbf{Working capital and capital expenditure.} Two mechanics shape the translation from P\&L to cash. Institutional subscriptions are billed annually in advance, so each new subscribing customer creates a deferred-revenue inflow that more than offsets the inventory and receivables build associated with hardware sales; the working-capital change is a positive contributor to operating cash in every year of the horizon (\Cref{fig:ent-fin-cash-overview}\,b), accumulating to approximately \pounds507 thousand by Y7. Capital expenditure is dominated by the aluminium and steel injection-moulding tools of \Cref{sec:ent-manufacturing-strategy}; at \pounds112 thousand over the horizon it is immaterial relative to operating cash burn.
+
+Taken together with \Cref{sec:ent-pnl}, the base case delivers break-even at the P\&L level in Y7, a peak unfunded cash trough of approximately \pounds3.3 million, and a positive working-capital contribution across every year of the horizon. The next section assesses which of these features are structural strengths of this specific business model and which are binding weaknesses.
 
 
-\section{Sensitivity Analysis}
-\label{sec:ent-sensitivity}
+\section{Structural Assessment}
+\label{sec:ent-structural}
 
-\todo{Stress-test key assumptions:
-\begin{itemize}
-    \item Base case, conservative, and optimistic scenarios
-    \item What happens if adoption is 50\% slower?
-    \item What happens if BOM costs are 30\% higher?
-    \item What happens if regulatory takes an extra year?
-    \item Tornado chart or similar showing which assumptions have the largest impact on breakeven timing
-\end{itemize}
-This section demonstrates rigour and shows which variables the business is most sensitive to.}
+The venture reaches break-even within the horizon, but its attractiveness as a business turns on the structural features of the resulting profile. This section distils those features into three structural strengths, three binding weaknesses, and the operational dashboard that translates them into management metrics. Several of the strengths and weaknesses descend from the same hybrid architecture chosen in \Cref{chapter:ent-business}, and that link is flagged directly where relevant.
+
+\subsection{Structural strengths}
+\label{sec:ent-strengths}
+
+Three features of the financial profile are structural strengths: persistent, differentiating, and baked into the business model rather than coincidental.
+
+\textbf{The institutional subscription bridges to mass-market hardware viability.} The hybrid architecture of \Cref{sec:ent-revenue} is not merely a pricing tactic: it is the mechanism by which the venture reaches Phase 3 mass-market hardware at grassroots-affordable prices. Recurring institutional revenue funds the Phase 1--2 regulatory build and cost-down, and is a strong business in its own right. The per-customer economics of \Cref{sec:ent-unit-economics} (13.5$\times$ LTV:CAC, 2.7-month payback) compound at scale into a 50\% incremental EBITDA margin on each marginal pound of revenue by Y7 (\Cref{tab:ent-fin-pnl} summary panel), the operating leverage of the recurring engine becoming visible within the horizon. Without the subscription bridge, hardware either exceeds the mass-market price ceiling of \Cref{sec:ent-pricing-strategy} or never reaches Phase 3 scale.
+
+\textbf{Annual-in-advance subscription billing creates a working-capital tailwind.} Hardware businesses typically consume working capital as they grow: inventory and receivables must be financed ahead of collections. This venture is unusual in that the opposite holds. Each new institutional customer pays a full year's subscription on contract signature, generating a deferred-revenue inflow that more than offsets the inventory and receivables build of hardware sales. Net working capital contributes positively to operating cash in every year of the horizon, accumulating to \pounds507 thousand by Y7, and the Y7 cash conversion ratio (NCFO $\div$ EBITDA) reaches 173\%: operating cash exceeds accounting profit because the deferred-revenue inflow adds to cash before the P\&L recognises it as revenue. This benefit would be unavailable to a per-test or pure-hardware revenue model.
+
+\textbf{The business is capital-light with UK tax tailwinds.} Capital expenditure totals only \pounds112 thousand across the horizon, dominated by the aluminium and steel injection-moulding tools of \Cref{sec:ent-manufacturing-strategy}; the partial-turnkey contract manufacturing arrangement of \Cref{sec:ent-mfg-sourcing} keeps the production footprint off the balance sheet. The funding requirement is therefore overwhelmingly a function of operating losses rather than capital intensity, the typical profile of a low-capex Class IIa medtech. UK tax treatment reinforces the profile: cumulative trading losses of approximately \pounds3.5 million through Y6 shelter Y7 taxable income and carry forward indefinitely, and the SME R\&D credit generates a \pounds50--80 thousand cash refund during each loss-making year.
 
 
-\section{Funding and Investment Strategy}
-\label{sec:ent-funding}
+\subsection{Binding weaknesses}
+\label{sec:ent-weaknesses}
 
-\todo{Eesh: Draft this section.}
+Three weaknesses bind the venture's execution, in the sense that the margin of safety against each is small relative to plausible variation. \Cref{fig:ent-fin-sensitivity} frames the first two quantitatively: Panel (a) is a one-variable-at-a-time tornado covering the four standard driver families of an early-stage venture model \citep{brealey2020principles}; Panel (b) translates each lever's slope into the absolute percentage shock from base case that would drive Y7 EBITDA to zero, giving the \emph{margin of safety} of each lever in its own units.
 
-\subsection{Development Cost Estimate}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/financial/fig_sensitivity_overview.pdf}
+    \caption[Sensitivity overview, two-panel summary]{Two-panel sensitivity summary. Panel (a) is a tornado showing the linear-approximation impact on Y7 EBITDA of a fixed proportional shock in each driver, with adverse moves in red and favourable moves in teal; adoption dominates by more than a factor of two over any other lever. Panel (b) translates each lever into the absolute percentage shock from its base-case value that would drive Y7 EBITDA to zero, giving the margin of safety in the lever's own units. Tighter margins (top of panel) are more binding constraints on execution.}
+    \label{fig:ent-fin-sensitivity}
+\end{figure}
 
-\todo{Estimate total development costs across phases.}
+\textbf{Subscription-engine fragility.} Adoption dominates by more than a factor of two over any other lever (\Cref{fig:ent-fin-sensitivity}\,a), in line with the revenue-model argument of \Cref{sec:ent-revenue}: the hybrid is volume-led and cannot be rescued by price or cost adjustments. Churn ranks fourth in the tornado but is asymmetrically damaging on the margin-of-safety view, because the perpetuity equivalent of \Cref{sec:ent-unit-economics} scales with the inverse of the churn rate. These two weaknesses sharpen each other during Phase 2: each thin-margin hardware unit is an acquisition bet on subscription attach and retention, and if the engine fails to fire or leaks too fast, the bridge of \Cref{sec:ent-strengths} does not form and Phase 2 hardware sales convert from lead generation to pure loss.
 
-\subsection{Funding Requirements}
+\textbf{Regulatory timing is the single largest execution risk.} The regulatory-delay bar of \Cref{fig:ent-fin-sensitivity}\,a is shown as a discrete one-sided shock: a one-year slip in UKCA certification produces an EBITDA hit comparable to or larger than any single-variable magnitude shock, extending the pre-revenue phase by a full year of cost base against no revenue \citep{brealey2020principles}. Unlike the other levers, regulatory timing sits largely outside the venture's direct control; it is bounded by preparation quality but ultimately at the discretion of the notified body.
 
-\todo{Total capital required to reach breakeven, timing and staging of funding rounds.}
+\textbf{Joint-failure risk is poorly captured by single-variable sensitivity.} The margin-of-safety view of \Cref{fig:ent-fin-sensitivity}\,b is necessary but not sufficient: a venture at the edge of several lever thresholds simultaneously has already failed jointly, even if no single lever has crossed its individual threshold. To bound this, the model was re-run with every driver (adoption, BOM cost, churn, headcount, marketing, regulatory cost) moved adversely at once. Under this compound shock the peak unfunded cash trough widens from \pounds3.3 million in the base case to approximately \pounds6.2 million, roughly doubling the capital requirement, and Y7 EBITDA drops to approximately \pounds(1.1) million. The stress is intentionally pessimistic and statistically improbable, but its value is precisely to bound the joint risk that independent lever tracking cannot capture \citep{brealey2020principles, saltelli2004sensitivity}.
 
-\subsection{Funding Sources}
+\subsection{Operational KPIs}
+\label{sec:ent-kpis}
 
-\todo{Evaluate candidate funding sources: grants, angel, VC, non-dilutive.}
+The weaknesses above translate into a small operational dashboard (\Cref{tab:ent-fin-kpis}): each KPI has a target value set inside its failure threshold, a tracking cadence calibrated to the underlying sensitivity, and a direct mapping to one of the weaknesses above. The conservative target buffer is standard balanced-scorecard practice for pairing sensitivity analysis with operational metrics \citep{kaplan1996balanced}. The joint-failure case of \Cref{sec:ent-weaknesses} remains the limit of what independent KPI tracking can catch: a venture at several edges simultaneously has already failed, even if no individual indicator has crossed red.
 
-\subsection{Investor Proposition}
+\input{figures/financial/tab_kpis.tex}
 
-\todo{Summarise the investment case: return profile, value inflection points, comparable exits.}
+The base-case analysis supports a decision to pursue the venture. The structural strengths are persistent features of the chosen revenue architecture that will compound beyond the modelled horizon; the binding weaknesses concentrate in the early commercial phase and are operationally trackable via the KPIs above. The capital required to bridge the Y2--Y6 burn plateau, its staging, and candidate sources are the subject of \Cref{chapter:ent-funding}.

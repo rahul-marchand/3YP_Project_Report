@@ -15,6 +15,14 @@
 
 
 %
+% Bibliography: natbib in numerical mode preserves the existing \cite{} → [N]
+% behaviour while enabling \citet{key} → "Author et al. [N]" textual citations
+% used in chap 9 (business plan) and chap 11 (financial plan).
+%
+\usepackage[numbers]{natbib}
+
+
+%
 % Document metadata
 %
 
@@ -53,14 +61,15 @@
 \include{chap_9_business}
 \include{chap_10_gtm}
 \include{chap_11_financial}
-\include{chap_12_risk}
+\include{chap_12_funding}
+\include{chap_13_risk}
 
 \appendix
 
 \include{appendix_1}
 \include{appendix_2}
 
-\backmatter 
-\listofreferences
+\backmatter
+\listofreferences[unsrtnat]
 
 \end{document}
