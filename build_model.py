@@ -230,7 +230,7 @@ def build_assumptions(wb):
             source="ch.9 §9.4: mid of £250–350 range; allow time-varying")
     s.years(22, [300] * N_YEARS, fmt=GBP)
     s.label(23, "Returns allowance", units="% of hardware revenue",
-            source="ch.9 §9.3: DOA + trial-period returns + in-warranty RMA; standard B2B medtech")
+            source="ch.9 §Warranty and Returns: DOA + trial-period returns only; in-warranty repairs covered separately by warranty provision")
     s.scalar(23, 0.02, fmt=PCT)
 
     # ---- Section 3: Subscription tiers ----

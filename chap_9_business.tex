@@ -1,17 +1,17 @@
 \chapter{Business Plan}
 \label{chapter:ent-business}
 
-The preceding chapters established the market opportunity and the competitive context. This chapter builds the operating model that turns that opportunity into a business: revenue, supply chain, unit economics, and fixed cost base.
+Preceding chapters established market opportunity and competitive context. This chapter builds the operating model that turns this into a business: revenue, supply chain, unit economics, and fixed cost base.
 
 
 \section{Revenue Model}
 \label{sec:ent-revenue}
 
-Of the seven revenue models identified by \citet{osterwalder2010business}, only \textit{asset sale} and \textit{subscription} fit. Advertising is incompatible with a clinical context where trust depends on the device serving the user's health; per-test usage fees penalise the marginal screen most likely to catch a missed concussion, contradicting the routine-screening objective of \Cref{chapter:introduction}; the remaining mechanisms (brokerage, licensing, leasing) assume an intermediation role, IP posture, or working-capital structure the venture does not occupy.
+Of the seven revenue models identified by \citet{osterwalder2010business}, only \textit{asset sale} and \textit{subscription} fit. Advertising is incompatible with a clinical context where trust depends on the device serving the user's health; per-test usage fees penalise the marginal screen most likely to catch a missed concussion, contradicting the routine-screening objective of \Cref{chapter:introduction}; brokerage, licensing, and leasing assume a role the venture does not occupy.
 
-Adding a subscription layer to the hardware sale is commercially attractive: it scales with the installed base, funds post-market surveillance and software updates, and recovers value over the customer lifetime rather than at the point of sale~\cite{teece2010business}. Applied indiscriminately, however, it fails on two counts. Ethically, a recurring fee gating the ability to screen for a head injury places an unconscionable commercial interest between the device and the user's health. A medical device also depends on buyer trust for adoption, and a subscription that paywalls core screening functionality directly undermines the clinical credibility the product must establish. For institutions, by contrast, the software layer delivers genuine value a standalone device cannot: multi-athlete roster management, longitudinal baselines across seasons, multi-operator accounts, and return-to-play tracking (\Cref{chapter:ent-competitive}). The selected model is therefore a hybrid: hardware at a single price to all customers, with an optional subscription layer for institutions.
+Adding a subscription layer to the hardware sale is commercially attractive: it scales with the installed base, funds post-market surveillance and software updates, and recovers value over the customer lifetime rather than at the point of sale~\cite{teece2010business}. Applied to individual users, however, it fails on two counts. \textit{Ethically}, charging for continued use of owned hardware is extractive in any consumer context, and particularly so for a health device: because concussion risk is sparse and unpredictable, the recurring fee creates a continuous incentive to cancel during the long intervals when no screen is needed, so the device is likely gated at the moment of injury, directly undermining the routine-screening mission of \Cref{chapter:introduction}. \textit{Commercially}, the same failure mode exposes the venture to asymmetric reputational and legal tail risk: a publicly-attributed missed concussion where the barrier was commercial rather than clinical is a venture-threatening outcome an asset-sale model does not generate. For institutions, by contrast, the subscription charges for data administration rather than screening access, a genuine complement a standalone device cannot deliver: multi-athlete roster management, longitudinal baselines across seasons, multi-operator accounts, and return-to-play tracking (\Cref{chapter:ent-competitive}). Clinical screening itself remains free with the hardware, so the ethical objection does not transfer, and institutional willingness-to-pay attaches to administration rather than to any individual's injury risk. The selected model is therefore a hybrid: hardware at a single price to all customers, with an optional institutional subscription.
 
-The platform that the subscription sustains is, in the sense of \citet{teece1986complementary}, a complementary asset: recurring institutional revenue during the high-fixed-cost early phases funds the post-market surveillance, software updates, and clinical evidence generation that credential the hardware for both segments, including individuals who never subscribe. The segments develop in sequence rather than in parallel: institutional subscription leads during the early commercial phases and continues as a residual layer once mass-market individual hardware scales. Mass-market individual hardware is the commercial destination, but the unit cost floor developed in \Cref{sec:ent-unit-cost} and the price ceiling that grassroots adoption can bear (\Cref{sec:ent-pricing-strategy}) leave a per-unit contribution thin by design. Recurring institutional subscription revenue is positioned to help the bridge across this gap, and across the chasm to the early majority more generally~\cite{moore1991chasm}.
+The platform the subscription sustains is a complementary asset to the hardware \citep{teece1986complementary}: recurring institutional revenue funds the post-market surveillance, software updates, and evidence generation that credential the hardware for both segments (including individuals who never subscribe), and bridges the venture to Phase~3 economies of scale before thin per-unit hardware contribution (\Cref{sec:ent-unit-cost,sec:ent-pricing-strategy}) can carry the business on its own. The GTM-side validation of this ordering is in \Cref{chapter:ent-gtm}.
 
 
 \section{Product and Supply Chain}
@@ -23,14 +23,14 @@ The platform that the subscription sustains is, in the sense of \citet{teece1986
 \label{sec:ent-mvp-definition}
 \label{sec:ent-roadmap}
 
-Phase~1 of the roadmap developed in \Cref{chapter:ent-market} corresponds to the \ab{mvp} defined here; Phase~2 and Phase~3 manufacturing trajectories are developed in \Cref{sec:ent-manufacturing-strategy}. The MVP is a research validation device deployed under controlled conditions with academic and clinical partners, comprising the headset (\Cref{chapter:headset}), inference software (\Cref{chapter:software}), a basic operator application, and a documented calibration protocol. Following \citet{ries2011lean}'s lean startup methodology and qualified for a regulated medical device that cannot ship loosely to end users, it must resolve three leap-of-faith hypotheses before regulatory clearance or volume commitment: \textit{technical}, that the hardware produces eye-tracking data sufficient to detect the biomarker signatures of \Cref{sec:bg-oculomotor}; \textit{user}, that the form factor is tolerable to children, adolescents, and individuals immediately post-injury; and \textit{operator}, that a non-expert can position the device, run a session, and act on the results without specialist support. Failure of any one invalidates the business case.
+Phase~1 of the roadmap developed in \Cref{chapter:ent-market} corresponds to the \ab{mvp} defined here; Phase~2 and~3 trajectories are developed in \Cref{sec:ent-manufacturing-strategy}. The MVP is a research validation device deployed under controlled conditions with academic and clinical partners, comprising the headset (\Cref{chapter:headset}), inference software (\Cref{chapter:software}), a basic operator application, and a documented calibration protocol. Adapting \citet{ries2011lean}'s lean startup methodology to a regulated device that cannot ship loosely, the MVP must resolve three leap-of-faith hypotheses before regulatory clearance: \textit{technical}, that the hardware produces eye-tracking data matching reference pupillometry on the biomarker signatures of \Cref{sec:bg-oculomotor}, with validation methodology in \Cref{chapter:software}; \textit{user}, that the form factor is tolerable to children, adolescents, and individuals immediately post-injury, measured by session completion rate and tolerability scoring; \textit{operator}, that a non-expert can position the device, run a session, and act on the result, measured by time-to-complete and protocol adherence. Failure of any one invalidates the business case.
 
 
 \subsection{Supply Chain Architecture}
 \label{sec:ent-sc-arch}
 \label{sec:ent-sourcing-risks}
 
-The first strategic question is which activities to perform in-house and which to outsource. Two frameworks bear on the decision: \citet{williamson1985institutions}'s transaction-cost economics keeps internal any activity with high \textit{asset specificity} (specialised to this product and costly to redeploy if a supplier relationship breaks); \citet{prahalad1990core}'s resource-based view retains any activity embodying a \textit{distinctive competency} (differentiating and costly to replicate). In this context these different criteria converge to the same conclusion: the binding manufacturing constraint is the geometric alignment of beamsplitter, cameras, and eye position, which is both specialised to this device (satisfying Williamson) and the principal determinant of measurement quality (satisfying Prahalad). Optical alignment is therefore the manufacturing core competency and stays in-house across every phase; the remaining activities are summarised in \Cref{tab:make-vs-buy}.
+The first strategic question is which activities to perform in-house. Two frameworks converge: \citet{williamson1985institutions}'s transaction-cost economics keeps internal any activity of high \textit{asset specificity} (costly to redeploy if a supplier relationship breaks), and \citet{prahalad1990core}'s resource-based view retains any \textit{distinctive competency} (differentiating and costly to replicate). The binding manufacturing constraint is the geometric alignment of beamsplitter, cameras, and eye position, which is both specialised to this device (Williamson) and the principal determinant of measurement quality (Prahalad). Optical alignment is therefore the manufacturing core competency, in-house across every phase; remaining activities are summarised in \Cref{tab:make-vs-buy}.
 
 \begin{table}[htbp]
     \centering
@@ -53,7 +53,7 @@ The first strategic question is which activities to perform in-house and which t
     \end{tabular}
 \end{table}
 
-The second strategic question is, of what the venture buys, which components need special attention. Applying \citet{kraljic1983purchasing}'s classification of purchased items by profit impact and supply risk, three BOM items sit squarely in the strategic quadrant: the compute module, dual cameras, and custom optical elements are each technically differentiated, sourced from a narrow supplier base, and difficult to substitute without redesign. Passive electronics, fasteners, and packaging are leverage or non-critical commodities. Three specific risks in the strategic quadrant warrant attention.
+The second strategic question is which purchased components need special attention. Applying \citet{kraljic1983purchasing}'s classification of purchased items by profit impact and supply risk, three BOM items sit squarely in the strategic quadrant: the compute module, dual cameras, and custom optical elements are each technically differentiated, sourced from a narrow supplier base, and difficult to substitute without redesign. Passive electronics, fasteners, and packaging are leverage or non-critical commodities. Three specific risks in the strategic quadrant warrant attention.
 
 First, the Raspberry Pi CM5 is single-sourced with a flat pricing policy and has risen approximately 70\% since its November 2024 launch, driven by LPDDR4 memory shortages~\cite{rpi-cm5-source}. The planned Phase~3 migration to an RK3588S-based module~\cite{orangepi-cm5-source} is both the primary unit-cost reduction initiative and the principal sourcing-risk mitigation; the carrier-board redesign and software porting are scoped as a Phase~2 engineering initiative so that Phase~3 can execute without delay. Second, the Arducam OV9281 camera modules suffer from integrator rather than sensor concentration: the underlying OmniVision sensor is in active production, but the pool of compatible global-shutter module integrators is effectively a single vendor~\cite{arducam-ov9281-source}. Lateral qualification of an equivalent module from Waveshare or a direct OEM is scoped during Phase~1. Third, the custom optical elements (beamsplitter, coated lenses) carry quality rather than availability risk: low-cost Asian suppliers exhibit unit-to-unit reflectance variation that propagates into measurement inconsistency. The procurement policy is to dual-source with strict incoming quality control on reflectance per lot.
 
@@ -68,7 +68,7 @@ The scope decisions of \Cref{sec:ent-sc-arch} remain stable across phases; their
 
 \textit{Phase~2} (batch): enclosures transition to outsourced SLS in PA12 nylon~\cite{3dprintuk-source}; alignment is performed against documented procedures with purpose-built jigs. Aluminium injection-moulding tooling (one-time GBP 8\,000--14\,000, per-part GBP 2--5) becomes the lower total-cost option at approximately 300--500 cumulative units~\cite{modernmoulds-source} and is committed once Phase~2 demand is validated. Priority: repeatability.
 
-\textit{Phase~3} (connected line): steel injection moulding for enclosures (one-time GBP 15\,000--30\,000, per-part GBP 1--3). Assembly moves to a partial-turnkey contract manufacturer: the venture consigns the strategic-quadrant components of \Cref{sec:ent-sc-arch} (compute module, cameras, optics); the CM sources commodity items at an 8--15\% material markup and performs PCB fabrication, SMT assembly, enclosure manufacture, and build-order assembly; the venture retains final integration, calibration, and end-of-line test. Priority: throughput and unit cost.
+\textit{Phase~3} (connected line): steel injection moulding for enclosures (one-time GBP 15\,000--30\,000, per-part GBP 1--3). Assembly moves to a partial-turnkey contract manufacturer certified to ISO~13485 or operating under the venture's quality management system (\Cref{chapter:ent-regulatory}): the venture consigns the strategic-quadrant components of \Cref{sec:ent-sc-arch} (compute module, cameras, optics); the CM sources commodity items at an 8--15\% material markup and performs PCB fabrication, SMT assembly, enclosure manufacture, and build-order assembly; the venture retains final integration, calibration, and end-of-line test. Priority: throughput and unit cost.
 
 \todo[inline]{\textbf{Figure: Enclosure cost crossover chart.} Cumulative volume (x) vs total cost (y, GBP) for SLS PA12, aluminium IM, and steel IM, with crossover points marked at $\sim$300--500 and $\sim$500--800 units. Built in TikZ/pgfplots.}
 
@@ -76,7 +76,9 @@ The scope decisions of \Cref{sec:ent-sc-arch} remain stable across phases; their
 \subsection{Inventory Strategy}
 \label{sec:ent-inventory}
 
-Institutional demand is functional, predictable and contracted per roster per season (\Cref{chapter:ent-market}), whilst individual grassroots demand at Phase~3 is less predictable. \citet{fisher1997supplychain} argues supply-chain design should match demand profile; the venture's mixed profile therefore requires a hybrid posture, implemented at the item level as \citet{chopra2016supply}'s push--pull architecture. Strategic-quadrant items (\Cref{sec:ent-sc-arch}) are pushed: ordered ahead of demand against forecast and held in venture-controlled consignment, because a supply disruption on a core-competency input would halt manufacturing. Commodity items and final assembly are pulled: ordered on actual build orders with no held inventory, because multiple suppliers are interchangeable and re-order lead times are short. The Kraljic strategic/commodity split of \Cref{sec:ent-sc-arch} therefore sits exactly on the push--pull boundary, producing an assemble-to-order architecture: strategic components pre-positioned through venture consignment, and commodity sourcing and final assembly executed by the contract manufacturer on actual build orders. The pushed strategic items (compute module, cameras, optics) carry lead times of 8--16 weeks~\cite{rpi-cm5-source, arducam-ov9281-source, edmund-optics-source}; consignment coverage is sized to match the binding item (CM5 at 12--16 weeks), yielding a strategic-item buffer of approximately 100 days. Weighted against approximately 20 days of commodity-item and work-in-progress inventory at the contract manufacturer, and with strategic items representing roughly two-thirds of BOM cost (\Cref{sec:ent-bom}), the blended target is 75 days of inventory on cost of goods sold (DIO).
+Institutional demand is functional, predictable and contracted per roster per season (\Cref{chapter:ent-market}), whilst individual grassroots demand at Phase~3 is less predictable. \citet{fisher1997supplychain} argues supply-chain design should match demand profile, and the venture's mixed profile requires a hybrid posture implemented at the item level as \citet{chopra2016supply}'s push--pull architecture. Strategic-quadrant items (\Cref{sec:ent-sc-arch}) are pushed: ordered ahead of demand against forecast and held in venture-controlled consignment, because a supply disruption on a strategic input would halt manufacturing. Commodity sourcing and assembly are pulled: executed by the contract manufacturer on actual build orders, because commodity suppliers are interchangeable and re-order lead times are short. The Kraljic strategic/commodity split therefore sits on the push--pull boundary, producing an assemble-to-order architecture.
+
+The pushed strategic items (compute module, cameras, optics) carry 8--16 week lead times~\cite{rpi-cm5-source, arducam-ov9281-source, edmund-optics-source}; consignment is sized to the binding item (CM5 at 12--16 weeks), a strategic-item buffer of approximately 100 days. Against roughly 20 days of commodity and WIP inventory at the contract manufacturer, and with strategic items at two-thirds of BOM cost (\Cref{sec:ent-bom}), the blended target is 75 days inventory outstanding (DIO) on COGS.
 
 
 \subsection{Unit Cost}
@@ -92,10 +94,8 @@ Institutional demand is functional, predictable and contracted per roster per se
     \footnotesize
     \begin{tabular}{lcrrrl}
         \toprule
-        \textbf{Component} & \textbf{Qty} & \textbf{Phase 1} & \textbf{Phase 2} & \textbf{Phase 3} & \textbf{Source} \\
-                           &              & \textbf{($\sim$10)}   & \textbf{($\sim$500)} & \textbf{($\sim$10\,000)} & \\
+        \textbf{Component} & \textbf{Qty} & \textbf{Phase 1 ($\sim$10)} & \textbf{Phase 2 ($\sim$500)} & \textbf{Phase 3 ($\sim$10\,000)} & \textbf{Source} \\
         \midrule
-        \multicolumn{6}{l}{\textit{Electronic components}} \\
         Compute module$^{\dagger\ddagger}$      & 1   & 83       & 83      & 35--55    & \cite{rpi-cm5-source, orangepi-cm5-source} \\
         Arducam OV9281 NoIR camera              & 2   & 66--86   & 52--64  & 36--48    & \cite{arducam-ov9281-source} \\
         Internal display$^\dagger$              & 1   & 33--35   & 24--28  & 15--20    & \cite{waveshare-dsi-source} \\
@@ -105,11 +105,9 @@ Institutional demand is functional, predictable and contracted per roster per se
         \ab{imu}$^\dagger$                      & 1   & 3        & 2       & 1.5       & \cite{digikey-source} \\
         Connectors, cables, passives            & --- & 11       & 6--7    & 3.5--4.5  & \cite{digikey-source} \\
         \midrule
-        \multicolumn{6}{l}{\textit{Optical components}} \\
         Beamsplitter (45$^\circ$ plate)         & 1   & 8--12    & 4--7    & 2--4      & \cite{edmund-optics-source} \\
         Lenses and IR-pass filters$^\dagger$    & --- & 6--10    & 3--5    & 1.5--2.5  & \cite{edmund-optics-source} \\
         \midrule
-        \multicolumn{6}{l}{\textit{Mechanical components}} \\
         Enclosure (FDM / SLS / IM)$^\dagger$    & --- & 3--5     & 15--25  & 2--5      & \cite{3dprintuk-source, modernmoulds-source} \\
         Three-point strap                       & 1   & 3--5     & 2--3    & 1--1.5    & \cite{retail-uk-source, volume-supplier-source} \\
         Facial interface (PU leather)           & 1   & 5--8     & 3--5    & 1--2      & \cite{retail-uk-source, volume-supplier-source} \\
@@ -124,7 +122,7 @@ The cost stack is dominated by three items (compute module, dual cameras, intern
 
 \todo[inline]{\textbf{Figure: BOM cost distribution.} A stacked bar chart (one bar per phase) segmented by component category, showing absolute cost and proportional split. Visualises the cost concentration and the effect of the Phase~3 compute migration.}
 
-\Cref{tab:unit-cost-stack} adds the manufacturing cost stack. Phase~3 assembly and calibration times are approximately halved relative to earlier phases through purpose-built jigs and automated test fixtures.
+\Cref{tab:unit-cost-stack} adds the manufacturing cost stack. Phase~3 assembly and calibration times are approximately halved relative to earlier phases through purpose-built jigs and automated test fixtures. At Phase~3 scale the total unit cost settles into the GBP 138--209 range; at Phase~2 the floor is GBP 252--318.
 
 \begin{table}[htbp]
     \centering
@@ -133,8 +131,7 @@ The cost stack is dominated by three items (compute module, dual cameras, intern
     \footnotesize
     \begin{tabular}{lrrr}
         \toprule
-        \textbf{Cost element} & \textbf{Phase 1} & \textbf{Phase 2} & \textbf{Phase 3} \\
-                              & \textbf{($\sim$10)}   & \textbf{($\sim$500)} & \textbf{($\sim$10\,000)} \\
+        \textbf{Cost element} & \textbf{Phase 1 ($\sim$10)} & \textbf{Phase 2 ($\sim$500)} & \textbf{Phase 3 ($\sim$10\,000)} \\
         \midrule
         Bill of materials (\Cref{tab:bom-volume-tiers}) & 266--316 & 219--264 & 114--166 \\
         \midrule
@@ -149,8 +146,6 @@ The cost stack is dominated by three items (compute module, dual cameras, intern
         \bottomrule
     \end{tabular}
 \end{table}
-
-At Phase~3 scale the total unit cost settles into the GBP 138--209 range; at Phase~2 the floor is GBP 252--318.
 
 
 \section{Pricing}
@@ -174,51 +169,46 @@ The per-customer contribution above must cover the venture's fixed cost base. Pa
 \label{sec:ent-ops-org}
 \label{sec:ent-ops-salaries}
 
-The team maps onto \citet{mintzberg1979structuring}'s \textit{simple structure} archetype in Phase~1, a four-founder nucleus combining CEO/commercial, hardware/embedded, CV/software, and clinical/regulatory roles, and grows to 11--14 FTE by Phase~3 (\Cref{tab:ent-ops-headcount}). The founder mapping is viable only whilst the regulatory burden is limited to research-use protocols; the first non-founder hires in Phase~2 are therefore a regulatory and quality specialist (who takes ownership of the QMS of \Cref{chapter:ent-regulatory}) and a clinical research coordinator. \citet{greiner1998evolution}'s evolution-and-revolution model anticipates two growth crises visible on this roadmap: a \textit{leadership crisis} at the Phase~1 to~2 boundary, when founders must relinquish responsibilities to specialist hires; and an \textit{autonomy crisis} mid-Phase~2, when the regulatory specialist must be empowered to overrule engineering on compliance matters.
+The team maps onto \citet{mintzberg1979structuring}'s \textit{simple structure} in Phase~1, a four-founder nucleus spanning CEO/commercial, hardware/embedded, CV/software, and clinical/regulatory roles, and grows to 11--14 FTE by Phase~3 (\Cref{tab:ent-ops-headcount}). The founder mapping is viable only whilst the regulatory burden is research-use; the first non-founder hires in Phase~2 are a regulatory and quality specialist (QMS ownership, \Cref{chapter:ent-regulatory}) and a clinical research coordinator. \citet{greiner1998evolution}'s evolution-and-revolution model anticipates two crises on this roadmap: a \textit{leadership crisis} at the Phase~1--2 boundary as founders relinquish responsibilities to specialist hires, and an \textit{autonomy crisis} mid-Phase~2 when the regulatory specialist must overrule engineering on compliance.
 
 \begin{table}[htbp]
     \centering
-    \caption[Phased headcount plan]{Phased headcount plan. FTE counts are cumulative end-of-phase targets. Regulatory and clinical roles in Phase~1 are absorbed by the founders as a shared responsibility rather than a separate hire.}
+    \caption[Phased headcount plan]{Phased headcount plan. FTE counts are cumulative end-of-phase targets; salary bands are Oxford 2025/26 benchmarks. Regulatory and clinical roles in Phase~1 are absorbed by the founders as a shared responsibility rather than a separate hire.}
     \label{tab:ent-ops-headcount}
-    \begin{tabular}{lccc}
+    \footnotesize
+    \begin{tabular}{lcccc}
         \toprule
-        \textbf{Function} & \textbf{Phase 1} & \textbf{Phase 2} & \textbf{Phase 3} \\
+        \textbf{Function} & \textbf{Band (GBP\,k)} & \textbf{Phase 1} & \textbf{Phase 2} & \textbf{Phase 3} \\
         \midrule
-        CEO / commercial lead                       & 1 (founder)  & 1     & 1     \\
-        Engineering (hardware, firmware, CV/ML)     & 3 (founders) & 4     & 5--6  \\
-        Regulatory and quality                      & (shared)     & 1     & 1--2  \\
-        Clinical research                           & (shared)     & 1     & 1     \\
-        Sales and business development              & 0            & 0     & 1--2  \\
-        Operations and supply chain                 & 0            & 0--1  & 1     \\
-        Customer support                            & 0            & 0     & 1     \\
+        CEO / commercial lead                       & 40--60 & 1 (founder)  & 1     & 1     \\
+        Engineering (hardware, firmware, CV/ML)     & 45--75 & 3 (founders) & 4     & 5--6  \\
+        Regulatory and quality                      & 45--80 & (shared)     & 1     & 1--2  \\
+        Clinical research                           & 28--56 & (shared)     & 1     & 1     \\
+        Sales and business development              & 28--56 & 0            & 0     & 1--2  \\
+        Operations and supply chain                 & 28--56 & 0            & 0--1  & 1     \\
+        Customer support                            & 28--56 & 0            & 0     & 1     \\
         \midrule
-        \textbf{Total FTE}                          & \textbf{4}   & \textbf{7--8} & \textbf{11--14} \\
+        \textbf{Total FTE}                          &        & \textbf{4}   & \textbf{7--8} & \textbf{11--14} \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Oxford 2025/26 salary benchmarks place engineering roles at GBP 45\,000--75\,000 and clinical and operations roles at GBP 28\,000--56\,000. Regulatory affairs specialists (GBP 45\,000--80\,000+) are the scarcest resource in the UK medtech labour market: a binding labour rather than cost constraint, because a hiring delay at the Phase~2 boundary defers the regulatory submission and extends pre-revenue runway burn one-for-one. Founder-CEO cash compensation is pre-Series~A (GBP 40\,000--60\,000), deliberately below market, with the four founders compensated through an equal 25\% equity split before investor dilution. Including the approximately 19\% loading for Employer National Insurance, pension, and benefits, Phase~2 payroll at seven FTE runs approximately GBP 400\,000 per year and Phase~3 at twelve FTE is of order GBP 750\,000--900\,000, the dominant fixed cost and the principal determinant of runway.
+Loading these bands by 19\% for Employer NI, pension, and benefits puts Phase~2 payroll at approximately GBP 400\,k/yr and Phase~3 at GBP 750--900\,k/yr, the dominant fixed cost throughout. The binding feature is labour rather than cost: UK medtech regulatory-affairs specialists are scarce, so the Phase~2 hire is capacity-gated rather than budget-gated, and a slip there defers the UKCA submission and extends pre-revenue runway burn one-for-one. Founder cash compensation is held below market (GBP 40--60\,k) and offset by an equal 25\% pre-dilution equity split, a deliberate cash-for-equity trade that keeps payroll from crowding out regulatory and clinical spend through Phase~2.
 
 \subsection{Facilities, Capex, and Ongoing Costs}
 \label{sec:ent-ops-facilities}
 \label{sec:ent-ops-insurance}
 
-\textbf{Facilities.} Phase~1 begins in effectively free incubator space (Oxford University Innovation, Begbroke AgileLab); Phase~2 moves into Oxford coworking; Phase~3 requires dedicated premises with a controlled environment for optical alignment and regulatory document storage, at GBP 14\,000--37\,000 per year plus service charges.
+The remainder of the fixed base scales with commercial exposure rather than with volume. Facilities step from free incubator space (Oxford University Innovation, Begbroke AgileLab) through Oxford coworking to dedicated premises at GBP 14--37\,k/yr once controlled optical alignment and regulatory document storage are required; cloud hosting rises from low thousands to GBP 20--50\,k/yr as longitudinal institutional data compounds on the installed base; manufacturing capex (the injection-moulding tooling of \Cref{sec:ent-manufacturing-strategy}) is immaterial at GBP 8--30\,k one-off. The structurally important line is product liability under strict liability (Consumer Protection Act 1987), which runs GBP 3--12\,k/yr at Phase~1 and GBP 20--45\,k/yr at Phase~3: NHS Supply Chain's GBP 5\,m cover minimum~\cite{nhs-supply-chain-insurance} is a non-discretionary floor. With the recurring QMS and post-market surveillance fees of \Cref{chapter:ent-regulatory}, Class~IIa compliance is a permanent feature of the operating base, concentrating the venture's commitment into recurring opex (the structural strength of \Cref{sec:ent-strengths}).
 
-\textbf{Infrastructure and capex.} Cloud hosting for the institutional management platform grows from low thousands per year at Phase~2 to GBP 20\,000--50\,000 at Phase~3 as longitudinal data compounds with the installed base. Manufacturing capex (injection-moulding tooling of \Cref{sec:ent-manufacturing-strategy} plus test fixtures) is small relative to the operating base.
 
-\textbf{Insurance and ongoing regulatory.} Product liability cover under strict liability (Consumer Protection Act 1987) is contractually essential. UK medical-device distributors typically require GBP 5--10\,m of cover; GBP 5\,m is the NHS Supply Chain procurement minimum~\cite{nhs-supply-chain-insurance}, with higher levels specified in stricter private-sector contracts. Insurance rises from approximately GBP 3\,000--12\,000 per year at Phase~1 to GBP 20\,000--45\,000 at Phase~3 as the distributor footprint widens. Notified-body fees, post-market surveillance, and QMS maintenance add a further recurring regulatory cost (\Cref{chapter:ent-regulatory}) that does not diminish after clearance is obtained.
+\subsection{Warranty and Returns}
+\label{sec:ent-ops-warranty}
+
+Hardware ships with a 12-month manufacturer's warranty, included in the hardware price of \Cref{sec:ent-pricing-strategy} and consistent with B2B medtech convention. Two disjoint accruals flow from it: a 2\% returns allowance booked as contra-revenue against dead-on-arrival units and 30-day institutional trial-period returns, and a 3\% warranty provision accrued at point of sale against 12-month repair and replacement costs. At the \pounds300 hardware ASP the latter is \pounds9 per unit, implying a 10\% failure rate at \pounds90 average repair cost, a conservative assumption for a first-generation optical device in sporting use.
 
 
 \section{Synthesis}
 \label{sec:ent-business-synthesis}
 
-The chapter's central operational insight is that the subscription layer is not merely a pricing-model choice but an operations-timing one. Supply-chain qualification (the RK3588S migration, lateral camera qualification, optical IQC) consumes engineering time and capital during Phases~1--2, precisely when per-unit BOM is highest and hardware contribution is thinnest; recurring institutional subscription revenue is the bridge that makes the Phase~3 cost-down programme affordable. The resulting architecture is also capital-light by construction: Phase~1 burn is low, the software platform scales without proportional headcount growth, and the partial-turnkey model avoids capital-intensive production infrastructure. 
-
-Three risks remain live, each mapping to one of the principal sections of the chapter.
-
-\textbf{Revenue model (\Cref{sec:ent-revenue}).} The hybrid makes viability rest on recurring institutional subscription bridging a thin per-unit margin. Acquisition economics pay off only if attach clears the fixed-cost burn threshold, and LTV is disproportionately sensitive to churn: a small increase compresses per-customer contribution asymmetrically.
-
-\textbf{Manufacturing (\Cref{sec:ent-manufacturing-strategy}).} The Phase~3 unit cost floor of GBP 138--209 assumes the RK3588S migration lands, volume commitments close, and IM tooling economics hold. If any slip, hardware stays at Phase~2 costs (GBP 252--318), above the grassroots price ceiling, and mass-market Phase~3 becomes economically inaccessible.
-
-\textbf{Operations (\Cref{sec:ent-operations}).} Key-person risk is concentrated in a four-founder team spanning four critical functions; the loss of any single founder eliminates a capability until a specialist hire closes the gap, and the scarcity of UK medtech regulatory specialists makes the Phase~2 boundary hire especially exposed.
+The chapter's central operational insight is that the subscription layer is not merely a pricing choice but an operations-timing one: Phases~1--2 consume engineering and regulatory capital precisely when per-unit hardware contribution is thinnest, and institutional revenue bridges the venture to the Phase~3 cost-down. The architecture is capital-light by construction, with partial-turnkey manufacturing off the balance sheet and a software platform that scales without proportional headcount, but concentrates execution risk on a single dependency: revenue viability, the manufacturing cost floor, and the pre-revenue burn all route through institutional attach and retention, stress-tested jointly in \Cref{chapter:ent-financial}. A strategic risk the sensitivity view does not surface is key-person concentration: a four-founder nucleus spans four critical functions, and the loss of any founder eliminates a capability until a specialist hire closes the gap, an exposure sharpened by the UK medtech regulatory-affairs scarcity of \Cref{sec:ent-ops-headcount}.
