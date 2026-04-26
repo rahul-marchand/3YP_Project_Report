@@ -34,9 +34,9 @@
 *.pdf
 
 # Keep figures
-!figures/*.ps
-!figures/*.eps
-!figures/*.pdf
+!figures/**/*.ps
+!figures/**/*.eps
+!figures/**/*.pdf
 
 # These are compiled documents that should be kept
 # in the repository as examples
