@@ -9,76 +9,60 @@ This chapter analyses the market opportunity for a headset-based oculomotor scre
 \section{Market Segmentation}
 \label{sec:ent-market-analysis}
 
-\todo{Suleiman: Draft this section. Frame the product as a portable oculomotor screening headset for rapid concussion/mTBI assessment, aimed at settings where quick triage matters and access to specialist neurodiagnostics is limited.}
+\subsection{The \ab{mtbi} Screening Market}
 
-\subsection{Unmet Need in Concussion Assessment}
+The global \ab{mtbi} assessment market was valued at \$2.3 billion in 2025, with a valuation of \$3.91 billion by 2035 at a CAGR of 12.7\%~\cite{businessresearchinsights2025tbi}. This market spans multiple domains such as sports (professional, amateur and youth), military (through explosions), clinical settings (A\&E) and occupational health.
 
-\todo{Why concussion assessment is a real unmet need — draw on the clinical need established in \Cref{chapter:introduction} but reframe for a commercial audience. Quantify the problem: incidence rates, costs of missed diagnosis, liability exposure for sports organisations.}
+Within sport, football is the world's largest participation sport with 265 million total players globally~\cite{fifa2007bigcount}, while the same FIFA source reports 21.5 million registered youth footballers under 18. Rugby union accounts for 8.46 million players globally~\cite{worldrugby2023participation}, with 57\% reported as pre-teen, and has one of the highest concussion rates per exposure where in elite rugby, it is 4.73--9.05 per 1000 exposures~\cite{gardner2014rugbyconcussion,rafferty2019rugbyconcussion} among the mainstream contact sports, with others such as basketball, hockey and martial arts contributing to this demographic.
 
-\subsection{Market Segmentation}
+\subsection{Market Focus}
 
-\todo{Define target markets in layers:
-\begin{itemize}
-    \item Primary beachhead: sports concussion assessment (elite and semi-professional rugby, football, contact sports)
-    \item Adjacent clinical: emergency departments, urgent care, concussion clinics
-    \item Future expansion: military, schools/universities, amateur sports organisations, remote/rural healthcare
-\end{itemize}
-Segment along four axes:
-\begin{itemize}
-    \item Use case: pitchside screening vs clinic/research use
-    \item Buyer type: sports organisations, clinics, hospitals, research institutions
-    \item Geography: UK first, then EU/US depending on regulatory logic
-    \item Customer sophistication: expert clinical user vs non-technical operator
-\end{itemize}
-Avoid generic ``the healthcare market is big'' framing. Be specific about where the headset is valuable and realistically adoptable first.}
+The specific market focused within this project is non-diagnostic \ab{mtbi} screening for children and adolescents in grassroots sport, including school rugby, school football, youth clubs and amateur leagues. Selecting this as the primary beachhead is justified through infrastructure, ethical and behavioural economic drivers which can create a rich environment for adoption.
 
-\subsection{Market Sizing}
+\paragraph{Infrastructure.} Within grassroots settings, it is reported there are 0.2 to 0.5 per 1000 athlete exposures but this is a severe undercount of the reality due to the lack of trained medical staff in these situations to do methods such as SCAT6~\cite{echemendia2023scat6}. In grassroots settings, reliance upon CRT6 by untrained volunteers can create a large safety gap with the data showing that if a concussion is only managed by a coach using CRT6 then the injury is missed in 42\% of cases compared to when an on-site trainer does CRT6~\cite{echemendia2023crt6}.
 
-\todo{Provide \ab{tam}/\ab{sam}/\ab{som} estimates with explicit assumptions. Include rough sales logic grounded in actual buyer counts (e.g.\ number of Premiership rugby clubs, number of UK EDs, number of university sports programmes), not abstract percentages of trillion-pound markets.}
+\paragraph{Ethics.} There is a larger societal duty of care towards the adolescent brain which is still developing, exhibiting higher vulnerability to Second Impact Syndrome (SIS) and prolonged recovery times in comparison with adults~\cite{patricios2023amsterdam}. This can be a primary driver for adopting screening technologies.
 
-\subsection{Adoption Dynamics}
+\paragraph{Behavioural economics.} Adoption in this segment can also be catalysed through self-other discrepancy in risk perception~\cite{stone2013selfother,dore2014parental}. Individuals can exhibit cognitive biases which lead to the acceptance of personal physical risks but studies show that they demonstrate much higher levels of risk-aversion when making safety decisions for others. The behaviour driver is rooted in Social Values Theory suggesting that parents and teachers will follow social norms to make safe decisions for children in their case. These combinations of safety biases and the institutional duty of care act as powerful adoption catalysts which will help reduce the market friction for the tool.
 
-\todo{Discuss likely early adopters vs later adopters. Why would research institutions and elite sports be first? What triggers broader adoption — regulatory endorsement, clinical evidence, insurance incentives, high-profile incidents?}
+\subsection{Market Sizing: TAM and SAM}
 
+The Total Addressable Market (TAM) is treated here as a bounded opportunity rather than a single exact figure. For the upper bound, UNESCO's global school enrolment estimates that there are 1.4 billion children, adolescents and youth in primary and secondary schools~\cite{unesco2026gem}, providing a theoretical ceiling. If all of these households were addressable with the headset costing \pounds{}300, this maximum global TAM would be \pounds{}420 billion. However, because not all of these children will have the same exposure to sport-related concussions, a more conservative lower bound with stronger evidence can be made: FIFA reports 21.5 million registered youth footballers under 18~\cite{fifa2007bigcount}, and World Rugby reports 8.46 million rugby participants globally, 57\% of whom are pre-teen~\cite{worldrugby2023participation}, giving approximately 4.8 million youth/pre-teen rugby participants. These two sports alone imply 26.3 million high-relevance youth users equivalent to a conservative TAM floor of \pounds{}7.9 billion, before including unregistered football, school sport, hockey, basketball, martial arts or other head-impact settings. This lower bound is used without including numerous other sports to ensure precision, trading the limitations of the number of sports for the high accuracy of these citations.
 
-\section{Stakeholder Analysis and User Research}
-\label{sec:ent-stakeholders}
+The Serviceable Addressable Market (SAM) narrows down to school children in Europe that can be served after validation in the UK, regulatory approval and institutional case studies. This is smaller than the global TAM because initial routes to adoption rely on trusted schools, clubs and parent-facing institutions rather than direct global consumer sales as evidenced in \Cref{chapter:ent-gtm}. In England, the beachhead includes 24,479 schools and 9.03 million pupils~\cite{dfe2025schools}, around 18,000 football clubs outside the professional game~\cite{englandfootball_clubs}, 5.1 million children regularly playing football~\cite{fa2024grassroots}, and 152,391 registered age-grade rugby players across 907 clubs~\cite{rfu2023agegrade}. At \pounds{}300 per parent device, English children regularly playing football alone represent a \pounds{}1.53 billion parent beachhead, before rugby and other head-impact sports are added; the institutional opportunity from schools, football clubs and rugby clubs at \pounds{}900 per deployment adds roughly \pounds{}39 million. After this beachhead, the European expansion SAM is substantially larger: UEFA's Football in Schools programme has already reached over 7 million children and 41,500 schools across Europe~\cite{uefa2025schools}, implying a conservative European school-football parent opportunity of \pounds{}2.1 billion and an institutional school-channel opportunity of \pounds{}37 million from this programme alone. This remains conservative because it excludes wider grassroots clubs, unregistered sport, rugby outside England, hockey, basketball, martial arts, cycling and home-use demand outside organised football.
 
-\todo{Suleiman: Draft this section.}
+Further geographic segmentation can be done here to show why our SAM is within Europe. \Cref{tab:ent-six-nations-rugby} is an illustrative Six Nations rugby expansion view using one World Rugby participation-map source base~\cite{worldrugby2020participationmap}.
 
-\subsection{Stakeholder Map}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{Illustrative Six Nations rugby participation view.}
+    \label{tab:ent-six-nations-rugby}
+    \begin{tabular}{lrrrr}
+        \toprule
+        \textbf{Country} & \textbf{Registered players} & \textbf{Est. youth (<18)} & \textbf{Youth \%} & \textbf{Clubs} \\
+        \midrule
+        England     & 1,990,988 & 1,094,043 & 55\% & 1,809 \\
+        France      &   542,242 &   244,009 & 45\% & 1,874 \\
+        Ireland     &   101,922 &    50,961 & 50\% &   213 \\
+        Italy       &    87,211 &    39,245 & 45\% &   490 \\
+        Wales       &    83,120 &    41,560 & 50\% &   357 \\
+        Scotland    &    49,265 &    24,633 & 50\% &   251 \\
+        \midrule
+        Six Nations total & 2,854,748 & 1,494,451 & 52\% & 4,994 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\todo{Identify all actors around the device:
-\begin{itemize}
-    \item Primary users: athlete/patient, sideline operator (physio, sports medic, coach)
-    \item Clinical users: ED clinician, concussion specialist, researcher
-    \item Decision-makers: team/club/school administrator, hospital procurement, \ab{nhs} buyer
-    \item Influencers: parent/guardian (especially youth sport), insurer, regulator
-\end{itemize}
-Map influence vs interest for key stakeholders.}
+These statistics of rugby players prove that there is an audience to be served within these countries, which will aid and give cause for more analysis of a geographic expansion later.
 
-\subsection{User Personas}
+\subsection{Settings Segmentation}
 
-\todo{Produce 2--4 strong personas, e.g.:
-\begin{enumerate}
-    \item Sideline physiotherapist for a semi-professional rugby club
-    \item ED clinician triaging mild head injuries in a busy department
-    \item Concussion researcher collecting longitudinal pupilometry data
-    \item School sports staff member with minimal technical training
-\end{enumerate}
-Each persona should include: role, goals, pain points, technical comfort, context of use, and what success looks like.}
+\paragraph{Youth sports clubs.} Youth sports clubs are a key area of interest for deploying the tool. In the UK for 2023/24, rugby union had 378,000 players in England with 89,000 volunteers~\cite{rfu2024annualreport} with the majority being youth players and the FA grassroots strategy projects having 220,000 new players across 15,000 teams in 2028~\cite{fa2024grassroots}. Furthermore, across Europe it is estimated that there are 700,000 sports clubs~\cite{nagel2020europeansportsclubs}. The buying power of this group ranks higher than others, with them having more dedicated funding to purchase the screening tool for their club.
 
-\subsection{User Journeys}
+\paragraph{Schools.} This is where the majority of concussions will happen with there being 29,200 schools in the UK~\cite{dfe2025educationstats} and 93.3 million pupils and students enrolled across the EU~\cite{eurostat2022students}. Schools would purchase the screening tool for usage in PE.
 
-\todo{Build user journeys covering:
-\begin{enumerate}
-    \item Pre-test: device setup, patient preparation, app connection
-    \item Test execution: conducting assessment after suspected impact
-    \item Result interpretation: receiving and understanding the result
-    \item Post-test decision: repeat test, referral, return-to-play decision
-    \item Data management: storing, uploading, reviewing historical data
-\end{enumerate}
-Connect tightly to product features: quick setup, non-technical operation, local inference, Bluetooth result to phone, Wi-Fi upload, motion quality flags, repeat-test recommendation.}
+\paragraph{Homes.} Children who come home from schools with concussions as well as parents who are concerned about their children's wellbeing playing grassroots sports. Parents would purchase the screening tool for use at home as well as for their child to take to school and high-risk sports-related activities. Traditionally, parents would use high variance sources such as Google as their first steps in this situation~\cite{kubb2020parentshealthinfo} whereas this screening tool can provide a first step of low variance objectivity to assist in this process.
 
 
 \section{Value Proposition}

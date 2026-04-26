@@ -6,49 +6,265 @@
 This chapter defines the strategy for bringing the headset to its first customers, covering beachhead selection, pilot design, sales channels, and partnership development.
 
 
-\section{Beachhead Market Selection}
-\label{sec:ent-beachhead}
+\section{GTM Adoption Strategy}
+\label{sec:ent-gtm-adoption}
 
-\todo{Suleiman: Justify the choice of first customer segment. A sensible sequence:
-\begin{enumerate}
-    \item Research / validation deployments with university sports medicine groups
-    \item Elite and semi-professional sport (rugby, football)
-    \item Broader clinical pathways (ED, concussion clinics) once evidence and regulatory progress mature
-\end{enumerate}
-Why does the beachhead matter for credibility and evidence generation?}
+In this section the go-to-market phases are laid out and evaluated using evidence from stakeholder interviews, power dynamics within different settings and frameworks to create an evidence-based map of why this sequence was chosen.
+
+\subsection{Technology Adoption Curve}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/eem/technology_adoption_curve}
+    \caption{Technology adoption curve for grassroots mTBI screening.}
+    \label{fig:ent-technology-adoption}
+\end{figure}
+
+Using Rogers' diffusion of innovations~\cite{rogers2003diffusion}, Phase 1 consists of innovators which are concussion researchers in this context. They have the frameworks to test unvalidated tools (CUREC) and are motivated by publishing papers and making breakthroughs in emerging fields whilst not requiring a fully functioning product to start testing it. This is advantageous as the product is yet to be regulatory approved here (\Cref{chapter:ent-regulatory}) and under the lean startup build, measure, learn framework~\cite{ries2011lean} this would allow for iteration sequences, converging towards the best product that can be deployed to the market and producing a published validation paper producing strong evidence for acceptance of the stakeholders in phase 2.
+
+Phase 2 are the early adopters, where schools and youth clubs are targeted. These stakeholders such as the PE teachers, headmasters and coaches will adopt research evidence and institutional endorsement as they see the potential in the product, not because of popularity. This was supported by an interview with a headmaster -- a high power, high interest stakeholder in these settings as per the figures below -- who said they would ``use it every single time once validated to be safe and useful by experts''. This is typical early adopter behaviour.
+
+The chasm identified by Moore~\cite{moore1991chasm} follows these phases after which we reach phase 3 with the early majority of the mass market of parents who would want more evidence of a functioning product before using it such as prior use in school, exhibiting early majority behaviour. These last two phases are cumulative; phase 2 generates institutional validation to assist phase 3 as well as verifying strategies to expand within the community of schools and clubs which continue through phase 3 to the mass market of schools, clubs and parents at home.
+
+To justify these claims and sequence of phases to appropriately match the different groups to the characteristics of the phases, these statements were grounded in strong evidence. Appropriate methods covered to support this included user interviews, the ACCORD framework, and stakeholder dynamics.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.82\textwidth]{figures/eem/stakeholder_matrix_youth_sports_clubs}
+    \caption{Power-interest grid for youth sports clubs.}
+    \label{fig:ent-stakeholder-youth-clubs}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.82\textwidth]{figures/eem/stakeholder_matrix_home}
+    \caption{Power-interest grid for users at home.}
+    \label{fig:ent-stakeholder-home}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.82\textwidth]{figures/eem/stakeholder_matrix_schools}
+    \caption{Power-interest grid for users at school.}
+    \label{fig:ent-stakeholder-schools}
+\end{figure}
+
+The power interest grids across the different settings of deployment show that parents are persistently high power, high interest stakeholders, driving user interviews to understand what must be in place for them to adopt the product. Statements of parents included ``if 100 schools are using it, I would feel confident'' and ``not something untested'', verifying that there should be sales and validation from schools and clubs before targeting large volume sales to parents.
+
+Additionally, applying the ACCORD framework (Rogers' diffusion of innovations~\cite{rogers2003diffusion}) helps understand how quickly an innovation can be adopted. Analysing this in comparison with and without the prior phase to understand which order is more fruitful relative to each other yielded the following results.
+
+\paragraph{Advantages.} In either case the tool would be better than non-trained coaches and parents by providing an objective measurement that is easy to use. No relative claim could be made here.
+
+\paragraph{Compatibility.} The social compatibility would be relatively larger with phase 2 than without as using a tool that is used by schools would make the parents feel like they are being a ``good, involved parent'' as verified in a user interview.
+
+\paragraph{Complexity.} For both cases the tool is easy to use, providing low complexity with a simple app interface developed in \Cref{chapter:software}. No relative claim could be made here either.
+
+\paragraph{Observability.} With phase 2, the observability would be high due to the social proof of the tool being used on pitches and recognisable coaches motivating parents that are watching on the sidelines or hear by word of mouth as per the user interview. Without phase 2, there would be less evidence for this as they would be beginning at the same time, the amount of observations of the tool's benefit would be lower. This reasoned a relative adoption benefit of having phase 2 before phase 3.
+
+\paragraph{Risk.} With phase 2, the perceived risk would be lower as per the user interview. Without phase 2 the evidence would not be there to support the parents' worry, pushing favour towards phase 2.
+
+\paragraph{Divisibility.} With phase 2, the product would already readily exist among certain schools and clubs at a larger scale than without phase 2, leading to easier trial use pushing towards relative favour of phase 2.
+
+This showed further that phase 3 following phase 2 would yield more benefit; however, there are limitations in these arguments such as user interviews being limited to two people and from a social values perspective~\cite{stone2013selfother,dore2014parental}, parents may adopt this earlier than expected out of a duty of responsibility.
+
+\subsection{Conclusions and Limitations}
+
+Through applying the appropriate frameworks, a strong argument was made for pushing forward this GTM sequence that we will deploy. However, the limited number of user interviews, and perhaps a more complicated story of the risk-averse behaviour exhibited by this population, can equally justify selling to parents as soon as there has been regulatory approval. Such an argument could claim if they are risk-averse~\cite{stone2013selfother,dore2014parental}, they would adopt it immediately to help the child.
 
 
-\section{Pilot Strategy}
-\label{sec:ent-pilots}
+\section{GTM Execution Strategy}
+\label{sec:ent-gtm-execution}
 
-\todo{Define:
-\begin{itemize}
-    \item Number and type of pilot sites
-    \item Success criteria for pilots
-    \item Timeline from pilot to commercial deployment
-    \item What the pilot proves to future customers
-\end{itemize}}
+Section~\ref{sec:ent-gtm-adoption} outlined the order of the GTM strategy and the reasons for that order. In this section, the exact methods of how these phases are executed include: the channels used, the pilot design, the timeline, the offer structure and the evidence required before progressing. User interviews and user journeys will be used again to identify points of adoption friction so that decisions are made with the intention of reducing them.
+
+Each GTM phase in this section is treated as an execution experiment rather than a fixed launch strategy. Since insufficient deployment data has yet to be collected, KPIs are used as phase-gate metrics. These are used to test whether our choices in channels, messages and deployment models are working well enough to justify scaling within the phase or progressing onto the next phase. If the KPI metrics are not met, then iterations must occur within the phase instead of progression. This dynamic, iterative approach provides exceptional flexibility to ensure that we do not get stuck in performing sub-optimal tactics and discover flaws in smaller units of a strategy before expanding it.
+
+The KPI evaluation theory used here comes from RE-AIM~\cite{reaim_framework} which helps to judge whether the phase can scale through reach, adoption, implementation and maintenance. Additionally, Proctor et al.'s~\cite{proctor2011implementation} implementation outcomes are also used to justify specific KPI choices through the values of acceptability, feasibility, adoption and sustainability. RE-AIM informs the questions that should be asked for scalability, Proctor justifies the KPIs for answering those questions. These frameworks combined ensure that the GTM execution is not purely assessed through sales but by whether the product can actually be adopted and sustained in the target settings, providing a more data driven model and feedback loop to execute the GTM strategy of highest returns. KPIs are used first to validate execution at individual units, then to test whether the execution model can be repeated within the phase. Once the strategy has been successful across multiple sites there is approval for progression to the next phase.
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{GTM execution figures.}
+    \label{tab:ent-gtm-execution-figures}
+    \begin{tabular}{p{3.2cm}p{2.6cm}p{4.0cm}p{4.5cm}}
+        \toprule
+        \textbf{GTM stage} & \textbf{Timeframe} & \textbf{Target} & \textbf{Expected results used in SOM} \\
+        \midrule
+        Phase 1: Research validation & 12--18 months & 20--30 researchers / clinics contacted & 3--5 sites; 200--300 completed tests \\
+        Phase 2A: School pilot & 1 school sport season & 60--80 sport-heavy schools contacted & 8--12 pilot schools \\
+        Phase 2B: Youth club pilot & 1 rugby/football season & 60--70 clubs contacted & 6--8 pilot clubs \\
+        Phase 2 paid institutional rollout & Following 12 months & 500--700 schools/clubs contacted & 70--100 paid institutions; base case 90 \\
+        Phase 3 parent soft launch & First 3 months of Phase 3 & Parents exposed through 108 deployed schools/clubs from Phase 2 & 400--1,000 home users from approx. 20,000 exposed families \\
+        Phase 3 parallel scaled rollout & First 12 months of Phase 3 & 800--1,200 further institutions contacted; 150 base-case paid conversions, 300 upside conversions & Contributes additional institutional revenue and year-weighted parent exposure for SOM \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{Reference basis for the GTM execution figures.}
+    \label{tab:ent-gtm-execution-rationale}
+    \begin{tabular}{p{3.7cm}p{11.3cm}}
+        \toprule
+        \textbf{GTM stage} & \textbf{Reference basis / rationale} \\
+        \midrule
+        Phase 1: Research validation & Treated as a feasibility/validation deployment rather than a sales launch. NHS digital-health pilot guidance~\cite{ohid2020digitalhealth} supports pilots with defined scope, data-collection plans, success/failure criteria, fixed timelines and defined responsibilities. \\
+        Phase 2A: School pilot & Parker et al.~\cite{parker2022schoolfeasibility} found UK school-based health feasibility trials recruited a median of 7.5 schools, with IQR 4.5--9 and range 2--37. Therefore, 8--12 schools is a reasonable feasibility-scale pilot. \\
+        Phase 2B: Youth club pilot & RFU evidence reports over 1,800 rugby clubs in England~\cite{rfu2024annualreport}, so 6--8 clubs is a small practical feasibility sample from a much larger reachable pool. \\
+        Phase 2 paid institutional rollout & Not literature-derived; this is a base-case commercial assumption conditional on pilot KPIs being met. Customer-development logic~\cite{blank2013startup} supports validating buyer, channel and repeatable sales process before scaling acquisition. \\
+        Phase 3 parent soft launch & Modelled from institutional exposure rather than TAM. Rogers/Moore logic~\cite{rogers2003diffusion,moore1991chasm} supports using institutional proof, observability and trust before entering mainstream parent adoption. \\
+        Phase 3 scaled rollout & Upside case depends on Phase 2 case studies, institutional testimonials and repeatable channel validation. Larger future volume is supported by continued grassroots football/rugby participation and governing-body distribution routes~\cite{fa2024grassroots,rfu2023agegrade,uefa2025schools,rfu2024annualreport}. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Phase 1}
+
+The objective of phase 1 is to create a reliable product through iterations with researchers, creating credible validation evidence before later pilots. This phase is not focused on sales, and is centred on creating the best product and gathering validation from the researcher community to achieve sufficiency for regulatory approval and bring about higher chances of adoption for phase 2.
+
+Therefore, the targets will include: 2--3 university sport science / neuroscience / engineering departments, 1 concussion clinic or sports medicine clinic and Oxford-linked researchers as warm trust channels are more effective.
+
+The channels and tactics used in this phase will include: Oxford supervisor / academic introductions as researchers are more likely to respond through trusted academic channels; research-use-only headset loans to optimise partner acceptance rate and usability logging during every trial to capture product failure points and optimise the product's success rate and setup time.
+
+The proposed timeline for this phase is 12--18 months and the phase-gate KPIs include 3--5 sites recruited, 200--300 completed tests, an acceptable test-failure rate, regulatory approval and a publishable paper for submitted validation output.
+
+If these KPIs are not sufficiently achieved, iteration methods for improving them include: using warmer introductions and narrower research targets to help stand out in the noise~\cite{blank2013startup}; improving engineering workflows with potential engineering recruitment to produce better test-failure; spending more time conducting research trials to ensure a publishable output as evidence strength can still be insufficient after this much time.
+
+The choices for these number of sites and tests is also supported in pilot-study literature for small feasibility samples~\cite{julious2005pilot}. Julious gives a rule of thumb for these numbers. Additional evidence of this strategy is given in the NHS pilot guidance~\cite{ohid2020digitalhealth} showing that pilots should have a defined scope, data-collection plan, success/failure criteria, fixed time period and defined responsibilities between the developer and research site.
+
+These specific KPIs were selected to test whether the research-validation model is scalable beyond a single site. RE-AIM~\cite{reaim_framework} supports site recruitment to measure Reach and Adoption as well as test-failure rate measuring Implementation. Proctor~\cite{proctor2011implementation} justifies these metrics further: feasibility is measured through test-failure rate and acceptability through researcher feedback.
+
+\subsection{Phase 2}
+
+Schools and clubs will both be offered the product of the headset with a higher tier app subscription at \pounds{}300 for the headset with a \pounds{}600 annual subscription as determined in \Cref{chapter:ent-financial,chapter:ent-business}. The objective for both is to ensure strong fit within their workflows, generate case studies as well as verifying channels for expansion within this segment whilst gaining trust for parent adoption and the mass market in phase 3.
+
+\subsubsection{2A -- Schools}
+
+Referring back to the power-interest grids, targeted individuals include: headteachers who play a high-power, high-interest role and purchase the product; PE teachers who can assist in spreading the message due to their high interest and will convey the message of the product offering fast, simple low-friction workflows after a head impact.
+
+During pilot recruitment, 60--80 sport-heavy schools are contacted to secure 8--12 school pilots. If KPIs are met then the following paid rollout to schools form part of the wider 500--700 institutional contact list contributing to \textasciitilde{}50 in the base case. Tactics to optimise the execution success will include: recruiting May--August~\cite{dfe2025planningcalendar} before the autumn sport season as it matches the school buying and sport planning cycle and optimises the pilot recruitment rate; one-season free/discounted pilot as this will lower the barrier to adoption and increase the pilot conversion with repeated usage; targeting sport-heavy independent schools in Oxfordshire/London/South-East first, as our proximity can provide warm access and improve close rates; using specific messaging with headteachers that ``This gives the school a defensible, documented workflow after a head impact'', as shown that this is a feature that matters from user interviews in \Cref{sec:ent-gtm-adoption}.
+
+\subsubsection{2B -- Youth Clubs}
+
+During pilot recruitment, 60--70 clubs are contacted to secure 6--8 club pilots. If the KPIs are met then in the following paid rollout, clubs contribute approximately 40 paid deployments within the 90-institution base case. Channels and tactics here will include: starting with local rugby clubs and welfare networks, collecting anonymised match-day usage targeting welfare/safeguarding officers with evidence from the power interest grids showing that these are the key stakeholders to target and incentivise.
+
+\subsubsection{Overall}
+
+The timelines for both will include: May--August recruiting before the sports season and school year starts; September--March deployment, user interviews and failed-test analysis; June--July pilots converted into annual packages and recruiting the next cohort.
+
+The pilot sizes were benchmarked against feasibility-study practice~\cite{parker2022schoolfeasibility}: UK school-based health feasibility trials recruit a median of 7.5 schools, making an 8--12 school pilot reasonable, while 6--8 clubs is a small practical example from the RFU's 1800+ English rugby clubs. The 15--20 institution total and one-season timeline allow testing across both schools and clubs with defined scope, data collection and success criteria; the later 50--100 paid rollout is base-case commercial assumption conditional on pilot KPIs being met, not a literature-driven forecast.
+
+KPIs here include clubs / schools recruited, pilot-to-paid conversion, tests per institution, successful test-completion rate, repeat usage across the season, PE teacher/coach confidence change, and renewal intent. These diagnose the effectiveness of the channel strength, workflow-feasibility, operator acceptability, social-pressure relief and real usage and whether the strategy can be repeated at scale. If weak, iteration techniques can include using warmer rugby networks, simplifying the access and storage of the headset and adjusting the message towards stakeholders; pushing more heavily into social proof tactics can improve adoption rates and will be a critical part of this, drawing on the behavioural economics evidence from \Cref{chapter:ent-market} and the worried parents in user interviews. These allow the testing of whether the model can be scaled in this phase and is also backed by RE-AIM and Proctor~\cite{reaim_framework,proctor2011implementation} as the number of institutions measures Reach as well as repeat usage / intent of renewal measuring sustainability.
+
+Assuming these KPIs are hit, the first paid institutional rollout targets 70--100 paid deployments, with 90 total paid institutions used as a base case. Including the 15--20 pilots, this gives approximately 108 total deployed institutions before phase 3. As a result, this will result in \pounds{}900 $\times$ 90 = \pounds{}81,000 pre-phase 3 revenue. Phase 2 will also have a low paid-advertising spend: acquisition is driven through warm outreach, school networks, governing-body networks and pilot case studies due to this phase's main objective being generating enough trust to target parents and being aggressive expansion of phase 2. These costs will not be deducted from the SOM as we define the SOM as gross obtainable revenue.
+
+\subsection{Phase 3 -- Parents}
+
+The objective here is to convert parents already exposed through schools and clubs into home users and expand to the mass market of schools, clubs and parents. Parents will be offered the product of the headset at \pounds{}300 with no subscription as determined in \Cref{chapter:ent-financial,chapter:ent-business}. Schools and youth clubs will still be targeted using previous strategies at a larger scale; for the SOM base case, this parallel rollout assumes 150 additional paid schools/clubs are added during the first phase 3 year from a wider 800--1200 contact list; parents will be the new category of expansion here as we have gained sufficient evidence from the KPI metrics to progress to this phase.
+
+Channels and tactics used here will include: emails to parents from schools and clubs referring back to the trust arguments of \Cref{sec:ent-gtm-adoption}; this will transfer trust from the schools and clubs to the product, assuring parents and improving the conversion rate KPI; home monitoring offers after an incident, offering the product to a parent whose child has already been affected increases product distribution and the repeat-test rates; creating GP-ready PDF reports which can produce downstream value as optimising report downloads for this high-interest stakeholder, incentivising them to spread through word of mouth; screening aid, not diagnosis language persistently used to reduce ethical/regulatory misuse risks to reduce misuse/false reassurance reports.
+
+KPIs used here include: parent conversion from exposed institutions which analyses trust transfer; app onboarding completions, diagnosing product usability; repeat-test rate understanding longitudinal value; misuse/false reassurance reports to analyse ethical safety. If weak, iteration methods will include simplifying the app setup, adjusting email timings, increasing testimonial proof publicity and creating a clearer recovery-monitoring journey.
+
+The timeline here will consist of the first 3 months having a soft launch to parents in pilot/paid institutions. If KPI metrics are hit, the next 9 months will consist of expansions to all families in phase 2 institutions utilising the channels of schools/clubs emails to transfer the validity, pushing the adoption friction of trust stressed in \Cref{sec:ent-gtm-adoption}. KPI analysis is reinforced here to ensure optimal strategy before aggressive expansion. This phase will simultaneously have expansion of schools and clubs using strategies outlined in phase 2 whilst starting the target of parents at home.
+
+\subsection{Conclusion}
+
+Overall this section has laid out an evidence and a data driven approach for the GTM execution, using KPIs and frameworks such as RE-AIM and Proctor~\cite{reaim_framework,proctor2011implementation}, power interest grids and user interviews from \Cref{sec:ent-gtm-adoption} to justify the metrics, channels and targets. Although this structure is laid out with flexibility for iteration, it is very possible that the data shows that the final strategy is much different to what was predicted, and that parents may adopt earlier than expected without having to do an entire year of phase 2. Simultaneously, we may also find that conversion rates are poor and that the product fails to cross the chasm, with evidence shown that headset technologies are typically a tough market to crack~\cite{billinghurst2015ar} and crossing this chasm is a known high-risk point~\cite{moore1991chasm}.
 
 
-\section{Sales and Distribution}
-\label{sec:ent-sales}
+\section{Serviceable Obtainable Market}
+\label{sec:ent-som}
 
-\todo{Discuss:
-\begin{itemize}
-    \item Direct sales vs distributor model
-    \item Partnerships with sports organisations, clinics, universities
-    \item Role of the phone app as part of the adoption funnel
-    \item Evidence-led adoption: published validation data as sales collateral
-\end{itemize}}
+SOM is defined as the expected obtainable revenue over the first 12 months after Phase 3 begins, assuming Phase 1 and Phase 2 KPIs have been met.
 
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{SOM revenue treatment by GTM period.}
+    \label{tab:ent-som-periods}
+    \begin{tabular}{p{3.4cm}p{6.8cm}p{4.0cm}}
+        \toprule
+        \textbf{Period} & \textbf{GTM activity} & \textbf{Revenue treatment} \\
+        \midrule
+        Phase 1: 12--18 months & Research validation with 3--5 sites and 200--300 tests & No revenue \\
+        Phase 2 pilot: one season & 15--20 free/discounted school and club pilots & No revenue assumed \\
+        Phase 2 paid rollout: 12 months & 90 paid institutions; 108 total deployed institutions including pilots & \pounds{}81,000 from 90 $\times$ \pounds{}900 \\
+        Phase 3: first 12 months & Parent channel added while schools/clubs continue scaling & Main SOM window \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\section{Partnership Strategy}
-\label{sec:ent-partnerships}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{Institutional Phase 3 revenue.}
+    \label{tab:ent-som-institutional}
+    \begin{tabular}{p{7.4cm}p{3.2cm}p{2.8cm}}
+        \toprule
+        \textbf{Source} & \textbf{Calculation} & \textbf{Revenue} \\
+        \midrule
+        Existing paid schools/clubs renewing app subscription & 90 $\times$ \pounds{}600 & \pounds{}54,000 \\
+        New schools/clubs added during Phase 3 & 150 $\times$ \pounds{}900 & \pounds{}135,000 \\
+        \midrule
+        Total institutional Phase 3 revenue & & \pounds{}189,000 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\todo{Identify key partnership types:
-\begin{itemize}
-    \item Clinical research partners for evidence generation
-    \item Sports governing bodies for credibility and access
-    \item Medical device distributors for scale
-    \item \ab{kol}s in sports medicine and concussion research
-\end{itemize}}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{Effective parent exposure in Phase 3.}
+    \label{tab:ent-som-family-exposure}
+    \begin{tabular}{p{6.6cm}p{5.2cm}p{2.8cm}}
+        \toprule
+        \textbf{Source} & \textbf{Calculation} & \textbf{Effective exposed families} \\
+        \midrule
+        Families exposed from existing 108 deployed institutions & Approx. 20,000 & 20,000 \\
+        Families exposed from 150 new Phase 3 institutions & 150 $\times$ \textasciitilde{}180 families $\times$ 50\% year weighting & 13,500 \\
+        \midrule
+        Total effective exposed families & & 33,500 \\
+        Parent conversion and revenue & 33,500 $\times$ 3\% $\approx$ 1,000 users; 1,000 $\times$ \pounds{}300 & \pounds{}300,000 revenue \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Each school constitutes to 200 families as a conservative modelling assumption derived from the DfE average of 9.03 million pupils across 24,479 schools, which is approximately 369 pupils per school~\cite{dfe2025schools}, reduced for sibling and household overlap. Each club is 150 families as a conservative grassroots-club modelling assumption~\cite{ukparliament2023clubs}. Therefore 60 $\times$ 200 + 48 $\times$ 150 = 19,200 rounds up to 20,000. Numbers used again for phase 3 exposure too. The 3\% conversion is a base case assumption benchmarked against e-commerce conversion rates~\cite{dynamicyield_conversion} and made more plausible that this is not cold advertising; parents are exposed through a trusted channel after institutional validation. To reflect this uncertainty, the SOM includes a conservative 2\% case and an upside 5\% case.
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{Base-case Phase 3 SOM.}
+    \label{tab:ent-som-base-case}
+    \begin{tabular}{lr}
+        \toprule
+        \textbf{Component} & \textbf{Revenue} \\
+        \midrule
+        Institutional Phase 3 revenue & \pounds{}189,000 \\
+        Parent Phase 3 revenue & \pounds{}300,000 \\
+        \midrule
+        Base-case Phase 3 SOM & \pounds{}489,000 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{SOM scenario sensitivity.}
+    \label{tab:ent-som-scenarios}
+    \begin{tabular}{lrrrrrr}
+        \toprule
+        \textbf{Scenario} & \textbf{Existing} & \textbf{New} & \textbf{Institutional} & \textbf{Exposed} & \textbf{Parent} & \textbf{Phase 3} \\
+        & \textbf{paid} & \textbf{Phase 3} & \textbf{revenue} & \textbf{families} & \textbf{revenue} & \textbf{SOM} \\
+        \midrule
+        Conservative & 50 & 75  & \pounds{}97,500  & 16,750 & \pounds{}100,500 & \pounds{}198,000 \\
+        Base case    & 90 & 150 & \pounds{}189,000 & 33,500 & \pounds{}300,000 & \pounds{}489,000 \\
+        Upside       & 150 & 300 & \pounds{}360,000 & 62,000 & \pounds{}930,000 & \pounds{}1,290,000 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+SOM is calculated as expected obtainable revenue in the first 12 months after Phase 3 begins, assuming that the Phase 1 and Phase 2 KPIs have been met. Phase 1 generates no revenue because it is a research-validation phase, while Phase 2 pilots are assumed to be free or discounted. Phase 2 produces 90 paid institutional deployments and 108 total deployed sites, generating \pounds{}81,000 from the initial paid institutional rollout. In Phase 3, the institutional channel continues rather than stopping: the base case assumes 150 additional paid schools/clubs are added, while the 90 existing paid institutions renew the \pounds{}600 annual subscription. This produces \pounds{}189,000 institutional revenue in the first Phase 3 year. Parent SOM is calculated from families exposed through deployed institutions. The existing 108 institutions expose approximately 20,000 families; new Phase 3 institutions are year-weighted because they are onboarded throughout the year, adding an effective 13,500 exposed families. At a 3\% parent conversion rate and \pounds{}300 per headset, this gives approximately 1,000 parent users and \pounds{}300,000 parent revenue. Therefore, the base-case first-year Phase 3 SOM is \pounds{}489,000. Conservative and upside scenarios are included to reflect uncertainty in institutional conversion and parent trust transfer.
