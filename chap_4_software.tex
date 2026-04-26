@@ -226,25 +226,26 @@ The smooth pursuit software developed in this section has met the constraints id
 The main limitation throughout, however, is the lack of real headset data. This includes filter thresholds, quality gates, and IMU validity cutoffs which are provisional but can be rechosen using the same methodologies once the data becomes available. Architectural changes have not been completely struck off but are less of a concern in comparison with labelling quality, subject diversity, and IR-specific augmentation given the MPIIGaze results. The next steps should be headset data collection, thresholding retuning, and selecting a final optimiser.
 
 
+\clearpage
 \section{Pupil Width Estimation}
 \label{sec:pupil-width}
 
-This section describes the pipeline that converts raw eye images from the headset camera into \ab{plr} biomarker measurements. The pipeline must satisfy the following requirements, derived from the literature review  (\Cref{chapter:background}) and the headset hardware (\Cref{chapter:headset}):
+Four requirements shape the pipeline, derived from the clinical target (\Cref{chapter:background}) and hardware (\Cref{chapter:headset}):
 
-\begin{itemize}
-    \item \textbf{Precision.} Resolve the pupil diameter changes associated with \ab{plr} abnormalities in \ab{mtbi}, which manifest as differences of 15--20\% in constriction amplitude and 15--20\,ms in latency between concussed and healthy populations;~\cite{master2020pupillary, ciuffreda2017plr}).
-
-    \item \textbf{Robustness.} Handle blinks (100--400\,ms of complete data loss) and other transient artefacts gracefully, detecting and discarding corrupted frames rather than propagating erroneous measurements.
-
-    \item \textbf{Ease of use.} Operate without specialist training or equipment, producing measurements that are comparable across subjects.
-
-    \item \textbf{Inference.} Complete processing within the 8.3\,ms per-frame budget imposed by the headset's 120\,fps capture rate on the Raspberry Pi~5.
-
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \textbf{Precision.} Resolve the ${\sim}15$--$20\%$ constriction-amplitude deficit and ${\sim}15$--$20$\,ms latency shift that characterise \ab{mtbi}~\cite{master2020pupillary, ciuffreda2017plr}. Normalising by iris diameter~\cite{boyle2021hvid} sets a precision target of ${\sim}0.02$ in pupil--iris ratio (${\sim}5$\,px on the OV9281 VGA capture, ${\sim}1$\,px on the prototype's $112{\times}112$ input).
+    \item \textbf{Robustness.} Tolerate noise artefacts during capture: blinks (100--400\,ms data loss), motion blur, specular reflections from the beamsplitter, and segmentation failures.
+    \item \textbf{Interpretability.} Expose a per-frame signal a developer or clinician can audit, so anomalous biomarker outputs trace to specific failures rather than being treated as opaque.
+    \item \textbf{Real-time inference.} Per-frame compute light enough to run in real time on a Raspberry~Pi~5 (runtime selected in \Cref{sec:litert}).
 \end{itemize}
+
+\paragraph{Contributions.} These sections establish which parts of the eye-tracking literature transfer under our constraints. Inside \Cref{sec:biomarker-extraction} we additionally apply two techniques from adjacent fields that, to our knowledge, are not used in \ab{mtbi} pupillometry; neither is methodologically new. A \emph{probability-weighted ellipse fit} replaces the argmax-then-fit pipeline standard in pupil tracking~\cite{yiu2019deepvog, chaudhary2019ritnet, kothari2021ellseg} with a weighted least-squares conic fit, using softmax pupil-class probabilities as per-pixel weights. Weighted ellipse fitting is itself standard in computer vision~\cite{kanatani2016ellipse} and \citet{yiu2019deepvog} already exploit segmentation confidence at the per-frame level. A \emph{parametric \ab{plr} fit} replaces the derivative-based extraction used uniformly in \ab{mtbi} pupillometry~\cite{bergamin2003pupil, mariakakis2017pupilscreen, master2020pupillary} with a closed-form fit to the post-stimulus waveform. Parametric \ab{plr} fitting is itself established in basic and cognitive pupillometry for noise regularisation~\cite{mathot2023pupil, mcanany2018iphone, pupilmetrics2024}.
 
 
 \subsection{Pipeline Design}
 \label{sec:pipeline}
+
+Two approaches dominate the recent literature: \emph{regression}, which predicts ellipse parameters directly from the image~\cite{kothari2021ellseg, jia2024condseg}, and \emph{segmentation}, which classifies each pixel into anatomical regions and fits an ellipse to the pupil boundary~\cite{chaudhary2019ritnet} (\Cref{fig:pipeline} compares the two).
 
 \begin{figure}[htbp]
     \centering
@@ -253,45 +254,12 @@ This section describes the pipeline that converts raw eye images from the headse
     \label{fig:pipeline}
 \end{figure}
 
-Two approaches dominate the recent literature for learning-based pupil measurement. In a \emph{regression} approach, a model predicts ellipse parameters directly from the raw image~\cite{kothari2021ellseg, jia2024condseg}. In a \emph{segmentation} approach, the model classifies each pixel into anatomical regions (pupil, iris, sclera, background) and an ellipse is fitted to the segmented boundary~\cite{chaudhary2019ritnet}.
+This work adopts segmentation. On \textbf{precision}, published comparisons show complementary strengths: regression gives tighter centre localisation (1.12 vs 1.47\,px on OpenEDS' $640{\times}400$ images, not directly comparable to later prototype figures at $112{\times}112$), segmentation gives higher-quality boundaries (97.4\% vs 94.6\% iris \ab{iou})~\cite{jia2024condseg, kothari2021ellseg}; boundary precision is what tracks diameter over time, so segmentation is slightly better suited. On \textbf{robustness}, segmentation's per-pixel probability map yields a per-frame confidence score that discards uncertain frames before biomarker extraction; regression provides no equivalent signal. On \textbf{interpretability}, segmentation masks are directly inspectable: during development anomalous \ab{plr} outputs can be traced to a specific failure mode by eye whilst regression is opaque. The principal trade-off is \textbf{annotation cost}: pixel-level masks take minutes per image versus seconds for regression-style labels, but for a medical-adjacent tool the robustness and interpretability advantages outweigh this cost, since silent failures risk missed referrals and auditable predictions are essential for development and trust.
 
-We adopt segmentation. On \textbf{accuracy}, recent comparative work shows complementary strengths: regression achieves tighter ellipse centre localisation (1.12 vs 1.47\,px on OpenEDS), while segmentation produces higher-quality boundaries (97.4\% vs 94.6\% iris \ab{iou})~\cite{jia2024condseg, kothari2021ellseg}. Since our downstream task (tracking diameter changes over time) depends on boundary precision rather than absolute centre accuracy, segmentation is slightly better suited.
+\subsection{Model Configuration}
+\label{sec:configuration}
 
-On \textbf{robustness}, segmentation produces a per-pixel probability map from which we derive per-frame confidence scores for automated quality gating: frames where the model is uncertain are downweighted or discarded before biomarker extraction, preventing corrupted measurements from propagating downstream. Regression provides no equivalent signal. On \textbf{interpretability}, the segmentation mask is directly inspectable: when the pipeline reports an anomalous \ab{plr} measurement, a user or developer can examine the mask to determine whether the anomaly reflects a genuine physiological response or a processing artefact.
-
-The trade-off is \textbf{annotation cost} when adapting to new hardware. Pixel-level segmentation masks require minutes per image to produce, whereas regression labels (e.g.\ clicking two points on the pupil boundary) take seconds, making regression substantially cheaper to fine-tune on a new device. We offset this by training on existing datasets (OpenEDS; 12\,759 masks~\cite{garbin2019openeds}), applying domain-specific augmentation (\Cref{sec:domain-transfer}), and validating end-to-end using cheaply acquired regression-style diameter labels from our headset.
-
-For a screening tool whose output may prompt referral to a medical professional, the robustness and interpretability advantages take priority over annotation cost: silent failures risk missed referrals, and the ability to audit predictions is essential for trust in the system's output. \Cref{tab:design-matrix} summarises the comparison.
-
-\begin{table}[htbp]
-\centering
-\caption{Design comparison for pupil diameter extraction. \textbf{Bold} indicates the stronger approach for each criterion.}
-\label{tab:design-matrix}
-\begin{tabular}{l c c}
-\toprule
-\tableHCell{Criterion} & \tableHCell{Regression} & \tableHCell{Segmentation} \\
-\midrule
-Accuracy            & \multicolumn{2}{c}{Complementary (see text)} \\
-Robustness          & No per-frame confidence & \textbf{Probability map} \\
-Interpretability    & Opaque                  & \textbf{Inspect mask} \\
-Annotation cost     & \textbf{Seconds/image}  & Minutes/image \\
-Real-time inference & \multicolumn{2}{c}{Both feasible at 120\,fps} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Ablation}
-\label{sec:ablation}
-
-Within the segmentation pipeline, three factors must be configured: model architecture, loss function, and preprocessing. We ablate each on the OpenEDS benchmark to verify our choices. As shown in \Cref{tab:baseline-results}, performance is saturated across architecture and loss function choices; preprocessing is the only ablated factor that meaningfully affects accuracy.
-
-All models are trained on OpenEDS~\cite{garbin2019openeds} (12\,759 annotated images, 152 participants) with the Adam optimiser (learning rate $10^{-3}$), ReduceLROnPlateau scheduling, for 50 epochs on an NVIDIA RTX A4000 (16\,GB). Due to compute constraints, we run three seeds for one configuration per architecture (RITnet + Dice, U-Net + CE) to characterise run-to-run variance, and single seeds for the remaining configurations.
-
-\paragraph{Architecture.} Deployment on the headset's Raspberry Pi~5 imposes inference compute constraints (the 8.3\,ms per-frame budget at 120\,fps has not yet been verified on-device). We compare RITnet~\cite{chaudhary2019ritnet}, a lightweight DenseNet--U-Net hybrid (250K parameters, {<}1\,MB), against a standard U-Net (7.8M parameters, 29.6\,MB). As \Cref{tab:baseline-results} shows, both architectures achieve comparable pupil axis error (0.09 vs 0.13 $\pm$ 0.02\,px), but U-Net is 46\% slower and 30$\times$ larger.
-
-\paragraph{Loss function.} Not all pixels matter equally for diameter estimation: accuracy depends on the pupil--iris boundary. We compare cross-entropy, generalised Dice (which addresses class imbalance by weighting each class inversely by area), CE + Dice, and a compound loss adding a boundary-aware term that upweights pixels near class edges~\cite{chaudhary2019ritnet}. The spread in axis error across all four is 0.04\,px (\Cref{tab:baseline-results}), comparable to the $\pm$0.03\,px seed-to-seed variance observed for Dice. Since the differences are within noise, we adopt the compound loss following the original RITnet paper: the boundary-aware term is theoretically motivated for our boundary-sensitive task, even though its empirical effect is small at this dataset scale.
-
-\paragraph{Preprocessing.} Raw eye images exhibit low contrast between iris and pupil. We apply gamma correction ($\gamma = 0.8$, a nonlinear intensity mapping that brightens dark regions) and CLAHE (contrast-limited adaptive histogram equalisation; clip limit 1.5, tile grid $8 \times 8$), which enhances local contrast without amplifying noise globally. Removing both approximately triples axis error (0.10 to 0.32\,px), making preprocessing the only factor with a meaningful effect.
+Three choices configure the segmentation pipeline: backbone, loss, and preprocessing. Each choice is evidenced by ablation on OpenEDS~\cite{garbin2019openeds} (12,759 images, 152 subjects). Every configuration is trained for 50 epochs on an NVIDIA RTX A4000 with Adam ($\eta = 10^{-3}$) and ReduceLROnPlateau scheduling. Compute constraints limited us to 3 seeds on two reference configurations and single seeds elsewhere; the measured $\pm$0.03\,px seed-to-seed variance sets the uncertainty floor for comparing single-seed runs. We report pupil IoU for comparability with prior work but select on \emph{axis error}, since IoU saturates on the bulk of interior pixels whereas axis error reflects the pupil--iris boundary precision that determines downstream ellipse-fit quality.
 
 \begin{table}[htbp]
 \centering
@@ -311,124 +279,106 @@ U-Net$^\dagger$  & CE    & Yes & 98.93 $\pm$ 0.10 & 0.13 $\pm$ 0.02 & 29.6 & 130
 \end{tabular}
 \end{table}
 
-We select RITnet with compound loss and gamma+CLAHE preprocessing as the deployment configuration (bold in \Cref{tab:baseline-results}).
+\paragraph{Preprocessing: contrast enhancement.} Gamma correction ($\gamma = 0.8$) and CLAHE (clip limit 1.5, tile grid $8 \times 8$) compensate for the low iris--pupil contrast of raw eye images. Removing them triples axis error (0.10 to 0.32\,px), making preprocessing the most load-bearing choice ablated here.
+
+\paragraph{Backbone: RITnet.} U-Net matches RITnet on axis error (0.13 vs 0.09\,px, within seed variance) at 28$\times$ the model size (29.6 vs 1.07\,MB). We pick RITnet for its efficiency.
+
+\paragraph{Loss: compound RITnet loss.} CE, Dice, CE + Dice, and the compound RITnet loss are indistinguishable within seed variance. We adopt the compound loss from the original RITnet paper~\cite{chaudhary2019ritnet} for consistency with the backbone's published configuration.
+
+\paragraph{Scope.} Hyperparameters (Adam $\eta = 10^{-3}$, ReduceLROnPlateau) were held fixed across backbones rather than tuned per architecture. Heavier backbones (DeepLab, SegFormer, nnU-Net) were not evaluated: at ${\sim}0.1$\,px axis error the precision floor is set by hand-annotated pupil masks on OpenEDS, and added capacity would erode the 8.3\,ms Pi~5 real-time budget without compensating gain. With the OpenEDS configuration settled, the deployment bottleneck shifts to the domain gap between OpenEDS and headset data (\Cref{sec:domain-transfer}).
 
 \subsection{Domain Transfer}
 \label{sec:domain-transfer}
 
-\paragraph{Domain gap.} OpenEDS was collected using a research-grade eye tracker with near-infrared illumination, high-resolution optics, and controlled viewing geometry. The headset uses \todo{fill in camera details from electronics section} viewing through a beamsplitter under display-reflected visible light. \Cref{fig:domain-gap} illustrates the visual differences: the headset images are lower resolution, exhibit different contrast characteristics, and contain reflections from the beamsplitter optics.
-
-\begin{figure}[htbp]
+\begin{wrapfigure}{r}{0.40\textwidth}
     \centering
-    \begin{minipage}{0.35\textwidth}
+    \vspace{0.2\baselineskip}
+    \captionwidth{0.40\textwidth}
+    \begin{minipage}{0.48\linewidth}
         \centering
         \includegraphics[width=\textwidth]{raw_eye_crop}
-        \subcaption{OpenEDS (research eye tracker)}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.35\textwidth}
+        \subcaption{OpenEDS}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\linewidth}
         \centering
         \includegraphics[width=\textwidth]{headset_raw_cropped}
-        \subcaption{Headset}
+        \subcaption{Prototype}
     \end{minipage}
-    \caption{Domain gap between training data and deployment hardware. The images differ in resolution, contrast, illumination spectrum, and noise characteristics.}
+    \caption{Domain gap between OpenEDS and the prototype, differing in resolution, contrast, illumination, and noise.}
     \label{fig:domain-gap}
-\end{figure}
+\end{wrapfigure}
 
-\paragraph{Augmentation strategy.} Annotating pixel-level segmentation masks for headset images is prohibitively labour-intensive (as discussed in \Cref{sec:pipeline}). Instead, we bridge the domain gap through data augmentation that simulates the headset imaging conditions during training. We evaluate two strategies of increasing specificity, with results in \Cref{tab:augmentation-results}.
+Domain transfer (the gap between training and deployment image distributions) is a recognised failure mode in computer vision: models trained on one distribution often collapse on another. The pipeline inherits this risk. OpenEDS was collected with research-grade near-infrared eye trackers under controlled geometry; the production design images the eye through a beamsplitter under display-reflected visible light. Hand-labelling pupil centres on 100 prototype frames (the only deployment-style hardware available) puts the OpenEDS-trained baseline at 7.9\,px centre-localisation error, well above the accuracy threshold.
 
-\emph{Standard augmentation} applies geometric transforms (random horizontal flips, small rotations) and photometric perturbations (brightness, contrast, and Gaussian noise jitter) that improve generalisation across any target domain.
+\paragraph{Candidate strategies.} Three strategies close the gap, in decreasing labelling cost: \textbf{from-scratch training} on an OpenEDS-scale labelled production set, with the highest performance ceiling (\Cref{sec:pipeline}); \textbf{fine-tuning} the OpenEDS-pretrained backbone on a few hundred labelled production frames; and \textbf{augmentation}, simulating the production distribution at training time with no production labels required, with direct precedent for cross-device generalisation in head-mounted eye tracking~\cite{kothari2022ellseggen}.
 
-\emph{Domain-specific augmentation} adds transforms targeting the identified differences: sclera region brightening (simulating the different illumination balance), resolution downsampling (matching the headset's lower effective resolution), and blur (simulating slight defocus through the beamsplitter optics).
+The strategy progresses with the design's maturity. Initially, hardware is likely to iterate quickly, and the minutes-per-image cost of pixel-mask labelling makes per-revision annotation prohibitively slow and expensive: every optical change discards the prior labelling effort. Only augmentation escapes this dependency. Once optics are fixed, modest annotated sets become durable and fine-tuning is the highest-accuracy option for a feasible labelling budget. As regulatory approval is approached, accumulated trial data supports the OpenEDS-scale dataset from-scratch training requires. \textbf{Augmentation is therefore the right strategy at this stage.} The critical assumption is that targeted transforms can simulate the production distribution well enough to close the verified gap.
 
-\begin{table}[htbp]
+\begin{wraptable}{r}{0.42\textwidth}
 \centering
-\caption{Effect of augmentation on OpenEDS test set performance and headset pupil detection rate. Augmentation reduces OpenEDS accuracy (as expected, since the training distribution is broadened) but dramatically improves headset generalisation.}
+\vspace{-0.75\baselineskip}
+\captionwidth{0.42\textwidth}
+\caption{Leave-one-in augmentation ablation on prototype frames. $^*$Mean inflated by a ${\sim}10\%$ failure subset (see text).}
 \label{tab:augmentation-results}
-\begin{tabular}{l r r r}
+\begin{tabular}{l r}
 \toprule
-\tableHCell{Configuration} & \tableHCell{Pupil IoU (\%)} & \tableHCell{Axis err (px)} & \tableHCell{Headset detection (\%)} \\
+\tableHCell{Configuration} & \tableHCell{Err (px)} \\
 \midrule
-No augmentation (baseline)  & 98.93 & 0.09 & 22.1 \\
-Standard augmentation       & 98.19 & 0.23 & \todo{--} \\
-Domain-specific augmentation & 79.28 & 2.68 & 52.3 \\
-Domain-specific + 112$\times$112 & 92.72 & 0.27 & \todo{--} \\
+No augmentation                  & 7.92$^*$ \\
+Standard augmentation            & 6.53$^*$ \\
+\quad + Sclera brightening         & 0.53 \\
+\quad + Resolution downsample      & 6.27$^*$ \\
+\quad + Blur                       & 6.64$^*$ \\
+\textbf{\quad + All}             & \textbf{0.44} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{wraptable}
 
-The domain-specific augmentation at full OpenEDS resolution significantly degrades in-distribution performance (pupil \ab{iou} drops to 79.3\%) because the aggressive transforms push the training distribution far from the OpenEDS test set. Training at the headset's native resolution (112$\times$112) partially recovers OpenEDS performance (92.7\% \ab{iou}) while maintaining the domain adaptation benefit. On headset images, domain-specific augmentation increases pupil detection from 22\% to 52\%, with sensible diameter measurements (pupil/iris ratio $0.45 \pm 0.09$) where the baseline model produces largely invalid fits.
+\paragraph{Experimental design.} Without prototype pixel masks the IoU and axis-error metrics from \Cref{sec:configuration} are unavailable; \textbf{centre error} is reported on a held-out set of prototype frames, with the 1.12\,px from regression-style pupillometry on OpenEDS~\cite{kothari2021ellseg} as the anchor (subject to the resolution caveat noted in \Cref{sec:pipeline}). Standard augmentation alone (geometric flips and small rotations; photometric brightness, contrast, and Gaussian-noise jitter) leaves the prototype gap largely intact. This work adds three domain-specific transforms, each targeting one visible gap in \Cref{fig:domain-gap}: sclera-region brightening (illumination balance), resolution downsampling to 112$\times$112 (effective resolution), and Gaussian blur (beamsplitter defocus). A leave-one-in ablation isolates each transform's contribution.
 
-\paragraph{Headset validation.} \Cref{fig:headset-validation} shows segmentation overlays on headset-captured images for the baseline and domain-augmented models. The baseline model frequently fails to segment the pupil or produces fragmented predictions, whereas the domain-augmented model achieves coherent segmentation on the majority of frames where the pupil is visible. \todo{Add regression-label diameter comparison on ${\sim}100$ labelled headset frames.}
+\paragraph{Interpreting the result.} The 7.9 and 6.5\,px baselines are dominated by a ${\sim}10\%$ subset of frames in which the model misclassifies image-corner artefacts as sclera, the ellipse fit lands on the corner, and centre error spikes. This is a discrete failure mode, not a noisy estimate. Excluding frames with error >10\,px, augmentation still improves accuracy on surviving frames (baseline 1.5\,px $\to$ standard 1.2\,px), so the headline change combines a smaller accuracy improvement with a failure-mode rescue. The failure frames are retained in the average because a 10\% complete-failure rate is real failure rather than measurement noise; the key finding is that augmentation removes every observation of this failure mode.
 
-\begin{figure}[htbp]
-    \centering
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{headset_baseline_overlay}
-        \subcaption{Baseline model (22\% detection)}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{headset_domain_aug_overlay}
-        \subcaption{Domain-augmented model (52\% detection)}
-    \end{minipage}
-    \caption{Segmentation results on headset-captured images. The baseline model (a) produces fragmented, mostly invalid predictions. Domain-specific augmentation (b) yields coherent pupil and iris segmentation on the majority of frames where the eye is visible.}
-    \label{fig:headset-validation}
-\end{figure}
+The verified gap is therefore closed: 7.9\,px falls to 0.4\,px with all three transforms, below the 1.12\,px literature anchor. Sclera brightening drives the lift (6.5 $\to$ 0.5\,px); resolution downsampling and Gaussian blur contribute little individually (6.3, 6.6\,px) and marginally beyond sclera (0.5 $\to$ 0.4\,px). The transform list is tied to the prototype's gaps; the durable contribution is the methodology (inspect the gap, name the failure mode, design a targeted transform, ablate), which the production design will re-apply against its own gap profile.
 
+\paragraph{Design Implications.} Augmentation is validated as the initial strategy: targeted transforms close the gap below the literature anchor with no production labels. As optics stabilise and labelled production data accumulates, the strategy moves through fine-tuning and ultimately to from-scratch training.
 
-\subsection{PLR Biomarker Extraction}
-\label{sec:plr-extraction}
+\subsection{Biomarker Extraction}
+\label{sec:biomarker-extraction}
 
-This subsection describes how per-frame segmentation masks are converted into clinically relevant \ab{plr} biomarkers. Each step is presented alongside the evidence that it works.
+From the segmentation mask we need clinical \ab{plr} biomarkers. This requires solving three problems in sequence: extracting a per-frame measurement, cleaning the time series of frame-level artefacts, and fitting biomarkers to the cleaned trajectory. We select against the constraints set out at the start of \Cref{sec:pupil-width}.
 
-\paragraph{Diameter extraction.} Given a segmentation mask, we fit an ellipse to the largest pupil contour via least squares, yielding centre coordinates, major and minor axis diameters, and rotation angle. We report mean diameter (average of major and minor axes) for robustness to foreshortening from small head rotations within the headset.
+\paragraph{Per-frame measurement.} A per-frame diameter measurement comparable across subjects is required from the segmentation mask. The dominant pupil-tracking pipeline~\cite{yiu2019deepvog, chaudhary2019ritnet, kothari2021ellseg} argmaxes the soft mask to binary and fits an ellipse via direct algebraic least squares~\cite{fitzgibbon1999direct}, discarding per-pixel probabilities. \citet{jia2024condseg} integrate a soft-mask ellipse parameterisation into training, which is more powerful but requires retraining whenever the segmentation model changes.
 
-The standard approach applies \texttt{argmax} to the segmentation logits before fitting, discarding the model's uncertainty. We improve on this with a probability-weighted fit: each pixel's contribution is weighted by its softmax probability of belonging to the pupil class, so uncertain boundary pixels have less influence than confident interior pixels. \todo{Report axis error improvement: hard vs soft fitting on OpenEDS test set.}
+This work instead applies a weighted least-squares conic fit at inference, using each candidate boundary pixel's softmax pupil-class probability as its WLS weight: confident interior pixels dominate the fit, uncertain boundary pixels contribute less, and segmentation uncertainty therefore passes through to the fit rather than being discarded at the threshold. Weighted conic fitting is itself standard in computer vision~\cite{kanatani2016ellipse} but, to the authors' knowledge, has not previously been applied in \ab{mtbi} pupillometry; the simplification over CondSeg is that no retraining or differentiable rendering is required. On the OpenEDS test set this reduces axis error from 0.47 to 0.44\,px relative to hard-argmax + LS. The probability-weighted fit is also used throughout the prototype evaluation in \Cref{sec:domain-transfer}.
 
-We normalise pupil diameter by the simultaneously measured iris diameter, producing a dimensionless pupil--iris ratio. Adult iris diameter varies by only ${\sim}3.4\%$ across individuals (11.8\,mm $\pm$ 0.4\,mm~\cite{boyle2021hvid}), so this ratio reflects true pupil size changes rather than geometric scaling, removing the need for per-subject calibration.
+The per-frame pupil diameter is the mean of the fitted ellipse's major and minor axes (robust to foreshortening from small head rotations) and normalised by the simultaneously measured iris diameter; adult iris diameter varies by only ${\sim}3.4\%$ across individuals~\cite{boyle2021hvid}, so the dimensionless pupil--iris ratio reflects true pupil change rather than geometric scaling and removes the need for per-subject calibration.
 
-\paragraph{Signal cleaning.} The raw diameter time series contains frame-to-frame jitter, data gaps from blinks, and low-frequency pupil oscillations (hippus, 0.5--2\,Hz). Three steps clean the signal before biomarker extraction. \textbf{Blink detection:} frames where the pupil area drops below 50\% of the pre-stimulus baseline or where the segmentation confidence falls below a threshold are identified; short blinks are interpolated, while blinks during the constriction phase invalidate the trial. \textbf{Outlier rejection:} frames where the frame-to-frame diameter change exceeds 8\,mm/s (approximately mean + 2\,SD of healthy peak constriction velocity~\cite{bremner2012pupillometric}) are treated as segmentation failures and interpolated. \textbf{Savitzky--Golay filtering:} a local polynomial is fitted to each window for temporal smoothing~\cite{savitzky1964smoothing}. Unlike a Gaussian kernel, this preserves the sharp constriction onset that is critical for accurate peak velocity estimation.
+\paragraph{Time-series cleaning.} Inspecting raw pupil--iris ratio traces from the prototype surfaces three common artefacts: frame-to-frame jitter, blink gaps (100--400\,ms), and outliers from motion and specular reflections. Each is filtered with a standard operation at standard parameters. \textbf{Blink detection:} frames where pupil area drops below 50\% of the pre-stimulus baseline or segmentation confidence falls below threshold are identified; short gaps are interpolated, and blinks during the constriction phase invalidate the trial. \textbf{Outlier rejection:} frames whose frame-to-frame diameter change exceeds 8\,mm/s (mean + 2\,SD of healthy peak constriction velocity~\cite{bremner2012pupillometric}) are interpolated. \textbf{Smoothing:} a Savitzky--Golay filter~\cite{savitzky1964smoothing} preserves the sharp constriction onset that the downstream peak-velocity biomarker depends on, unlike a Gaussian kernel. Systematic validation on a labelled artefact dataset was out of scope at this stage, but spot-checks on the available recordings confirm the three operations remove visible artefacts without distorting the \ab{plr} trajectory.
 
-\paragraph{Parametric curve fitting.} Rather than extracting biomarkers from local derivatives of the smoothed signal (which amplify noise), we fit a parametric model to the entire post-stimulus waveform~\cite{fan2011modeling}:
+\paragraph{Biomarker fit.} The \ab{mtbi} pupillometry literature extracts biomarkers from derivatives of the smoothed waveform~\cite{bergamin2003pupil, master2020pupillary, mariakakis2017pupilscreen}: peak velocity from $\max |d'(t)|$, latency from a threshold crossing on $d'(t)$, amplitude from the baseline-to-minimum ratio, and recovery from $T_{75}$. Differentiation amplifies high-frequency noise, which is consequential given the residual jitter typical of any segmentation-based pipeline. This work instead fits a parametric model to the entire post-stimulus waveform (\Cref{fig:plr-validation}a):
 %
 \begin{equation}
     d(t) = d_0 - A \left(1 - e^{-(t - t_{\mathrm{onset}})/\tau_c}\right) e^{-(t - t_{\mathrm{onset}})/\tau_d}
     \label{eq:plr-model}
 \end{equation}
 %
-where $d_0$ is the baseline diameter, $A$ is the constriction amplitude, $t_{\mathrm{onset}}$ is the latency, $\tau_c$ is the constriction time constant, and $\tau_d$ is the dilation recovery time constant. The model is fitted via nonlinear least squares with physiologically informed bounds on each parameter. This acts as a physics-informed regulariser: every data point contributes to every parameter estimate, and the model rejects solutions that would correspond to impossible pupil dynamics. The fitted parameters directly yield the clinically relevant biomarkers identified in \Cref{chapter:background}: constriction latency ($t_{\mathrm{onset}}$), constriction amplitude ($A/d_0 \times 100\%$), peak constriction velocity ($\max |d'(t)|$, derivable analytically), and recovery time constant ($\tau_d$). \Cref{fig:plr-fitted} shows an example fit.
+where $d_0$ is baseline diameter, $A$ is constriction amplitude, $t_{\mathrm{onset}}$ is latency, and $\tau_c, \tau_d$ are the constriction and dilation time constants.\footnote{\Cref{eq:plr-model} is a phenomenological closed form consistent with the underlying viscoelastic ODE dynamics of Fan \& Yao~\cite{fan2011modeling}; the closed form is widely used downstream for efficient biomarker extraction rather than being their literal equation.} Nonlinear least squares with physiologically informed bounds yields fitted parameters from which biomarkers are read out analytically. This is the model-based analysis used in basic and cognitive pupillometry~\cite{mathot2023pupil, mcanany2018iphone, pupilmetrics2024} for its noise tolerance, but has not, to the authors' knowledge, been applied to \ab{mtbi} pupillometry.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{plr_fitted_curve}
-    \caption{Parametric curve fitting applied to a synthetic \ab{plr} waveform ($\sigma = 0.2$\,mm noise). The fitted model (red) yields constriction latency, amplitude, peak velocity, and recovery time constant. $R^2 = 0.965$.}
-    \label{fig:plr-fitted}
+    \includegraphics[width=\textwidth]{plr_combined}
+    \caption{Parametric \ab{plr} fit and noise robustness. (a)~Parametric model (red, $R^2 = 0.965$) fitted to a synthetic \ab{plr} waveform with $\sigma = 0.2$\,mm noise; biomarkers are read analytically from fitted parameters of \Cref{eq:plr-model}. (b)~Parameter recovery vs noise level over 100 synthetic trials per condition: relative errors in amplitude, latency, recovery $\tau$, and the fit residual $1 - R^2$.}
+    \label{fig:plr-validation}
 \end{figure}
 
-We validate robustness by generating 100 synthetic \ab{plr} waveforms at each of six noise levels ($\sigma = 0.05$ to $0.5$\,mm) and measuring parameter recovery against known ground truth (\Cref{fig:robustness-noise}). The parametric fit maintains $R^2 > 0.9$ up to $\sigma \approx 0.3$\,mm. Latency is the most robust parameter (error {<}0.04\,s across all noise levels), while amplitude and recovery time degrade at higher noise. In a separate blink injection experiment (3 to 10 consecutive frames zeroed at random post-stimulus positions), $R^2$ remains above 0.99 across all blink durations, confirming that the blink detection and interpolation pipeline effectively neutralises data dropout.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{robustness_noise}
-    \caption{\ab{plr} parameter recovery under increasing measurement noise (100 trials per condition). The parametric fit degrades gracefully; latency is the most robust parameter.}
-    \label{fig:robustness-noise}
-\end{figure}
-
-\paragraph{Bilateral comparison.} The headset captures both eyes simultaneously, enabling bilateral \ab{plr} comparison. The relative afferent pupillary defect (RAPD), defined as the asymmetry in \ab{plr} parameters between eyes, is one of the most clinically significant pupillary findings in neurological assessment: even when absolute parameters fall within normal range, inter-eye asymmetry can indicate unilateral injury. We compute parameters independently for each eye and report the inter-eye difference for each biomarker.
+Synthetic \ab{plr} waveforms with known ground-truth parameters enable direct measurement of recovery: 100 traces were generated at each of six noise levels ($\sigma = 0.05$ to $0.5$\,mm) to characterise the fit's noise tolerance (\Cref{fig:plr-validation}b). The fit maintains $R^2 > 0.9$ up to $\sigma \approx 0.3$\,mm; latency is the most robust parameter (error {<}0.04\,s), while amplitude and recovery time degrade at higher noise. In a blink-injection experiment (3--10 consecutive frames zeroed at random post-stimulus positions), $R^2 > 0.99$ across all durations, confirming that the cleaning pipeline neutralises dropout.
 
 
 \subsection{Limitations}
 \label{sec:limitations}
 
-The current pipeline has four principal limitations that define the scope for future work. First, the segmentation model is trained on OpenEDS; despite domain-specific augmentation, the gap to headset imagery may ultimately require fine-tuning on headset-specific annotated data to achieve clinical-grade accuracy. Second, the \ab{plr} extraction pipeline has been validated on synthetic waveforms with known ground truth; clinical validation with concussed and healthy participants is required to confirm that the parametric model captures the full range of pathological \ab{plr} responses observed in \ab{mtbi}. Third, the robustness experiments assume additive Gaussian noise, which may not fully characterise the headset's artefact profile (e.g.\ motion blur from head movement, specular reflections from the beamsplitter). Fourth, each frame is segmented independently; incorporating temporal context could improve frame-to-frame consistency but at the cost of increased model complexity and latency.
+\paragraph{Real-hardware validation gap.} The pipeline has not been run end-to-end on real hardware. Stages were validated in isolation: segmentation on OpenEDS and 100 hand-labelled prototype frames, biomarker fit on synthetic waveforms generated from \Cref{eq:plr-model}. Supporting comparisons share this constraint: the probability-weighted ellipse was tested only on OpenEDS (gain at the seed-noise floor), most ablations are single-seed, and Pi~5 latency under concurrent workloads is unbenchmarked. Validating the assembled pipeline on real recordings is the natural next step.
 
+\paragraph{Modelling simplifications.} Robustness experiments use additive Gaussian noise; real artefacts (motion blur, specular reflections, segmentation failures) are likely heavier-tailed and temporally correlated. Blink injection uses idealised windows without closing/opening dynamics. The parametric \ab{plr} form is one specific functional choice; pathological waveforms with biphasic or oscillatory shapes may not be representable.
 
-\section{Vergence Measurement}
-\label{sec:vergence}
-
-Vergence measurement reuses the gaze estimation pipeline described in \Cref{sec:gaze-estimation} to assess a different oculomotor biomarker: the \ab{npc}. During the vergence assessment, the headset display presents a target that moves progressively closer to the user along the depth axis. The system tracks the horizontal gaze angle of each eye independently; as long as the user can maintain binocular fixation, the two gaze vectors converge toward the target.
-
-The \ab{npc} is identified as the target distance at which convergence breaks down, detected either by a sudden divergence in the estimated gaze angles (indicating that one eye has lost fixation) or by the user reporting diplopia. Because this measurement depends on the gaze estimation model's ability to track both eyes simultaneously and resolve small angular differences, the accuracy of the vergence assessment is directly limited by the gaze model's angular resolution. \todo{Detail the geometric conversion from gaze angles to convergence distance and report the achievable NPC precision.}
+\paragraph{Population scope.} Healthy-adult assumptions thread through the pipeline: iris-diameter normalisation~\cite{boyle2021hvid}, the blink threshold, the outlier velocity~\cite{bremner2012pupillometric}, and the parametric fit's bounds all derive from healthy populations. Pathological responses (longer latency, smaller amplitude, asymmetric, oscillatory) could be misclassified, requiring validation on a representative population sample.
