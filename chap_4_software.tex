@@ -210,6 +210,13 @@ To validate that these are sensible choices for a machine learning architecture 
     \end{tabular}
 \end{table}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/mpiigaze_per_subject_mae}
+    \caption{Per-subject MAE across 15 LOPO folds for both optimisers on MPIIGaze, with published baselines shown as horizontal references.}
+    \label{fig:mpiigaze-per-subject}
+\end{figure}
+
 The pipeline achieved 4.97\textdegree{} (Adam) and 4.85\textdegree{} (SGD) mean MAE across the 15 folds, which is competitive with Cheng et al.\ (4.70\textdegree{}), Zhang et al.\ 2017 (4.80\textdegree{}), and 2015 (6.3\textdegree{}). This benchmark validates that the choices of training loop, loss function, and architecture are not the main limiting factor for gaze regression and that the residual error on the headset data is more strongly associated with domain-specific factors such as geometry, subject variance, and IR imagery. Therefore, future optimisations should consider data quality, labelling, and IR-specific augmentation whilst not excluding architecture-specific choices, but rather putting them as a secondary concern instead.
 
 \section{Summary and Design Considerations of the Smooth Pursuit Trial}
