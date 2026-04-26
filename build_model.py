@@ -71,7 +71,7 @@ FMT_TEXT = '@'
 
 def delayed_units(col, A_prefix=""):
     """
-    Formula expression for reg-delay-shifted new units in a given column.
+    Formula expression for reg-delay-shifted total headsets in a given column.
 
     Commercial years shift right by S_REG_DELAY years; research years
     (periods 1–3) are unaffected. Years that get shifted off the end repeat
@@ -80,6 +80,18 @@ def delayed_units(col, A_prefix=""):
     prefix = A_prefix
     return (
         f"INDEX({prefix}$C$15:{prefix}$K$15, 1, "
+        f"MAX({col}5 - {S_REG_DELAY}, MIN({col}5, 3)))"
+    )
+
+
+def delayed_inst(col, A_prefix=""):
+    """
+    Reg-delay-shifted institutional buyers (Assumptions row 28).
+    Drives subscription accumulation (parents excluded) and sales commission.
+    """
+    prefix = A_prefix
+    return (
+        f"INDEX({prefix}$C$28:{prefix}$K$28, 1, "
         f"MAX({col}5 - {S_REG_DELAY}, MIN({col}5, 3)))"
     )
 
@@ -185,9 +197,11 @@ def build_assumptions(wb):
 
     # ---- Section 0: Sanity checks ----
     s.section(9, "0. SANITY CHECKS")
-    s.label(10, "Tier mix sums to 100% (each year)",
-            source="Should display 100.0% across the row")
-    s.year_formulas(10, lambda col, i: f"=SUM({col}26:{col}30)", fmt=PCT)
+    s.label(10, "Total headsets = 3 × inst + parent",
+            source="Should display OK across the row (row 15 = $B$26·row28 + row29)")
+    s.year_formulas(10,
+        lambda col, i: f'=IF({col}15=$B$26*{col}28+{col}29, "OK", "FAIL")',
+        fmt=FMT_TEXT)
     s.label(11, "Cash never below buffer",
             source="From Cash flow tab — checks all 9 closing-cash years")
     s.cell(11, 2,
@@ -199,27 +213,28 @@ def build_assumptions(wb):
            '=IF(SUMPRODUCT(--(ABS(\'Balance sheet\'!C34:K34)<1))=9, "OK", "FAIL")',
            font=font_formula)
 
-    # ---- Section 1: Adoption ramp ----
-    s.section(14, "1. ADOPTION RAMP   [PROVISIONAL → ch.10]")
-    s.label(15, "New units sold per year", units="units",
-            source="Replace with ch.10 GTM curve")
-    s.years(15, [10, 25, 200, 800, 2000, 4500, 7000], fmt=NUM, prov=True)
+    # ---- Section 1: Adoption ramp (derived from GTM channel mix in section 3) ----
+    s.section(14, "1. ADOPTION RAMP   (derived from GTM channel mix, §3)")
+    s.label(15, "Total headsets sold per year (derived)", units="headsets",
+            source="= 3 × institutional buyers + parent buyers (rows 28–29)")
+    s.year_formulas(15,
+        lambda col, i: f"=$B$26*{col}28 + {col}29", fmt=NUM)
     s.label(16, "Annual subscription churn", units="% per year",
             source="ch.9 §9.4 indicative; applied to start-of-year base")
     s.scalar(16, 0.10, fmt=PCT)
-    s.label(17, "Active subscribers (end of year)", units="subs",
-            source="prior × (1 − churn) + new units × adoption × attach rate")
+    s.label(17, "Active headset subscriptions (end of year)", units="subs",
+            source="prior × (1 − churn) + institutional buyers × headsets/inst × attach × adoption")
     s.year_formulas(17,
         lambda col, i: (
-            f"={delayed_units(col)} * {S_ADOPTION} * $B$33 "
+            f"={delayed_inst(col)} * $B$26 * {S_ADOPTION} * $B$33 "
             f"+ OFFSET({col}17, 0, -1) * (1 - $B$16 * {S_CHURN})"
         ),
         fmt=NUM)
-    s.label(18, "Average subscribers (year)", units="subs",
+    s.label(18, "Average headset subscriptions (year)", units="subs",
             source="(start + end) / 2; drives subscription revenue")
     s.year_formulas(18,
         lambda col, i: f"=({col}17 + OFFSET({col}17, 0, -1)) / 2", fmt=NUM)
-    s.label(19, "Cumulative units sold (end of year)", units="units")
+    s.label(19, "Cumulative headsets sold (end of year)", units="headsets")
     s.year_formulas(19,
         lambda col, i: f"={delayed_units(col)} * {S_ADOPTION} + OFFSET({col}19, 0, -1)",
         fmt=NUM)
@@ -233,37 +248,34 @@ def build_assumptions(wb):
             source="ch.9 §Warranty and Returns: DOA + trial-period returns only; in-warranty repairs covered separately by warranty provision")
     s.scalar(23, 0.02, fmt=PCT)
 
-    # ---- Section 3: Subscription tiers ----
-    s.section(24, "3. SUBSCRIPTION TIERS   (5 slots — set unused tier mix to 0%)")
-    s.cell(25, 1, "Tier name", font=font_subheader)
-    s.cell(25, 2, "£/yr", font=font_subheader, align=Alignment(horizontal="center"))
-    for i, y in enumerate(YEAR_LABELS):
-        s.cell(25, 3 + i, "Mix " + y, font=font_subheader,
-               align=Alignment(horizontal="center"))
+    # ---- Section 3: GTM channel mix, subscription & marketing split ----
+    s.section(24, "3. GTM CHANNEL MIX, SUBSCRIPTION & MARKETING SPLIT")
+    s.label(26, "Headsets per institutional buyer", units="headsets/buyer",
+            source="ch.10 §10.2: schools/clubs each cover multiple sports")
+    s.scalar(26, 3, fmt=INT)
+    s.label(27, "Subscription price per headset", units="£/headset/yr",
+            source="ch.10 §10.2: flat £600/yr; per-headset billing")
+    s.scalar(27, 600, fmt=GBP)
+    s.label(28, "Institutional buyers (schools + clubs)", units="buyers",
+            source="ch.10 §10.2 (Phase 2 paid + Phase 3 institutional, scaling through Y7)")
+    s.years(28, [0, 0, 30, 90, 150, 400, 750], fmt=NUM, prov=True)
+    s.label(29, "DTC buyers (direct-to-consumer, no subscription)", units="buyers",
+            source="ch.10 §10.3 (3% / 4% / 6% conversion ramp on effective exposure)")
+    s.years(29, [0, 0, 0, 0, 1041, 1954, 5325], fmt=NUM, prov=True)
+    s.label(30, "Institutional channel marketing", units="£/yr",
+            source="B2B sales floor: conferences, sales reps, materials")
+    s.years(30, [5000, 10000, 25000, 50000, 50000, 75000, 100000], fmt=GBP, prov=True)
+    s.label(31, "DTC channel marketing", units="£/yr",
+            source="Parent acquisition: digital, social, content marketing")
+    s.years(31, [0, 0, 0, 0, 100000, 225000, 400000], fmt=GBP, prov=True)
 
-    tiers = [
-        ("Standard (institutional)", 360,  [0.60, 0.60, 0.60, 0.70, 0.70, 0.80, 0.80]),
-        ("Pro (institutional)",      600,  [0.40, 0.40, 0.40, 0.30, 0.30, 0.20, 0.20]),
-        ("(unused)",                 0,    [0.00] * N_YEARS),
-        ("(unused)",                 0,    [0.00] * N_YEARS),
-        ("(unused)",                 0,    [0.00] * N_YEARS),
-    ]
-    for i, (name, price, mix) in enumerate(tiers):
-        r = 26 + i
-        s.cell(r, 1, name, font=font_input)
-        s.cell(r, 2, price, font=font_input, fmt=GBP)
-        for j, m in enumerate(mix):
-            s.cell(r, 3 + j, m, font=font_input, fmt=PCT)
-
-    s.label(31, "Mix sum (validation — should = 100%)")
-    s.year_formulas(31, lambda col, i: f"=SUM({col}26:{col}30)", fmt=PCT)
-    s.label(32, "Blended ARPU (computed)", units="£/sub/yr", total=True)
-    s.year_formulas(32,
-        lambda col, i: f"=SUMPRODUCT($B$26:$B$30, {col}26:{col}30)",
-        fmt=GBP, total=True)
-    s.label(33, "Subscription attach rate", units="% of new units",
-            source="ch.9 §9.4: fraction of hardware buyers that become institutional subscribers; individuals do not subscribe")
-    s.scalar(33, 0.50, fmt=PCT)
+    s.label(32, "Subscription ARPU per headset", units="£/sub/yr", total=True,
+            source="= $B$27 (single-tier per-headset pricing)")
+    s.year_formulas(32, lambda col, i: f"=$B$27", fmt=GBP, total=True)
+    s.label(33, "Subscription attach (per institutional headset)",
+            units="% of inst. headsets",
+            source="100% by construction; DTC excluded in row 17 by using delayed_inst")
+    s.scalar(33, 1.0, fmt=PCT)
 
     # ---- Section 4: Other revenue lines ----
     s.section(34, "4. OTHER REVENUE LINES   (toggle on/off)")
@@ -357,9 +369,11 @@ def build_assumptions(wb):
             source="Applied to gross new subscription revenue")
     s.scalar(67, 0.15, fmt=PCT)
     s.label(68, "Sales commission £", units="£",
-            source="new units × adoption × attach rate × blended ARPU × commission %")
+            source="institutional buyers × headsets/inst × adoption × attach × ARPU × commission %")
     s.year_formulas(68,
-        lambda col, i: f"={delayed_units(col)} * {S_ADOPTION} * $B$33 * {col}32 * $B$67",
+        lambda col, i: (
+            f"={delayed_inst(col)} * $B$26 * {S_ADOPTION} * $B$33 * {col}32 * $B$67"
+        ),
         fmt=GBP)
     s.label(69, "Total people cost", units="£", total=True,
             source="= loaded payroll + sales commission")
@@ -370,9 +384,9 @@ def build_assumptions(wb):
     s.label(72, "R&D non-payroll", units="£",
             source="Prototyping components, dev tools, CAD/sim licences")
     s.years(72, [15000, 20000, 25000, 30000, 30000, 30000, 30000], fmt=GBP)
-    s.label(73, "Marketing", units="£",
-            source="Conferences, materials, digital, evidence-base publishing")
-    s.years(73, [5000, 10000, 40000, 100000, 180000, 260000, 340000], fmt=GBP)
+    s.label(73, "Marketing (derived)", units="£",
+            source="= institutional channel marketing + DTC channel marketing (rows 30 + 31)")
+    s.year_formulas(73, lambda col, i: f"={col}30 + {col}31", fmt=GBP)
     s.label(74, "Travel & subsistence", units="£")
     s.years(74, [8000, 12000, 25000, 40000, 55000, 70000, 85000], fmt=GBP)
     s.label(75, "Professional fees", units="£",
@@ -627,55 +641,74 @@ def build_unit_economics(wb):
     s.label(44, "Steady-state total LTV per customer", units="£/customer", total=True)
     s.year_formulas(44, lambda col, i: f"={col}11 + {col}31 + {col}43", fmt=GBP, total=True)
 
-    # ---- Section 7: CAC ----
-    s.section(46, "7. CUSTOMER ACQUISITION COST (CAC)")
-    s.label(47, "Marketing spend per year", units="£")
+    # ---- Section 7: CAC by channel ----
+    s.section(46, "7. CUSTOMER ACQUISITION COST  (by channel)")
+    s.label(47, "Institutional channel marketing", units="£/yr")
     for i, col in enumerate(YEAR_COLS):
-        s.cell(47, 3 + i, f"={A}{col}73", font=font_link, fmt=GBP)
-    s.label(48, "Sales commission per year", units="£")
+        s.cell(47, 3 + i, f"={A}{col}30", font=font_link, fmt=GBP)
+    s.label(48, "Sales commission (institutional only)", units="£/yr")
     for i, col in enumerate(YEAR_COLS):
         s.cell(48, 3 + i, f"={A}{col}68", font=font_link, fmt=GBP)
-    s.label(49, "Total acquisition spend", units="£")
+    s.label(49, "Institutional acquisition spend", units="£/yr")
     s.year_formulas(49, lambda col, i: f"={col}47 + {col}48", fmt=GBP)
-    s.label(50, "New units sold", units="units")
+    s.label(50, "Institutional buyers", units="buyers")
     for i, col in enumerate(YEAR_COLS):
-        s.cell(50, 3 + i, f"={A}{col}15", font=font_link, fmt=NUM)
-    s.label(51, "CAC per new customer", units="£/customer", total=True,
-            source="= total acquisition spend / new units")
+        s.cell(50, 3 + i, f"={A}{col}28", font=font_link, fmt=NUM)
+    s.label(51, "CAC per institutional customer", units="£/customer", total=True,
+            source="= institutional acquisition spend / institutional buyers")
     s.year_formulas(51, lambda col, i: f"=IFERROR({col}49/{col}50, 0)", fmt=GBP, total=True)
 
-    # ---- Section 8: LTV:CAC + payback ----
-    s.section(53, "8. LTV : CAC AND PAYBACK")
-    s.label(54, "LTV : CAC ratio  (3-year horizon)", units="ratio", total=True,
+    s.label(52, "DTC channel marketing", units="£/yr")
+    for i, col in enumerate(YEAR_COLS):
+        s.cell(52, 3 + i, f"={A}{col}31", font=font_link, fmt=GBP)
+    s.label(53, "DTC buyers", units="buyers")
+    for i, col in enumerate(YEAR_COLS):
+        s.cell(53, 3 + i, f"={A}{col}29", font=font_link, fmt=NUM)
+    s.label(54, "CAC per DTC customer", units="£/customer", total=True,
+            source="= DTC marketing / DTC buyers (no commission on DTC)")
+    s.year_formulas(54, lambda col, i: f"=IFERROR({col}52/{col}53, 0)", fmt=GBP, total=True)
+
+    # ---- Section 8: LTV per customer & LTV:CAC by channel ----
+    s.section(56, "8. LTV PER CUSTOMER & LTV : CAC  (by channel)")
+    s.label(57, "3-year LTV per institutional customer", units="£/customer", total=True,
+            source="= 3 headsets × (HW contribution + 3-yr sub LTV per headset)")
+    s.year_formulas(57,
+        lambda col, i: f"={A}$B$26 * ({col}11 + {col}41)",
+        fmt=GBP, total=True)
+    s.label(58, "LTV per DTC customer (one-off)", units="£/customer", total=True,
+            source="= hardware contribution per headset (no subscription)")
+    s.year_formulas(58, lambda col, i: f"={col}11", fmt=GBP, total=True)
+    s.label(59, "LTV : CAC ratio  (institutional, 3-year)", units="ratio", total=True,
             source="Industry benchmark > 3.0x")
-    s.year_formulas(54,
-        lambda col, i: f"=IFERROR({col}42/{col}51, 0)",
+    s.year_formulas(59,
+        lambda col, i: f"=IFERROR({col}57/{col}51, 0)",
         fmt='0.0"x";(0.0"x");"-"', total=True)
-    s.label(55, "LTV : CAC ratio  (steady state)", units="ratio")
-    s.year_formulas(55,
-        lambda col, i: f"=IFERROR({col}44/{col}51, 0)",
-        fmt='0.0"x";(0.0"x");"-"')
-    s.label(56, "Payback period", units="months",
-            source="= CAC × 12 / annual contribution per customer")
-    s.year_formulas(56,
-        lambda col, i: f"=IFERROR({col}51*12/{col}35, 0)",
+    s.label(60, "LTV : CAC ratio  (DTC)", units="ratio", total=True,
+            source="DTC must clear 1.0x to be self-funding at acquisition")
+    s.year_formulas(60,
+        lambda col, i: f"=IFERROR({col}58/{col}54, 0)",
+        fmt='0.0"x";(0.0"x");"-"', total=True)
+    s.label(61, "Payback period (institutional)", units="months",
+            source="= CAC × 12 / annual contribution per institutional customer (3 headsets)")
+    s.year_formulas(61,
+        lambda col, i: f"=IFERROR({col}51*12/({A}$B$26 * {col}35), 0)",
         fmt='0.0;(0.0);"-"')
 
-    # ---- Section 9: Steady-state summary panel (Y7 reference, post-breakeven) ----
-    s.section(58, "9. STEADY-STATE SUMMARY  (Y7 reference, post-breakeven)")
+    # ---- Section 9: Steady-state summary panel (Y7 reference) ----
+    s.section(63, "9. STEADY-STATE SUMMARY  (Y7 reference)")
     panel = [
-        ("Hardware contribution per unit",                "K11", GBP),
-        ("Subscription contribution per customer per yr", "K17", GBP),
-        ("Annual contribution per active customer",       "K35", GBP),
-        ("3-year total LTV per customer",                 "K42", GBP),
-        ("Steady-state LTV per customer",                 "K44", GBP),
-        ("CAC per new customer",                          "K51", GBP),
-        ("LTV : CAC ratio  (3-year)",                     "K54", '0.0"x";(0.0"x");"-"'),
-        ("LTV : CAC ratio  (steady state)",               "K55", '0.0"x";(0.0"x");"-"'),
-        ("Payback period (months)",                       "K56", '0.0;(0.0);"-"'),
+        ("Hardware contribution per headset",             "K11", GBP),
+        ("Subscription contribution per headset/yr",      "K17", GBP),
+        ("3-year LTV per institutional customer",         "K57", GBP),
+        ("LTV per DTC customer (hardware only)",          "K58", GBP),
+        ("CAC per institutional customer",                "K51", GBP),
+        ("CAC per DTC customer",                          "K54", GBP),
+        ("LTV : CAC  (institutional, 3-year)",            "K59", '0.0"x";(0.0"x");"-"'),
+        ("LTV : CAC  (DTC)",                              "K60", '0.0"x";(0.0"x");"-"'),
+        ("Payback period (institutional, months)",        "K61", '0.0;(0.0);"-"'),
     ]
     for i, (lbl, ref, fmt) in enumerate(panel):
-        r = 59 + i
+        r = 64 + i
         s.cell(r, 1, lbl, font=font_subheader, fill=fill_subsection)
         s.cell(r, 2, f"={ref}", font=font_link, fmt=fmt, fill=fill_subsection)
         for col in range(3, LAST_COL + 1):

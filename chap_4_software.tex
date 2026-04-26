@@ -18,7 +18,7 @@ To ensure that users can easily operate this system, a phone app controls the he
     \label{fig:app-design}
 \end{figure}
 
-\section{On-Device Inference: LiteRT (formerly TensorFlow Lite) Runtime}
+\section{On-Device Inference: LiteRT (formerly TensorFlow Lite) Runtime}\label{sec:litert}
 
 We decided on using LiteRT for the inference engine. A runtime shapes the system's latency, memory footprint, energy consumption, and operational reliability. Simultaneously running with the model are the stimulus display, IMU polling loop, Bluetooth communication, and the cameras. These system conditions paired with the fact that the models run entirely on the Pi~5 show that it is extremely important that an appropriate runtime is selected around our design choices and system philosophy.
 
@@ -239,7 +239,7 @@ Four requirements shape the pipeline, derived from the clinical target (\Cref{ch
     \item \textbf{Real-time inference.} Per-frame compute light enough to run in real time on a Raspberry~Pi~5 (runtime selected in \Cref{sec:litert}).
 \end{itemize}
 
-\paragraph{Contributions.} These sections establish which parts of the eye-tracking literature transfer under our constraints. Inside \Cref{sec:biomarker-extraction} we additionally apply two techniques from adjacent fields that, to our knowledge, are not used in \ab{mtbi} pupillometry; neither is methodologically new. A \emph{probability-weighted ellipse fit} replaces the argmax-then-fit pipeline standard in pupil tracking~\cite{yiu2019deepvog, chaudhary2019ritnet, kothari2021ellseg} with a weighted least-squares conic fit, using softmax pupil-class probabilities as per-pixel weights. Weighted ellipse fitting is itself standard in computer vision~\cite{kanatani2016ellipse} and \citet{yiu2019deepvog} already exploit segmentation confidence at the per-frame level. A \emph{parametric \ab{plr} fit} replaces the derivative-based extraction used uniformly in \ab{mtbi} pupillometry~\cite{bergamin2003pupil, mariakakis2017pupilscreen, master2020pupillary} with a closed-form fit to the post-stimulus waveform. Parametric \ab{plr} fitting is itself established in basic and cognitive pupillometry for noise regularisation~\cite{korn2016solid, mcanany2018iphone, pupilmetrics2024}.
+\paragraph{Contributions.} These sections establish which parts of the eye-tracking literature transfer under this project's constraints. Inside \Cref{sec:biomarker-extraction}, this work additionally applies two techniques from adjacent fields that, to the authors' knowledge, are not used in \ab{mtbi} pupillometry; neither is methodologically new. A \emph{probability-weighted ellipse fit} replaces the argmax-then-fit pipeline standard in pupil tracking~\cite{yiu2019deepvog, chaudhary2019ritnet, kothari2021ellseg} with a weighted least-squares conic fit, using softmax pupil-class probabilities as per-pixel weights. Weighted ellipse fitting is itself standard in computer vision~\cite{kanatani2016ellipse} and \citet{yiu2019deepvog} already exploit segmentation confidence at the per-frame level. A \emph{parametric \ab{plr} fit} replaces the derivative-based extraction used uniformly in \ab{mtbi} pupillometry~\cite{bergamin2003pupil, mariakakis2017pupilscreen, master2020pupillary} with a closed-form fit to the post-stimulus waveform. Parametric \ab{plr} fitting is itself established in basic and cognitive pupillometry for noise regularisation~\cite{korn2016solid, mcanany2018iphone, pupilmetrics2024}.
 
 
 \subsection{Pipeline Design}
@@ -259,7 +259,7 @@ This work adopts segmentation. On \textbf{precision}, published comparisons show
 \subsection{Model Configuration}
 \label{sec:configuration}
 
-Three choices configure the segmentation pipeline: backbone, loss, and preprocessing. Each choice is evidenced by ablation on OpenEDS~\cite{garbin2019openeds} (12,759 images, 152 subjects). Every configuration is trained for 50 epochs on an NVIDIA RTX A4000 with Adam ($\eta = 10^{-3}$) and ReduceLROnPlateau scheduling. Compute constraints limited us to 3 seeds on two reference configurations and single seeds elsewhere; the measured $\pm$0.03\,px seed-to-seed variance sets the uncertainty floor for comparing single-seed runs. We report pupil IoU for comparability with prior work but select on \emph{axis error}, since IoU saturates on the bulk of interior pixels whereas axis error reflects the pupil--iris boundary precision that determines downstream ellipse-fit quality.
+Three choices configure the segmentation pipeline: backbone, loss, and preprocessing. Each choice is evidenced by ablation on OpenEDS~\cite{garbin2019openeds} (12,759 images, 152 subjects). Every configuration is trained for 50 epochs on an NVIDIA RTX A4000 with Adam ($\eta = 10^{-3}$) and ReduceLROnPlateau scheduling. Compute constraints limited training to 3 seeds on two reference configurations and single seeds elsewhere; the measured $\pm$0.03\,px seed-to-seed variance sets the uncertainty floor for comparing single-seed runs. Pupil IoU is reported for comparability with prior work, but model selection uses \emph{axis error}, since IoU saturates on the bulk of interior pixels whereas axis error reflects the pupil--iris boundary precision that determines downstream ellipse-fit quality.
 
 \begin{table}[htbp]
 \centering
@@ -281,9 +281,9 @@ U-Net$^\dagger$  & CE    & Yes & 98.93 $\pm$ 0.10 & 0.13 $\pm$ 0.02 & 29.6 & 130
 
 \paragraph{Preprocessing: contrast enhancement.} Gamma correction ($\gamma = 0.8$) and CLAHE (clip limit 1.5, tile grid $8 \times 8$) compensate for the low iris--pupil contrast of raw eye images. Removing them triples axis error (0.10 to 0.32\,px), making preprocessing the most load-bearing choice ablated here.
 
-\paragraph{Backbone: RITnet.} U-Net matches RITnet on axis error (0.13 vs 0.09\,px, within seed variance) at 28$\times$ the model size (29.6 vs 1.07\,MB). We pick RITnet for its efficiency.
+\paragraph{Backbone: RITnet.} U-Net matches RITnet on axis error (0.13 vs 0.09\,px, within seed variance) at 28$\times$ the model size (29.6 vs 1.07\,MB). RITnet is selected for its efficiency.
 
-\paragraph{Loss: compound RITnet loss.} CE, Dice, CE + Dice, and the compound RITnet loss are indistinguishable within seed variance. We adopt the compound loss from the original RITnet paper~\cite{chaudhary2019ritnet} for consistency with the backbone's published configuration.
+\paragraph{Loss: compound RITnet loss.} CE, Dice, CE + Dice, and the compound RITnet loss are indistinguishable within seed variance. The compound loss from the original RITnet paper~\cite{chaudhary2019ritnet} is adopted for consistency with the backbone's published configuration.
 
 \paragraph{Scope.} Hyperparameters (Adam $\eta = 10^{-3}$, ReduceLROnPlateau) were held fixed across backbones rather than tuned per architecture. Heavier backbones (DeepLab, SegFormer, nnU-Net) were not evaluated: at ${\sim}0.1$\,px axis error the precision floor is set by hand-annotated pupil masks on OpenEDS, and added capacity would erode the 8.3\,ms Pi~5 real-time budget without compensating gain. With the OpenEDS configuration settled, the deployment bottleneck shifts to the domain gap between OpenEDS and headset data (\Cref{sec:domain-transfer}).
 
@@ -336,7 +336,7 @@ Standard augmentation            & 6.53$^*$ \\
 
 \paragraph{Experimental design.} Without prototype pixel masks the IoU and axis-error metrics from \Cref{sec:configuration} are unavailable; \textbf{centre error} is reported on a held-out set of prototype frames, with the 1.12\,px from regression-style pupillometry on OpenEDS~\cite{kothari2021ellseg} as the anchor (subject to the resolution caveat noted in \Cref{sec:pipeline}). Standard augmentation alone (geometric flips and small rotations; photometric brightness, contrast, and Gaussian-noise jitter) leaves the prototype gap largely intact. This work adds three domain-specific transforms, each targeting one visible gap in \Cref{fig:domain-gap}: sclera-region brightening (illumination balance), resolution downsampling to 112$\times$112 (effective resolution), and Gaussian blur (beamsplitter defocus). A leave-one-in ablation isolates each transform's contribution.
 
-\paragraph{Interpreting the result.} The 7.9 and 6.5\,px baselines are dominated by a ${\sim}10\%$ subset of frames in which the model misclassifies image-corner artefacts as sclera, the ellipse fit lands on the corner, and centre error spikes. This is a discrete failure mode, not a noisy estimate. Excluding frames with error >10\,px, augmentation still improves accuracy on surviving frames (baseline 1.5\,px $\to$ standard 1.2\,px), so the headline change combines a smaller accuracy improvement with a failure-mode rescue. The failure frames are retained in the average because a 10\% complete-failure rate is real failure rather than measurement noise; the key finding is that augmentation removes every observation of this failure mode.
+\paragraph{Interpreting the result.} The 7.9 and 6.5\,px baselines are dominated by a ${\sim}10\%$ subset of frames in which the model misclassifies image-corner artefacts as sclera, the ellipse fit lands on the corner, and centre error spikes. This is a discrete failure mode, not a noisy estimate. Excluding frames with error >10\,px, augmentation still improves accuracy on surviving frames (baseline 1.5\,px to standard 1.2\,px), so the headline change combines a smaller accuracy improvement with a failure-mode rescue. The failure frames are retained in the results because a 10\% complete-failure rate is real failure rather than measurement noise; the key finding is that augmentation removes every observation of this failure mode.
 
 The verified gap is therefore closed: 7.9\,px falls to 0.4\,px with all three transforms, below the 1.12\,px literature anchor. Sclera brightening drives the lift (6.5 $\to$ 0.5\,px); resolution downsampling and Gaussian blur contribute little individually (6.3, 6.6\,px) and marginally beyond sclera (0.5 $\to$ 0.4\,px). The transform list is tied to the prototype's gaps; the durable contribution is the methodology (inspect the gap, name the failure mode, design a targeted transform, ablate), which the production design will re-apply against its own gap profile.
 
@@ -345,7 +345,7 @@ The verified gap is therefore closed: 7.9\,px falls to 0.4\,px with all three tr
 \subsection{Biomarker Extraction}
 \label{sec:biomarker-extraction}
 
-From the segmentation mask we need clinical \ab{plr} biomarkers. This requires solving three problems in sequence: extracting a per-frame measurement, cleaning the time series of frame-level artefacts, and fitting biomarkers to the cleaned trajectory. We select against the constraints set out at the start of \Cref{sec:pupil-width}.
+Clinical \ab{plr} biomarkers must be derived from the segmentation mask. This requires solving three problems in sequence: extracting a per-frame measurement, cleaning the time series of frame-level artefacts, and fitting biomarkers to the cleaned trajectory. Each is selected against the constraints set out at the start of \Cref{sec:pupil-width}.
 
 \paragraph{Per-frame measurement.} A per-frame diameter measurement comparable across subjects is required from the segmentation mask. The dominant pupil-tracking pipeline~\cite{yiu2019deepvog, chaudhary2019ritnet, kothari2021ellseg} argmaxes the soft mask to binary and fits an ellipse via direct algebraic least squares~\cite{fitzgibbon1999direct}, discarding per-pixel probabilities. \citet{jia2024condseg} integrate a soft-mask ellipse parameterisation into training, which is more powerful but requires retraining whenever the segmentation model changes.
 
@@ -367,7 +367,7 @@ where $d_0$ is baseline diameter, $A$ is constriction amplitude, $t_{\mathrm{ons
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{plr_combined}
-    \caption{Parametric \ab{plr} fit and noise robustness. (a)~Parametric model (red, $R^2 = 0.965$) fitted to a synthetic \ab{plr} waveform with $\sigma = 0.2$\,mm noise; biomarkers are read analytically from fitted parameters of \Cref{eq:plr-model}. (b)~Parameter recovery vs noise level over 100 synthetic trials per condition: relative errors in amplitude, latency, recovery $\tau$, and the fit residual $1 - R^2$.}
+    \caption{Parametric \ab{plr} fit and noise robustness. (a)~Parametric model (red, $R^2 = 0.965$) fitted to a synthetic \ab{plr} waveform with $\sigma = 0.2$\,mm noise; biomarkers are read analytically from fitted parameters of \Cref{eq:plr-model}. (b)~Parameter recovery over 100 synthetic trials per noise level: ground-truth-normalised mean absolute errors in amplitude, latency, and recovery $\tau$, with $1 - R^2$ on the same axis as a fit-quality reference (all dimensionless; lower is better).}
     \label{fig:plr-validation}
 \end{figure}
 
