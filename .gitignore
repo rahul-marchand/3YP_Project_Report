@@ -369,4 +369,5 @@ TSWLatexianTemp*
 
 # AI tools
 CLAUDE.md
+.claude/
 

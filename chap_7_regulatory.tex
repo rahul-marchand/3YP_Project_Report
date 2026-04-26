@@ -3,43 +3,51 @@
 
 % Owner: Eesh
 
-This chapter examines the regulatory environment for a headset-based \ab{mtbi} screening device, covering product classification, approval pathways, claims language, and data privacy obligations.
+This chapter examines the regulatory environment for the headset-based \ab{mtbi} screening device, covering product classification, geographic entry pathway selection, claims language, and data privacy obligations. Unlike conventional B2B or B2C technology products, MedTech products require significant emphasis on regulatory constraints due to the intricacy and global complexity of approval processes~\cite{frontiers2024medtechregulation}. These constraints arise in two stages: (i) ethics approvals and health-data governance during data collection and device development, and (ii) intended-use claims, conformity assessments and clinical evidence requirements during commercialisation~\cite{hra_medical_devices,gov_uk_software_apps}. This chapter aims to optimise the product's survival probability by selecting jurisdictions which minimise regulatory friction and align with the chosen GTM strategy in \Cref{chapter:ent-gtm}.
 
 
 \section{Product Classification}
 \label{sec:ent-classification}
 
-\todo{Eesh: Define the likely regulatory positioning:
+The intended purpose of the device must be defined explicitly, as the regulatory pathway changes significantly depending on its product classification~\cite{gov_uk_samd}. Three positionings are available, each with different burden/claim trade-offs:
 \begin{itemize}
-    \item Wellness tool (lowest burden, but limits claims)
-    \item Decision-support tool (moderate burden)
-    \item Class IIa medical device (if screening claims are made)
+    \item \textbf{Wellness tool} -- lowest regulatory burden, but limits the claims that can be made about clinical utility and excludes use within the workflow of medical professionals.
+    \item \textbf{Decision-support / screening aid} -- moderate burden, permitting the device to support but not replace clinical decision-making.
+    \item \textbf{Class IIa medical device} -- highest burden where formal screening or diagnostic claims are made.
 \end{itemize}
-The classification affects everything downstream. Discuss the trade-offs.}
+The headset-based \ab{mtbi} detection product is positioned as a \emph{supporting assessment / screening aid} rather than a \emph{concussion diagnosis device}. This deliberately reduces the regulatory burden during commercialisation, while preserving the clinical credibility that distinguishes the product from a pure consumer wellness device. The implications of this choice for the language used in marketing and product documentation are discussed further in \Cref{sec:ent-claims}.
 
 
-\section{UK Regulatory Pathway}
+\section{Phase 1 Jurisdiction: UK}
 \label{sec:ent-regulatory-uk}
 
-\todo{Examine the \ab{mhra} pathway:
-\begin{itemize}
-    \item \ab{ukca} marking requirements for medical devices
-    \item \ab{samd} considerations --- the inference model and decision logic may independently qualify as SaMD
-    \item Evidence requirements for screening/decision-support claims
-    \item Quality management system requirements (ISO 13485)
-    \item Clinical evaluation report requirements
-\end{itemize}}
+The UK was selected as the ideal location for Phase 1 of the GTM strategy. Australia, Singapore, the US, and Denmark were also considered, but the UK was chosen for two main reasons. First, the UK has established research governance structures for data collection from \ab{nhs}-affiliated concussion clinics and educational institutions. Second, this choice is operationally realistic for an Oxford-based team with warm access to local research and clinical networks. Although the UK is not the lowest-friction market from an administrative standpoint, it offers the greatest strategic alignment for Phase 1.
+
+\subsection{NHS Research Approval Pathway}
+
+The route by which data can be collected from concussion clinics is the NHS Research Approval Pathway. Our study should be framed as a \emph{formally governed medical-device research study} rather than a \emph{prototype test} in order to support later commercialisation. The Health Research Authority (HRA) states that ethical approval is required for a clinical investigation undertaken by a commercial company to demonstrate the safety and performance of a non-UKCA/CE marked medical device~\cite{hra_medical_devices}. To achieve approval from the Research Ethics Committee (REC), our study must be submitted through the Integrated Research Application System (IRAS). The REC will then evaluate the study on patient involvement, scientific and social value, and confidentiality before allowing it to start. This process allows NeuroScreen to demonstrate its ethics-oriented approach throughout product iteration.
+
+As the parallel data collection from a university sports facility supports the same device investigation, the HRA requires a non-NHS/HSC Site Assessment Form to be provided within the IRAS application~\cite{hra_uk_governance}. This allows the suitability of the non-NHS site to be evaluated by the same REC, which is advantageous for Phase 1: both data-collection venues are assessed and approved through a single regulatory pathway, reducing the administrative cost associated with the process.
+
+\subsection{Data Protection in Phase 1}
+
+Phase 1 places a substantial emphasis on data protection. The collected dataset will contain raw eye video, derived physiological features and baseline information for each user. The Information Commissioner's Office (ICO), which upholds the General Data Protection Regulation (GDPR) in the UK, classifies such health data as \emph{Special Category Data}~\cite{ico_special_category}. This requires submission of a Data Protection Impact Assessment (DPIA) demonstrating a lawful basis for processing under Article 6(1)(e), which permits processing necessary in the public interest~\cite{gdpr_art6}, and Article 9(2)(j), which permits processing for scientific research purposes~\cite{gdpr_art9}. These obligations align with NeuroScreen's emphasis on strict data-collection pipelines, enabling transparency around data retention timelines, access controls and remote storage processes.
+
+Adhering to this rigorous data-collection pathway allows NeuroScreen to generate a clinically credible and internationally reusable evidence package. This reduces the adoption risk associated with Phase 2 by cultivating credibility amongst professional clubs and medical professionals, and supports Phase 3, where the device is offered to non-medical end users (parents) who demand higher reliability assurances.
 
 
-\section{European and International Considerations}
-\label{sec:ent-regulatory-intl}
+\section{Phase 2 Jurisdiction: EU}
+\label{sec:ent-regulatory-eu}
 
-\todo{Briefly address:
-\begin{itemize}
-    \item CE marking under EU MDR if European market is targeted
-    \item FDA 510(k) or De Novo pathway if US market is targeted
-    \item Whether regulatory reciprocity or mutual recognition agreements apply
-\end{itemize}}
+The EU was chosen for Phase 2. While the UK and Australia are attractive markets for early traction, the EU offers the most scalable first commercial launch due to access to multiple member states through a single regulatory pathway. This aligns with the company's accessibility goals while operating as a lean startup, reducing the per-market regulatory cost of commercialisation.
+
+\subsection{CE Marking and Classification}
+
+To sell the device in the 32 member states of the EU, a Conformit\'{e} Europ\'{e}enne (CE) Mark is required. The first step of the commercialisation pathway is submitting an intended-use statement to the Medical Device Coordination Group (MDCG). EU guidance on medical-device classification states that the intended use of a device is decisive in its classification and qualification~\cite{eu_mdcg_classification}. Rule 11 within the MDR framework classifies \emph{software intended to provide information used to take decisions with diagnostic or therapeutic purposes} as a Class IIa device~\cite{eu_mdcg_classification}. CE-mark approval for a Class IIa device typically takes between 6--9 months~\cite{medenvoy_ce_timeline}. To maximise NeuroScreen's survival chances, the headset's intended-use statement will state that it \emph{supports \ab{mtbi} assessments} rather than diagnosing them, minimising both the approval timeline and the downstream evidence burden (consistent with \Cref{sec:ent-claims}).
+
+\subsection{Conformity Assessment}
+
+Following classification, a conformity assessment is required. A limitation of the EU route is that the pathway requires more than a functioning prototype: the European Commission requires manufacturers to maintain a quality management system and risk management system as set out in Article 9 of the MDR, alongside a clinical evaluation and post-market clinical follow-up~\cite{eu_md_manufacturers}. Although these requirements are demanding, they force NeuroScreen to build robust internal structures at seed stage, future-proofing the business while simultaneously meeting regulatory needs. Detailed quality control, risk assessment, and lifecycle and environmental impact assessment workflows would be developed as part of the Phase 2 entry plan.
 
 
 \section{Claims Language}
@@ -53,18 +61,6 @@ The classification affects everything downstream. Discuss the trade-offs.}
     \item ``Diagnoses concussion'' --- not permissible without full clinical trial evidence and Class IIa/IIb clearance
 \end{itemize}
 Recommend claims language for each phase of the roadmap in \Cref{sec:ent-mvp}.}
-
-
-\section{Data Privacy and Compliance}
-\label{sec:ent-privacy}
-
-\todo{Address:
-\begin{itemize}
-    \item UK GDPR implications for biometric/health data collection
-    \item Special considerations for data from minors in youth sport
-    \item On-device vs cloud processing implications for data protection
-    \item Consent mechanisms in the companion app
-\end{itemize}}
 
 
 \section{Prototype vs Commercial Device}
