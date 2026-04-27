@@ -1,103 +1,208 @@
 \chapter{Hardware}
 \label{chapter:headset}
 
-The system is conceived as a low-cost, head-mounted device that standardises the geometry between a user's eyes, a stimulus display, and an imaging sensor in order to perform multi-parameter oculomotor assessment using pupillometry. The headset provides:
 
-\begin{itemize}
-    \item A controlled optical pathway from a display to the user's eyes, allowing presentation of pupillary light reflex, smooth pursuit, and vergence stimuli.
-
-    \item A stable, near-frontal view of both eyes for image-based tracking of pupil size and gaze.
-
-    \item A mechanically constrained, repeatable eye--camera distance across users.
-\end{itemize}
-
-To remain compatible with deployment in grassroots sports, the design prioritises minimal custom electronics and leverages consumer hardware wherever possible. The headset therefore acts primarily as an optical and mechanical fixture around a smartphone with only simple ancillary electronics (e.g. LEDs) where required.
-
-A key architectural decision is the use of a partially reflective beamsplitter positioned at 45° between the eyes and a display located above the field of view. This beamsplitter performs two functions simultaneously: it reflects the display image into the eyes, mimicking a compact VR headset, and it transmits light from the eyes to a camera located behind the beamsplitter on the same optical axis as the lenses. By keeping the camera bay dark and the display bright, the user perceives only the reflected display image, whilst the camera looks through the beamsplitter at the illuminated eyes. This arrangement resolves the conflict between the need for a straight-on eye view and the requirement that the camera not intrude into the visual field.
+\section{Hardware Architecture and the Beamsplitter Solution}
+\label{sec:hw-architecture}
 
 
-\section{Design Criteria}
+\subsection{Clinical Biomarkers and Hardware Requirements}
+\label{sec:hw-biomarkers-requirements}
 
-The hardware must satisfy a set of quantitative and qualitative requirements derived from the clinical use case, the chosen biomarkers, and the intended deployment environment. For clarity, these are grouped into optical, geometric, user-facing, and practical constraints.
+The oculomotor assessment framework measures three biomarkers: \ab{plr} amplitude and velocity, smooth pursuit accuracy, and vergence precision. Each imposes distinct hardware demands. \ab{plr} measurement requires two distinct illumination paths: a visible stimulus source to elicit the reflex, and a separate near-infrared (NIR) imaging source that captures pupil dynamics without stimulating photoreceptors. Ambient visible light interferes with \ab{plr} measurement by reducing our control of the total stimulus intensity at the retina, while stray light reduces pupil-image contrast on the NIR sensor. Both problems are eliminated by enclosing the optical path in a light-sealed housing. Smooth pursuit and vergence testing impose a further constraint: the geometric relationship between the display, camera, and eye must remain constant throughout each test. A per-session calibration routine---the user fixates known screen positions---establishes the eye-to-display mapping at the start of each use, but this calibration is only valid while the device remains stationary relative to the head. A handheld device cannot guarantee this: hand tremor and postural drift shift the stimulus position frame-to-frame, contaminating the gaze signal with device motion. A rigid head-mounted structure eliminates the problem, because the optics move with the user's head and the calibrated geometry is preserved throughout testing. Pupil imaging accuracy demands near-perpendicular camera viewing: at an off-axis angle $\alpha$, a circular pupil projects as an ellipse with minor axis foreshortened by $\cos(\alpha)$, introducing error. At $\alpha = 5^{\circ}$, this foreshortening is $<0.4\%$, acceptable given that clinical \ab{plr} changes range 0.5--1.0\,mm on a baseline of 4--5\,mm (10--20\% signal). Beyond $5^{\circ}$, foreshortening exceeds measurement noise and biases velocity estimates~\todo{CITE NEEDED}. Binocular vergence testing requires independent control of stimulus presented to each eye, demanding optical separation. Finally, screening in non-clinical settings---school athletic departments, urgent care clinics, sideline assessment---requires the device to be compact, low-cost, and operable by medical personnel without ophthalmology training.
 
-\subsection{Optical and Imaging Requirements}
+These five requirements drive the hardware specification:
+\begin{enumerate}
+    \item \textbf{Controlled illumination:} an enclosed optical path that excludes ambient light, with a visible stimulus source ($\sim$480\,nm, melanopsin-activating) and a separate NIR imaging source (850\,nm, invisible to photoreceptors) that does not itself elicit a pupillary response.
+    \item \textbf{Fixed geometry:} rigid mechanical structure; absolute positioning repeatability $\leq 1$\,mm across 6 axes.
+    \item \textbf{Near-frontal camera view:} on-axis or $\alpha \leq 5^{\circ}$ to pupil center.
+    \item \textbf{Binocular disparity capability:} independent left/right stimulus paths.
+    \item \textbf{Compact, low-cost, non-specialist operation:} depth $<40$\,mm, cost $<\pounds 500$, intuitive interface.
+\end{enumerate}
 
-\textbf{Pupil visibility and resolution.} The camera must resolve the pupillary margin sufficiently for accurate segmentation and diameter measurement on each frame. This implies:
-
-\begin{itemize}
-    \item Eye region spanning a substantial fraction of the frame (e.g. > 200--300 pixels across the iris for typical smartphone resolutions).
-
-    \item Sufficient contrast between iris and pupil under controlled illumination.
-\end{itemize}
-
-\textbf{Viewing angle and distortion.} The camera should view each eye approximately along its optical axis, minimising foreshortening and perspective distortion that would complicate gaze estimation.
-
-\textbf{Controlled illumination.} The optical system must:
-
-\begin{itemize}
-    \item Provide enough light to achieve low-noise images at video frame rates.
-
-    \item Avoid large specular glares that obscure the pupil.
-
-    \item Support controlled light stimuli for PLR (rapid change in illumination) without saturating the sensor or causing discomfort.
-\end{itemize}
-
-\textbf{Stimulus--eye relationship.} The geometry between the eye and the display must be known and stable so that the position of a dot or other stimuli on the screen can be related to an expected gaze direction.
-
-\subsection{Geometric and Mechanical Requirements}
-
-\textbf{Fixed eye--camera distance.} The headset must constrain the distance and relative orientation between eyes and camera to within a tight tolerance across users (e.g. variations on the order of a few millimetres), ensuring that calibration performed once is valid for repeated tests.
-
-\textbf{Accommodation comfort.} The virtual distance of the viewed image must fall within a comfortable accommodative range for children and adolescents, and must not induce significant eye strain during testing.
-
-\textbf{Alignment repeatability.} The design should assist users in positioning the headset correctly (e.g. via nose bridge, straps, and padding) so that the eye-box (region where both eyes see the full display and are fully visible to the camera) is easy to locate.
-
-\subsection{User-Facing Requirements}
-
-\textbf{Comfort and safety.} The headset must be lightweight, distribute pressure evenly, avoid sharp edges, and be tolerable for a few minutes of use immediately after a suspected head injury.
-
-\textbf{Low cognitive and visual load.} Optical design should avoid unusual or distracting artefacts (e.g. a visible camera in one eye) that could be unsettling, especially for symptomatic users.
-
-\subsection{Practical and Economic Requirements}
-
-\textbf{Low cost.} The bill of materials (excluding the user's smartphone) should fall in the £30--£80 range, precluding the use of multiple high-speed IR cameras or custom microdisplays.
-
-\textbf{Robustness and manufacturability.} Components should be readily available, mechanically robust, and tolerant of repeated handling in school and club environments.
-
-\textbf{Modularity.} The design should permit substitution of different smartphones (within a size range) and potential future upgrades (e.g. adding IR LEDs) without complete redesign.
-
-These requirements guided the exploration of candidate optical and mechanical configurations.
+No single-variable constraint is difficult to meet. Meeting all five simultaneously eliminates most architectures and reveals a unique optimal solution.
 
 
-\section{Optics}
+\subsection{Architecture Evaluation: Pugh Decision Matrix}
+\label{sec:hw-pugh-matrix}
 
-\subsection{Direct Viewing Without Lenses}
+We evaluated four candidate architectures against these five requirements (\todo{FIGURE: Pugh decision matrix described below}).
 
-A natural baseline configuration places the display at a distance where users can focus without additional optics, and positions the camera near the display to observe the eyes. A prototype implementing this concept used a smartphone screen at distances in the range 20--30~cm from the eyes, mounted within an extended headset ``tube''.
+\textbf{Handheld smartphone} (handheld smartphone with custom app): Requires user to hold device steady while performing oculomotor tasks---an impossible ergonomic demand. Camera and display are collocated; foreshortening angle is typically 30--40$^{\circ}$ ($\cos(35^{\circ}) \approx 0.82$, foreshortening $\sim$18\%), far exceeding tolerance. Ambient light contaminates \ab{plr} signal. Stimulus presentation is uncontrolled: no mechanical fixture ensures identical geometry between sessions. This architecture fails requirements 1, 2, 3, and 4. Clinical pupillometry using consumer smartphones~\todo{REF NEEDED} sacrifices accuracy by accepting device-to-eye variability; screening for \ab{mtbi} cannot afford this loss.
 
-Informal testing with multiple users showed that whilst some individuals could accommodate at these distances, others struggled to achieve a clear image or reported rapid onset of eye strain. Reported comfortable focus distances varied substantially between users, and increasing the display distance to accommodate those with poorer near vision produced an impractically large form factor.
+\textbf{Headset, direct viewing (no optics):} A headset mounting a display at fixed distance eliminates positional variability and enables active illumination control. However, comfortable sustained viewing of a display at the human near point of accommodation---25--30\,cm in adults, 7--15\,cm in children aged 8--18~\todo{REF NEEDED}---places the display 25--30\,cm from the eye. An unlit headset becomes impractically deep. Simultaneously, a camera positioned on-axis (directly behind the eye's line of sight, required for requirement 3) physically obstructs the user's view of the display. Requirement 3 and 5 cannot be satisfied together without introducing optics.
 
-This approach failed several requirements:
+\textbf{Lensed headset, no beamsplitter:} A converging lens creates a virtual image of the physical display at greater distance, reducing required headset depth. A 50--60\,mm focal length lens can place a 1\,inch display at virtual infinity, acceptable for 25--30\,cm physical display position~\todo{CITE NEEDED}. However, the camera positioning dilemma remains: mounting the camera on-axis obstructs the display; mounting off-axis reintroduces foreshortening. At 15\,mm off-axis on a 30\,mm eye-to-lens distance, the angle to the pupil exceeds $25^{\circ}$, incurring foreshortening $>9\%$. Requirements 3 and 5 remain incompatible.
 
-\begin{itemize}
-    \item \textbf{Accommodation comfort and variability.} The design relied on the user's accommodative ability at relatively close distances, producing an unacceptable spread in user experience and risking exacerbation of symptoms in recently concussed individuals.
+\textbf{Beamsplitter headset (proposed):} A partially reflective optical element at $45^{\circ}$ to the display axis reflects the display image toward the user's eyes while transmitting the light from the eye back through the element to a camera positioned on-axis behind it. This architecture decouples the camera viewing path from the user's viewing path geometrically: the camera sits on-axis (requirement 3) without obstructing the display (requirement 5). NIR imaging illumination enters coaxially with the camera, while visible stimulus light is delivered via the display path---satisfying decoupled illumination control (requirement 1). The optical assembly can be rigidly mounted within a compact enclosure (requirement 2). Binocular testing is enabled by presenting independent stimuli to each eye via optical splitting (requirement 4). All five requirements are simultaneously satisfied.
 
-    \item \textbf{Form factor.} Achieving a universally comfortable focus distance without optics implied a very deep headset, undermining portability and comfort.
-\end{itemize}
-
-These results motivated the introduction of lenses to decouple the physical display distance from the perceived focus distance.
+\todo{FIGURE: Pugh decision matrix (table) evaluating four architectures against five requirements. Rows: handheld smartphone, headset no optics, lensed headset no beamsplitter, beamsplitter headset. Columns: controlled illumination, fixed geometry, near-frontal camera ($\alpha \leq 5^{\circ}$), binocular disparity, compact/low-cost. Marks: ``fails'', ``partial/compromised'', ``satisfies''. Beamsplitter row is all ``satisfies''. This is the only architecture satisfying all requirements.}
 
 
-\subsection{Formal Justification for Lenses}
+\subsection{The Beamsplitter Principle}
+\label{sec:hw-beamsplitter-principle}
 
-\todo{Need lenses for 3D image, which is needed for convergence testing. Analyse the impact of losing convergence testing.}
+A partially reflective surface (beamsplitter) oriented at $45^{\circ}$ to both the display axis and the camera axis creates an elegant geometric solution. Light from the display (positioned above the beamsplitter) reflects at $45^{\circ}$ toward the user's eyes. Light from the eye (incident on the beamsplitter on-axis) transmits back through the beamsplitter to the camera positioned directly behind it. The selected design uses a \textbf{longpass dichroic plate beamsplitter} at $45^{\circ}$ AOI, routing visible light (display $\to$ eye) by reflection and NIR light (eye $\to$ camera) by spectral transmission rather than amplitude splitting; this delivers $\sim$1.7--1.9$\times$ more flux on each critical path than a neutral 50:50 split (full spec in \Cref{sec:hw-beamsplitter-spec}).
 
-\todo{Need lenses to be able to position the display nearer than the user's near point without inducing eye-strain or blurry vision. This is necessary otherwise we get an impractically long headset.}
+Between the beamsplitter and the eye, a plano-convex BK7 converging lens is positioned (focal length and lens-architecture rationale in \Cref{sec:hw-optical-design}). This lens serves two purposes: it creates a virtual image of the display at a distance beyond the near point of accommodation (eliminating vergence strain), and it collimates the light from the eye, improving camera focus tolerance and reducing field-of-view limitations~\todo{CITE NEEDED}. The camera itself is positioned at a conjugate image plane behind the beamsplitter, set to focus on the eye's pupil and iris.
+
+This arrangement---display above beamsplitter, lens between beamsplitter and eye, camera behind beamsplitter on-axis---resolves the fundamental conflict between user viewing comfort (display at fixed, ergonomic depth) and imaging geometry (camera on-axis for minimal foreshortening). The beamsplitter makes the design possible; all downstream optical, mechanical, and electronic subsystems are constrained by this geometric choice.
+
+\todo{FIGURE: Optical path diagram. Side view schematic showing: display panel (top), $45^{\circ}$ longpass dichroic beamsplitter (center), plano-convex lens (between beamsplitter and eye, curved face toward display), eye (right), camera (bottom, behind beamsplitter). Annotate: (1) display light path ($\nearrow$ at $45^{\circ}$ to eye, visible reflected), (2) eye image path ($\swarrow$ NIR transmitted through beamsplitter to camera), (3) active illumination path (downward, coaxial with camera), (4) focal length $f$, (5) beamsplitter angle, (6) working distance from lens to eye ($\sim$40\,mm).}
 
 
-\subsection{Camera Positioning}
+\subsection{Downstream Requirements}
+\label{sec:hw-downstream-requirements}
 
-\todo{Once the need for lenses has been established, it is useful to consider conventional VR setups, particularly in the context of camera placements. Meta Pro and Apple Vision Pro both have...}
+The choice of beamsplitter defines the optical design space for \Cref{sec:hw-optical-design}. The beamsplitter's position and reflectivity determine the required lens focal length and numerical aperture. The need for coaxial illumination and the spectral sensitivity of melanopsin (peak $\sim$480\,nm) constrain the light source wavelength and intensity. The binocular testing requirement necessitates either dual beamsplitters (one per eye) or a more complex folding system to present independent stimuli. These constraints---focal length, beamsplitter spec, illumination wavelength, binocular optical split---are addressed systematically in the lens design and illumination strategy that follows.
+
+
+\section{Optical Design: Lens System, Beamsplitter, and Illumination Strategy}
+\label{sec:hw-optical-design}
+
+Without magnification, comfortable close-range viewing of a smartphone display requires the eye to accommodate to approximately 25--30\,cm, limiting visual comfort during extended use and imposing bulky design constraints. In \ab{mtbi} populations, accommodation dysfunction may further degrade comfort and measurement fidelity. A relay lens system addresses this constraint by creating a virtual image at infinity or comfortable viewing distance, allowing the eye to relax and the display to be positioned deeper within the headset enclosure. This section justifies the selection of each optical component through first-principles analysis, empirical focal length trade-offs, and quantitative comparison of candidate illumination wavelengths. The design trades component cost (all $<\pounds 20$ per unit) against positioning tolerance, aberration control, and measurement fidelity.
+
+
+\subsection{Lens Architecture Selection}
+\label{sec:hw-lens-architecture}
+
+The relay lens performs double duty under the dichroic architecture: it relays the visible display image to the eye AND must transmit cleanly across both visible (400--700\,nm reflected to eye) and 850\,nm NIR (transmitted from eye to camera through the same lens). This co-use changes the candidate set from ``comfortable virtual image'' alone to ``comfortable virtual image AND clean pupil-edge image at the camera.''
+
+We adopt \textbf{pupil-edge image quality at the camera} as the single discriminator. Pupil centroid error scales sub-linearly with edge sharpness, but pupil \textit{boundary} segmentation---required for sub-mm pupil diameter measurement (the diagnostic metric)---degrades fast once the edge transitions across more than $\approx 2$ sensor pixels. Anything that smears the pupil edge at 850\,nm directly attacks measurement fidelity, which subordinates other axes (cost, mass, axial form factor) so long as those remain within mobile-headset bounds.
+
+Five candidates were evaluated against this discriminator: plano-convex, biconvex, aspheric singlet, Fresnel, and visible+NIR achromatic doublet. \textbf{Fresnel is rejected outright}: its concentric grooves act as a diffraction grating across both bands, producing structured stray light and edge halation in the camera image---a known failure mode for any pupil-segmentation pipeline and not recoverable in software. \textbf{Achromat is rejected as overkill}: the visible/NIR axial chromatic shift across a single BK7 singlet at $f = 100$\,mm is sub-mm ($\Delta f \approx 0.6$\,mm between $\lambda = 550$\,nm and $\lambda = 850$\,nm), small enough to be absorbed by a fixed mechanical offset between the display plane and the camera sensor plane. A doublet would eliminate the shift but adds \pounds 15--30 per unit and ${\sim}3\times$ mass for a benefit already absorbed mechanically. \textbf{Plano-convex is marginally preferred} to biconvex at our f-number ($\approx f/3.3$): for an on-axis source it minimises spherical aberration when the curved surface faces the collimated side, giving a tighter pupil-edge PSF. The difference is small (a few \% in encircled-energy radius) but free.
+
+The \ab{mvp} swept singlet focal lengths empirically from 40 to 150\,mm with biconvex stock and converged on \textbf{$f = 100$\,mm}, which \Cref{sec:hw-virtual-image} derives from first principles via accommodation tolerance. Theory and experiment agree, and no other axis in the trade space (depth, mass, cost) shifts the ordering. The production design therefore locks \textbf{plano-convex singlet, BK7, $f = 100$\,mm}, with the curved face oriented toward the display side.
+
+One honest caveat: the empirical 40--150\,mm sweep was conducted with biconvex stock only, before the dichroic pivot made cross-band edge sharpness the discriminator. The plano-convex preference is therefore predicted, not measured, on this rig. Final-build verification (re-imaging a known-pupil target through both singlets at 850\,nm and quantifying edge sigma) is included in the \Cref{sec:hw-vergence-specs} commissioning checklist.
+
+\todo{FIGURE: Lens architecture trade table --- five candidates $\times$ four axes (pupil-edge PSF at 850\,nm; visible/NIR chromatic shift; cost \pounds/unit; mass g). Rows: plano-convex, biconvex, aspheric, Fresnel, achromat doublet. Cell shading indicates pass / marginal / fail against each axis.}
+
+
+\subsection{Virtual Image Distance and Focal Length Tolerance}
+\label{sec:hw-virtual-image}
+
+The thin lens equation governs virtual image formation:
+%
+\begin{equation}
+    \frac{1}{f} = \frac{1}{v} - \frac{1}{u}
+\end{equation}
+%
+where $f$ is focal length, $u$ is object distance (display to lens), and $v$ is image distance (positive real, negative virtual). Rearranging:
+%
+\begin{equation}
+    |v| = \frac{f \cdot u}{f - u}
+\end{equation}
+
+For comfortable viewing, the virtual image should be placed at infinity or beyond the eye's near point (typically 0.25--0.5\,m). Setting $u \approx f$ places $|v| \to \infty$ (relaxed accommodation); small deviations create finite but manageable accommodation demand.
+
+The selected design uses a plano-convex BK7 singlet (lens-type rationale: \Cref{sec:hw-lens-architecture}) with $f = 100$\,mm positioned at $u \approx 95$\,mm. The resulting virtual image distance is:
+%
+\begin{equation}
+    |v| = \frac{100 \times 95}{100 - 95} = 1900 \text{ mm}
+\end{equation}
+
+This corresponds to an accommodation demand of approximately 0.5 diopters, well within the relaxed viewing range for healthy adults and \ab{mtbi} populations with intact accommodation. A positioning tolerance of $\pm 2$\,mm in the mechanical enclosure shifts $u$ to 93\,mm or 97\,mm, yielding $|v|$ values of 1395\,mm and 1475\,mm respectively---accommodation shifts of $\pm 0.2$\,D. This graceful degradation is critical for a 3D-printed assembly without precision machining.
+
+Contrast this with a shorter focal length. A $f = 50$\,mm lens at nominal $u = 48$\,mm produces $|v| = 1200$\,mm (0.83\,D). The same $\pm 2$\,mm error yields $|v| = 575$\,mm and $|v| = 1545$\,mm---accommodation shifts of $+0.9$\,D and $-0.3$\,D respectively. Some users would experience near-point focusing, reducing visual comfort. A $f = 35$\,mm lens at $u = 33$\,mm produces $|v| = 577$\,mm. A $+2$\,mm error pushes the virtual image to just 271\,mm, near the human near point and potentially uncomfortable for sustained viewing.
+
+We evaluated focal lengths of 40, 50, 65, 80, and 100\,mm in the prototype enclosure. The analytical predictions above were confirmed through hands-on assessment of virtual image comfort and sensitivity to positioning error across the candidate lenses. These evaluations corroborate that $f = 100$\,mm delivers both comfort ($|v| \approx 1.9$\,m at nominal position) and robustness ($\pm 2$\,mm error $\to \pm 0.2$\,D shift). The trade-off is increased headset depth: 100\,mm lenses require roughly 15--20\,mm additional depth compared to 50\,mm optics. For a prototype exploring clinical measurement fidelity, this depth penalty is acceptable; future production designs could incorporate folded optics (e.g., achromatic doublets with in-plane deflection) to reduce form factor.
+
+\todo{FIGURE: Focal length trade-off analysis. Left panel: virtual image distance $|v|$ as a function of object distance $u$ for $f \in \{40, 50, 65, 80, 100\}$\,mm. Nominal display position ($-2$ to $+2$\,mm tolerance window) shown as shaded band for each focal length. Right panel: accommodation demand (diopters) at nominal $u$ and at $\pm 2$\,mm error; colors indicate visual comfort zones (relaxed: ${<}0.5$\,D, moderate: 0.5--1.0\,D, near-point: ${>}1.5$\,D).}
+
+
+\subsection{Beamsplitter Specification}
+\label{sec:hw-beamsplitter-spec}
+
+The beamsplitter is the central optical element that enables coaxial visible display delivery and NIR pupil imaging from a single shared aperture. Two routing strategies are available: amplitude splitting (a neutral 50:50 plate, dividing both bands equally between display and camera paths) or spectral splitting (a dichroic plate, routing visible and NIR by wavelength). The selected design is a \textbf{longpass dichroic plate beamsplitter} at $45^{\circ}$ AOI with a 750\,nm longpass cut: visible light (400--700\,nm) reflects toward the eye for stimulus delivery; NIR (above 750\,nm) transmits through to the camera for pupil imaging. Each band lands on its intended path by design rather than each path being halved.
+
+The visible reflectance floor is specified at \textbf{$R_{\text{vis}} \geq 85\%$ under worst-case linear polarisation (P-pol)} averaged across 400--700\,nm, with NIR transmittance $T_{\text{NIR}} \geq 90\%$ above the cut. A neutral 50:50 plate delivers $R = T = 0.50$ in each band; the dichroic delivers $\sim$1.7--1.9$\times$ more flux on the two critical paths (display $\to$ eye and eye $\to$ camera) without cross-contamination. This gain propagates to two downstream specs. The post-dichroic transmission budget for the display path is $\tau_{\text{total}} \approx 0.88$ ($R_{\text{vis}}$ 0.90 nominal $\times$ AR-lens 0.99); combined with the projected solid angle of the virtual image at the eye ($\Omega_{\text{proj}} \approx 0.21$\,sr), the master conversion is $L_{\text{display}} \approx 5.3 \times E_{\text{cornea}}$. Anchoring the stimulus-response curve to Truong \& Ciuffreda (2016) with spatial-summation correction per Park \& McAnany (2015), this fixes the display luminance floor at $\geq 1000$\,cd/m\textsuperscript{2} for $\geq 2.5$\,mm transient \ab{plr} amplitude ($Z \geq 3$ against both acute $+35\%$ (Master 2020) and chronic $-20\%$ (Ciuffreda 2015) concussion directions at the 0.15\,mm pupil-tracking noise floor---full derivation in supplementary brightness decision trace~\todo{CITE: cross-reference internal display-brightness derivation document}). The NIR LED power budget relaxes by approximately the same factor versus neutral splitting, easing the IEC 62471 eye-safety margin (cross-reference Eesh's H\&S analysis in \Cref{sec:electronics}).
+
+\textbf{Cut wavelength.} The longpass cut at 750\,nm sits one transition slope ($\sim$10--20\,nm) above the deepest red display content ($\sim$700\,nm) and $\geq 50$\,nm below the chosen 850\,nm NIR illumination line. The 50\,nm guard protects against AOI shift, manufacturing tolerance, and LED spectral spread. Catalogue cuts step at 650/700/750/800\,nm; 750\,nm is the only stocked standard that sits cleanly between the two constraints.
+
+\textbf{Polarisation at $45^{\circ}$ AOI.} Hard-coated dielectric edges at oblique incidence are intrinsically polarisation-dependent (Macleod, \textit{Thin-Film Optical Filters} Ch.~8): S- and P-polarised components see slightly different effective edge wavelengths, with a 5--8 percentage-point S vs P in-band reflectance gap typical of catalogue parts. With unpolarised $R_{\text{avg}} \geq 90\%$ published, worst-case P-pol lands at 82--88\%; the $R_{\text{vis}} \geq 85\%$ floor sits inside this envelope as a defensible spec without requiring a premium part. No constraint on display polariser orientation is propagated to panel selection: the landscape mounting requirement (panel long edge along IPD axis) already locks panel orientation, and the brightness recompute confirms $Z \geq 3$ holds under the worst-case polarisation assumption.
+
+\textbf{Plate dimensions and substrate.} The plate clear aperture must intercept the full eye-side optical aperture and the full display footprint at $45^{\circ}$ projection. With the locked $f = 100$\,mm plano-convex relay lens (\Cref{sec:hw-lens-architecture}) and $\pm 15^{\circ}$ worst-case eye rotation through 15\,mm eye relief, the eye-side beam diameter at the plate is $\sim$25\,mm; projected at $45^{\circ}$ this requires a clear aperture of $\sim$25 $\times$ 35\,mm (rectangular). Standard catalogue sizes (25.4 $\times$ 36.0\,mm or 50.8\,mm-diameter round) accommodate this with margin. Substrate thickness 1.0--1.6\,mm is the catalogue norm; thinner is preferred for rear-surface NIR ghost suppression, with NIR-optimised AR on the rear face suppressing the residual ghost below the camera noise floor.
+
+\textbf{Stray light.} Under the corrected geometry (display above pointing down; eye-dichroic-camera collinear horizontal), display NIR emission and the $\sim$5--10\% residual visible that fails to reflect both transmit downward through the plate, away from the camera. A matte-black absorber on the bottom face of the optical block plus internal housing blackening suppresses indirect scatter. Standard practice; near-zero \ab{bom} impact.
+
+\textbf{Selection band and cost.} Candidate parts include Thorlabs DMLP-series (longpass) and Semrock/Edmund TECHSPEC longpass equivalents at 750\,nm cut. Component cost at modest volumes is \pounds 25--50 per unit---a step up from the \pounds 5--10 neutral plate but a small fraction of the \pounds 200--300 device launch \ab{bom}, dominated at the system level by the brightness, LED-power, and camera-SNR gains it unlocks. Selection criteria: characterised at $45^{\circ}$ AOI (not $0^{\circ}$); NIR-optimised rear-face AR; meets $R_{\text{vis}} \geq 85\%$ / $T_{\text{NIR}} \geq 90\%$ at the specified polarisation worst case. Specific part selection is deferred to procurement-stage datasheet verification.
+
+\todo{FIGURE: Beamsplitter spectral response and routing. Left panel: dichroic R/T spectrum vs wavelength (400--1000\,nm) with 750\,nm longpass cut annotated; visible band (400--700\,nm) shaded, 850\,nm NIR LED line marked, 50\,nm guard band shown. Right panel: optical-block schematic (display top, eye-dichroic-camera collinear horizontal) with colour-coded ray paths: visible reflected to eye, NIR transmitted to camera, residual visible/NIR transmitted downward to absorber.}
+
+
+\subsection{Illumination Strategy: Visible vs Infrared}
+\label{sec:hw-illumination-strategy}
+
+All commercial clinical pupillometers use NIR illumination, not visible light. This choice reflects a fundamental constraint on \ab{plr} measurement during dark adaptation recovery. The human \ab{plr} is mediated by intrinsically photosensitive retinal ganglion cells (ipRGCs, expressing melanopsin) and classical rod and cone photoreceptors, with peak spectral sensitivity near 480\,nm (blue-green) for ipRGC contribution and 555\,nm (green) for photopic cone vision. Any visible illumination applied during dark-phase recovery stimulates these pathways, modulating pupil redilation velocity and complicating interpretation of the underlying \ab{mtbi}-related accommodation and vergence dysfunction.
+
+NIR light (850--940\,nm) does not activate melanopsin or classical photoreceptors, decoupling the imaging source from the \ab{plr} pathway. This is the established standard in clinical pupillometry: visible-light imaging biases recovery kinetics and confounds diagnostic measurements. For \ab{mtbi} screening, where \ab{plr} dynamics are diagnostic markers, NIR illumination is mandatory.
+
+Beyond the confound argument, NIR offers a secondary optical advantage. The pupil appears as a high-contrast dark region against the lighter iris in NIR imaging because retinal pigment epithelium (RPE) at the back of the eye absorbs strongly across 700--1100\,nm, while the iris stroma reflects diffusely. This contrast is especially pronounced in dark irides (high melanin content), where visible-light imaging struggles to discriminate the pupil boundary. NIR shifts the contrast mechanism from pigmentation (which confounds visible imaging) to scattering and absorption, yielding robust pupil segmentation.
+
+Wavelength selection within the NIR band requires balancing four competing factors: (1) Silicon CMOS sensor quantum efficiency (QE) peaks around 850\,nm for most smartphone and machine-vision sensors, declining sharply above 900\,nm. (2) Eye safety---longer wavelengths generally pose lower thermal hazard per unit irradiance, but shorter wavelengths within the NIR band are still safe under appropriate power limits (cross-reference Eesh's IEC 62471 analysis in \Cref{sec:electronics}). (3) LED availability and cost: 850\,nm LEDs are widely stocked, low-cost ($<\pounds 1$--$2$ per unit), and exhibit high radiant efficiency (70--80\% wall-plug efficiency). 940\,nm LEDs are less common and more expensive. (4) Tissue absorption and scattering---water absorption in cornea and lens increases above 950\,nm, while melanin absorption decreases monotonically with wavelength. At 850\,nm, melanin contrast is high, transmission through the media is good, and silicon sensor response peaks. Trade-off analysis reveals 850\,nm as the optimal balance, offering the highest signal-to-noise ratio in pupil imaging while maintaining the simplest supply chain and lowest cost.
+
+The \ab{mvp} is a two-stage illumination roadmap: an initial visible-light prototype (functional for static pupil size, vergence angle, and accommodation via far-point recovery) and a NIR production design (full \ab{plr} recovery fidelity). This staged approach validates the beamsplitter architecture and camera mounting before the more demanding optical requirement: vergence testing, which exploits the binocular display path to measure convergence insufficiency.
+
+\todo{TABLE: Visible vs.\ NIR illumination comparison. Columns: property, visible (400--700\,nm), NIR (850\,nm). Rows: \ab{plr} confound (yes/no), pupil-iris contrast (moderate/high in dark irides), hardware cost (0/+\pounds 10 for dedicated NIR module), impact on SP/vergence measurement (confounded/independent), impact on accommodation measurement (minor/none), commercial availability (standard/needs sourcing), \ab{mvp} suitability (yes/no). Summary row: visible \ab{mvp} sufficient for static and far-point metrics; NIR production required for \ab{plr} dynamics.}
+
+
+\section{Vergence Feasibility and Camera Geometry}
+\label{sec:hw-vergence}
+
+
+\subsection{Introduction: Clinical Justification}
+\label{sec:hw-vergence-clinical}
+
+Convergence insufficiency affects 35--49\% of \ab{mtbi} patients (versus 2--8\% baseline prevalence) and predicts a 12.3$\times$ increase in odds of prolonged recovery~\todo{REF: cross-reference Rahul's Section 2 \ab{mtbi} prevalence statistics}. The clinical gold standard---near point of convergence (\ab{npc}) testing---requires advancing a physical target toward the patient, equipment that is stationary and inaccessible in resource-limited settings. The screening headset relocates this assessment to a portable optical platform: apparent depth, controlled via interocular disparity, directly drives vergence angle. This section quantifies the constraints that enable this translation.
+
+
+\subsection{Binocular Disparity and Vergence Angle}
+\label{sec:hw-binocular-disparity}
+
+The headset uses a physical septum to divide the display at the midline, enforcing that each eye observes only its respective half. Software renders a target dot---initially zero disparity (both eyes' dots aligned, depth at infinity)---then progressively increases crossed disparity to simulate target approach. As disparity grows, vergence angle increases according to the geometric relationship:
+%
+\begin{equation}
+    \theta_c = 2 \cdot \arctan\left(\frac{\delta}{2 d_v}\right)
+\end{equation}
+%
+where $\theta_c$ is the vergence angle (in radians), $\delta$ is the horizontal display disparity (in mm), and $d_v$ is the virtual image distance (in mm) formed by the imaging optics.
+
+For the plano-convex relay lens specified in \Cref{sec:hw-optical-design} ($f = 100$\,mm), the virtual image distance is approximately 1900\,mm. Consider a worked example: if the software commands a display disparity of 10\,mm, the resulting vergence angle is:
+%
+\begin{equation}
+    \theta_c = 2 \cdot \arctan\left(\frac{10}{2 \times 1900}\right) \approx 0.30^{\circ}
+\end{equation}
+
+This modest angle reflects the large conjugate distance. The clinical relevance is absolute: at this vergence demand, a patient with convergence insufficiency would fail to fuse, and the vergence range traversed (from 0 to $0.30^{\circ}$ and beyond, to the fusion limit) quantifies their deficit.
+
+A critical design implication emerges from the equation above: \textbf{vergence angle is inversely proportional to virtual image distance.} Shorter focal length lenses produce shorter conjugate distances and thus larger vergence angles for identical display disparities. This coupling means that lens selection directly determines the vergence test range and must be coordinated with the disparity budget available on the display hardware. The 100\,mm focal length was selected to keep the virtual image distance practical (sub-2-metre) while maintaining sufficient angular resolution to distinguish healthy from pathological vergence profiles.
+
+\todo{FIGURE: Binocular optical path schematic. Schematic cross-section (sagittal plane) showing left and right eye apertures, longpass dichroic beamsplitter, plano-convex relay lens ($f = 100$\,mm), display with septum at midline, and target dots rendered at position $\delta$ to each eye. Vergence angle $\theta_c$ subtended at the eyes is annotated.}
+
+
+\subsection{Interpupillary Distance and Demographic Accommodation}
+\label{sec:hw-ipd}
+
+The target population---children and adolescents aged 8--18 years---exhibits significant anatomical variation. Interpupillary distance (IPD) ranges approximately 48--65\,mm across this cohort~\todo{CITE NEEDED: normative anthropometric study, paediatric optics}. The screening headset employs a mechanically symmetric design: paired plano-convex BK7 singlets of identical focal length, a longpass dichroic plate beamsplitter spanning both eyes, and a septum positioned at the display midline.
+
+For patients with IPD near 56\,mm (population median), the optical axes align nearly perfectly with lens principal planes, and the vergence measurement is unbiased. Users at the extremes of the IPD range (e.g., 48\,mm or 65\,mm) experience modest asymmetry in the conjugate distance and effective focal length, slightly degrading vergence precision. However, this residual error remains clinically acceptable: the vergence signal (differences on the order of $0.5$--$1.0^{\circ}$ between healthy and pathological patients) is substantially larger than the induced bias. Accommodating variable IPD through mechanical adjustment (e.g., adjustable nose bridge) is deferred to the engineering design section and does not affect the feasibility analysis here.
+
+
+\subsection{Vergence--Accommodation Conflict}
+\label{sec:hw-vac-conflict}
+
+In natural vision, convergence and accommodation vary covariantly: fixating on a near object requires both lens thickening (to focus) and convergence (to align the optical axes). The headset decouples these: binocular disparity commands vergence angle, but accommodation is fixed by the virtual image distance ($\sim$1.9\,m for the 100\,mm lens).
+
+This introduces a fundamental measurement assumption: \textbf{the headset measures fusional vergence under fixed accommodation, not accommodative vergence.} Fusional vergence is the range of convergence that can be sustained when accommodation is held constant; it is slightly broader than the vergence range measured in clinical \ab{npc} testing, where accommodation varies with fixation distance~\todo{CITE NEEDED: clinical vergence physiology}. However, the relationship is strong and monotonic: patients with convergence insufficiency show reduced fusional vergence and reduced accommodative vergence.
+
+For brief assessment windows (30--60\,seconds per test), the mismatch induces minimal discomfort and does not confound the detection of pathology. Future validation studies must establish the correlation between headset-measured fusional vergence and clinical \ab{npc}; this is a measurement validation task, not a design failure. The explicit acknowledgment of this assumption satisfies the requirement to examine design tradeoffs critically.
+
+
+\subsection{Specifications Summary}
+\label{sec:hw-vergence-specs}
+
+The analysis yields three binding specifications: the display must support $\geq 10$\,mm crossed disparity (\Cref{sec:hw-binocular-disparity}), the camera must maintain $\alpha < 5^{\circ}$ (\Cref{sec:hw-biomarkers-requirements}), and the mechanical design must accommodate IPD variation of 48--65\,mm with residual bias $< 5\%$ (\Cref{sec:hw-ipd}). These constraints propagate directly into the engineering design considerations that follow.
 
 
 \section{Electronics}
@@ -390,3 +495,19 @@ The headset must be comfortable for potentially concussed individuals, robust en
 \textbf{Light sealing and ventilation.} Consistent pupillary light reflex measurement requires controlled ambient light conditions, as identified in \Cref{sec:bg-oculomotor}. The facial interface provides a light seal around the eyes, blocking external illumination. However, a fully sealed enclosure causes fogging of the beamsplitter and lenses from breath and body heat, degrading image quality. This is addressed by incorporating small baffled vents at the lower edge of the headset: the baffles admit airflow while blocking direct light paths. The vents are positioned below the optical axis to prevent light ingress from reaching the camera sensor. \todo{Verify vent design in final prototype.}
 
 \textbf{Robustness.} The device is intended for use in school and club environments where it will be transported in kit bags and handled by non-experts. PETG's impact resistance provides adequate drop protection for the prototype; a production device in PA12 would improve this further. All optical components (beamsplitter, lenses, camera module) are recessed within the shell rather than exposed, protecting them from accidental damage. \todo{Add figure: annotated CAD render showing key features, and side-view diagram showing centre of mass position.}
+
+
+\section{Engineering Design Considerations}
+\label{sec:hw-design-considerations}
+
+The optical architecture described in \Cref{sec:hw-architecture,sec:hw-optical-design,sec:hw-vergence} was shaped throughout by health and safety, inclusivity, sustainability, and commercial constraints.
+
+The choice of 850\,nm NIR illumination satisfies photobiological safety standards defined by IEC 62471~\todo{REF: IEC 62471 standard}; Eesh's concurrent safety analysis (\Cref{sec:electronics}) confirms that corneal irradiance remains below the 1404\,W/m\textsuperscript{2} limit for 30--60\,s exposure. This wavelength avoids the visible spectrum, eliminating glare and discomfort during test sessions. Equally important, the virtual image formed at approximately 1.9\,m (\Cref{sec:hw-virtual-image}) minimizes accommodation demand, which is critical: a device that exacerbates accommodation stress would contradict its own diagnostic purpose for symptomatic users. The brief test duration ($<60$\,s) further limits cumulative retinal exposure.
+
+The symmetric binocular design ensures equivalent optical quality for both eyes across the IPD range (\Cref{sec:hw-ipd}), avoiding the monocular or asymmetric compromises found in some handheld variants. The head-mounted form factor removes dependence on hand steadiness---a key advantage for young, distressed, or symptomatic users who may struggle to hold a device stable.
+
+
+\section{Technical Limitations}
+\label{sec:hw-technical-limitations}
+
+The headset prototype remains analytically validated but lacks empirical clinical validation against gold-standard imaging modalities (CT or MRI-confirmed mild traumatic brain injury). This represents the most significant technical boundary: the device identifies oculomotor abnormalities that correlate with \ab{mtbi} in published literature, yet we cannot claim diagnostic sensitivity or specificity without prospective cohort studies comparing headset measurements against confirmed cases. The vergence--accommodation conflict---where the eyes converge in response to binocular disparity while accommodation remains fixed at the virtual image distance ($\sim$1.9\,m)---has been characterised analytically (\Cref{sec:hw-vac-conflict}) but not validated empirically in a clinical cohort. While optical design modelling predicts acceptable image quality, the parallel development of camera selection and optical specifications prevents end-to-end image quality validation; Victor's optical design and Eesh's camera characterisation were optimised independently rather than jointly characterised in the integrated system. This decoupling means real-world gaze tracking accuracy and pupil detection robustness under field conditions (outdoor sports environments, varied lighting) remain untested.

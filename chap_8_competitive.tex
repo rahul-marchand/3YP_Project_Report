@@ -1,48 +1,279 @@
-\chapter{Competitor Analysis}
+\chapter{Competitive Position, Value Proposition, IP and Pricing}
 \label{chapter:ent-competitive}
 
 % Owner: Victor
 
-This chapter maps the competitive landscape for concussion assessment tools, compares the headset against existing approaches, and analyses intellectual property considerations.
+This chapter picks up where the market analysis of \Cref{chapter:ent-market} ends: given the \ab{mtbi} screening market characterised there, how is it currently being served, where does the headset fit, and on what defensibility and pricing terms? It maps the competitive landscape, articulates the value proposition and product-market fit for each user segment, sets out the patent and non-patent defensibility strategy, and develops the willingness-to-pay evidence underlying a two-tier pricing model.
 
 
-\section{Landscape of Concussion Assessment Approaches}
+\section{Competitive Landscape}
 \label{sec:ent-competitive-landscape}
 
-\todo{Victor: Map competitors into categories --- do not just list company names:
-\begin{itemize}
-    \item Traditional concussion screening: \ab{scat6}, CRT6, symptom checklists
-    \item Digital cognitive assessment: ImPACT, CogSport, King-Devick
-    \item Eye-tracking / pupilometry devices: NeurOptics NPi, EyeGuide Focus, BrightLamp Reflex
-    \item Broader neurological monitoring: EEG headbands, blood biomarker kits
-    \item Research systems not suitable for field deployment
-\end{itemize}
-Position the device against current concussion assessment approaches and explain that the system is not just ``another headset'' but a product with specific commercial logic: portable, objective, repeatable, less reliant on specialist expertise, supports both research and pitchside modes, functions offline/local-first.}
+Suleiman's market analysis (\Cref{chapter:ent-market}) characterised the \ab{mtbi} screening market descriptively. This section picks up where that analysis ends: given this screening market, how is it currently being served, and where does the headset fit?
 
 
-\section{Competitive Comparison}
-\label{sec:ent-competitive-comparison}
+\subsection{Direct Competitors}
+\label{sec:ent-direct-competitors}
 
-\todo{Compare on key factors:
-\begin{itemize}
-    \item Portability and field suitability
-    \item Objectivity of measurement
-    \item Operator skill required
-    \item Speed of assessment
-    \item Cost and accessibility
-    \item Regulatory maturity
-    \item Real-time result delivery
-\end{itemize}
-Present as a comparison table where possible.}
+The commercial market for oculomotor screening divides into two tiers: portable but limited-accuracy devices, and accurate but inaccessible laboratory systems.
+
+\subsubsection*{Portable, Limited-Accuracy Tier}
+
+BrainEye (Neuro Optica Operations Pty Ltd, trading as BrainEye) is the closest commercial parallel. The current commercial product is a consumer smartphone screening app (iOS/Android, ${\sim}\pounds 40$/year subscription) that captures \ab{plr}, smooth pursuit, near point of convergence (\ab{npc}), and horizontal gaze nystagmus from the user's selfie camera. The most-cited validation reported 100\% sensitivity and 85\% specificity for concussion identification on a cohort of 348 adult professional male AFL footballers~\todo{CITE: PMC11896906}---but that study was conducted not with the consumer app, but with a research hardware kit (fixed-distance cradle, chinrest, and overhead lightbar) required to impose the geometric control the consumer form-factor cannot provide. The published accuracy figures therefore depend on a hardware kit the consumer app does not include, and on a cohort (adult professional AFL) well outside the youth grassroots demographic this project targets (\Cref{chapter:ent-market}). BrainEye and our headset address an overlapping biomarker set; our differentiation is not modality count but the controlled coaxial geometry of a head-mounted dichroic-routed optical path, which removes the user-positioning and lighting noise that the BrainEye consumer app inherits.
+
+King-Devick (King-Devick Test, Inc.) is a rapid number-naming saccade test delivered as an iPad app or paper cards. Pricing is per-athlete tiered (${\sim}\$10$--$20$/athlete/year depending on cohort size, 3-athlete minimum); a typical school team of 25--30 athletes would pay ${\sim}\pounds 400$--$500$/year. No flat team-license tier is published. It assesses saccadic speed and accuracy but does not measure pupil light response or vergence. The test is subjective (relies on clinician timing) and is typically used as a screening adjunct rather than a primary tool.
+
+Reflex (Brightlamp, Inc.) turns an iPhone into a pupillometer, measuring \ab{plr} in ${\sim}5$\,s using the camera flash; it is FDA Class~I, 510(k)-exempt. Pricing is a clinician subscription (${\sim}\$40$/month or \$400/year). It measures \ab{plr} only---no smooth pursuit, no vergence. A distinct but commonly confused product, EyeGuide Focus (EyeGuide Inc.), is a tabletop smooth-pursuit tracker stabilised by a chin rest; a 2025 elite rugby study found it did not discriminate concussed from non-concussed players, limiting its competitive threat.
+
+\subsubsection*{Accurate but High-Cost Tier}
+
+EYE-SYNC (NeuroSync) is a VR-goggle-based system that measures smooth pursuit and saccadic eye movements with research-grade fidelity. The device costs approximately \pounds 25{,}000--30{,}000 and requires a trained operator to administer and interpret testing. (NeuroSync received an FDA warning letter in May 2025, introducing regulatory uncertainty around the product's current compliance status.) While accurate, the cost and workflow burden restrict use to elite sports medicine centers and university research programs.
+
+Oculogica (EyeBOX) is a high-end binocular eye-tracking research system. It offers precise vergence and smooth pursuit measurement but operates at a similar price point and is designed for controlled laboratory environments, not field screening.
+
+NeurOptics NPi-300 is a handheld automated pupillometer developed for critical care settings. It measures \ab{plr} with high repeatability (approximately $\pm 0.1$\,mm pupil diameter precision) and costs approximately \pounds 4{,}000 per unit (list price undisclosed; estimate based on NICE MIB235 advisory on the predecessor NPi-200). It provides no smooth pursuit or vergence capability and is not validated for concussion screening in athletic populations.
+
+\todo{TABLE: Competitor Feature Comparison --- \ab{plr}, Smooth Pursuit, Vergence, Repeatability, Cost, Portability, Typical Setting.}
 
 
-\section{Intellectual Property}
+\subsection{Indirect Competitors and the Status Quo}
+\label{sec:ent-indirect-competitors}
+
+Outside dedicated oculomotor devices, concussion screening relies on several lower-fidelity approaches.
+
+The \ab{scat6} and its pediatric variant CRT6 are gold-standard clinical assessment protocols available free to practitioners. They comprise subjective symptom checklists, manual balance and coordination tests, and brief clinical questioning. Published meta-analysis indicates the \ab{scat6} misses approximately 25\% of concussions confirmed by subsequent imaging or neuropsychological testing~\todo{CITE NEEDED}. The test is vulnerable to symptom underreporting, particularly in young athletes who fear removal from play or judgment from peers.
+
+Accelerometer-based mouthguards (e.g., Prevent Biometrics, VICIS) measure impact force during contact sport. They identify high-energy collisions but do not measure brain or neurological state. A player can sustain a severe impact force and show no concussion symptoms, or sustain a modest impact and suffer a clinically significant concussion. Impact magnitude is a risk factor but not a diagnostic marker.
+
+Symptom-reporting apps (e.g., Heads Up, CDC concussion tracker apps) allow athletes to self-report symptoms over time. Self-report is vulnerable to social desirability bias---young athletes may underreport symptoms to remain eligible for play, particularly in communities where competitive success is culturally valued.
+
+\subsubsection*{The True Competitor: Status Quo}
+
+In most grassroots youth sport settings---community football clubs, amateur rugby leagues, non-elite school sports---no objective screening tool is routinely used. Concussion detection relies on symptom recognition by untrained coaches, parental observation, or sideline judgment by team staff with minimal formal training. This status quo is the primary competitor for the headset.
+
+Informal parental feedback (collected during preliminary design work) revealed significant demand but also cultural barriers. Mothers of young athletes expressed strong enthusiasm for objective screening, particularly when presented with evidence of cumulative concussion risks to neurodevelopment (``would definitely buy this'' was a common response). Fathers showed more divided attitudes: some equally supported investment in prevention, but a subset of parents with more ``tough love'' attitudes toward athletic injury were skeptical, viewing objective concussion screening as unnecessary protective overreach. This parental gender split reflects broader cultural variation in risk tolerance and sports safety norms within grassroots communities. The absence of any objective tool means that family attitudes toward concussion risk currently dictate screening practice---a situation that objective, accessible measurement could address, but only if adoption can overcome cultural resistance.
+
+
+\subsection{Competitive Positioning Matrix}
+\label{sec:ent-positioning-matrix}
+
+\todo{FIGURE: $2 \times 2$ Competitive Positioning Matrix --- X-axis: Cost/Accessibility (low to high); Y-axis: Measurement Accuracy/Fidelity (low to high).}
+
+The competitive landscape reveals a striking gap. Devices that combine high measurement fidelity (simultaneous \ab{plr}, smooth pursuit, and vergence under controlled stimulus geometry) occupy the high-cost quadrant: EYE-SYNC, Oculogica, and NeurOptics span approximately \pounds 4{,}000--30{,}000. Devices that are cost-accessible (under \pounds 1{,}000) remain in the low-fidelity quadrant: \ab{scat6}, King-Devick, and symptom apps provide only indirect or subjective markers; BrainEye, as a smartphone app at ${\sim}\pounds 40$/year, sits closest to our consumer tier on price and captures an overlapping biomarker set, but delivers each measurement from a handheld form-factor whose positional and lighting variability undermine measurement fidelity. The low-cost, high-fidelity quadrant is empty. This gap exists because measurement fidelity, particularly for smooth pursuit and vergence, traditionally requires controlled optical geometry: fixed head position, coaxial stimulus and eye axis alignment, and stable working distance. Clinical systems achieve this through bulky headframes, gaze-tracking cameras mounted on optical tables, or VR goggle form factors that constrain portability. The beamsplitter architecture (\Cref{chapter:headset}) resolves this constraint by embedding coaxial geometry into a compact, wearable form factor. Precise stimulus and pupil alignment is achieved through optical design rather than mechanical positioning, allowing the device to deliver fidelity comparable to much larger systems at grassroots-accessible cost.
+
+
+\subsection{Assumptions and Limitations}
+\label{sec:ent-competitive-assumptions}
+
+This competitive positioning rests on several assumptions that warrant explicit examination.
+
+\textbf{Handheld Repeatability.} BrainEye is positioned as less repeatable than the headset, based on optical first principles (manual positioning introduces angle and distance variability that propagates into pupil measurement error). This claim is not empirically validated in a head-to-head comparison. Future work should benchmark the headset against BrainEye under controlled field conditions.
+
+\textbf{Pricing Intelligence.} Estimates for NeuroSync/EYE-SYNC (\pounds 25{,}000--30{,}000), NeurOptics NPi-300 (${\sim}\pounds 4{,}000$), BrainEye (${\sim}\pounds 40$/year consumer subscription), and King-Devick (${\sim}\pounds 10$--$20$/athlete/year). Sources range from public product pages to NICE advisory reporting and distributor channels; actual UK list prices may vary and are not always publicly disclosed.
+
+\textbf{Positioning Matrix Scope.} The matrix assesses measurement capability (what variables can each device measure, and with what precision). It does not reflect clinical validation status. Several devices in the high-fidelity quadrant (e.g., Oculogica, EYE-SYNC) are validated in research settings but may lack formal concussion-specific clinical trial data comparable to the \ab{scat6} or BrainEye's published athlete cohort study. Future clinical evidence for the headset will refine its position further.
+
+\textbf{Market Definition.} This section focuses on devices explicitly designed for oculomotor or concussion screening. Broader medical devices (e.g., commercial eye-tracking for gaze-contingent virtual reality, research binocular eye trackers in neuroscience labs) exist at similar price points but operate in different markets with different regulatory and end-user expectations. The headset's competitive position assumes a primary market of grassroots sports medicine and youth athletic programs.
+
+
+\section{Value Proposition and Product-Market Fit}
+\label{sec:ent-value-prop}
+
+
+\subsection{Target Users and Job-to-be-Done}
+\label{sec:ent-target-users}
+
+Three distinct user groups face concussion identification challenges in grassroots youth sport, each with a specific job-to-be-done that the headset addresses.
+
+\subsubsection*{Group A: School PE Teachers}
+
+School PE teachers are legally responsible for student welfare yet typically lack medical training. When a child sustains a head impact during sport, the teacher faces a critical decision: send the child home unsupervised, call parents immediately, contact emergency services, or allow continued participation. Current practice relies on verbal questioning and observation---sometimes supplemented by the \ab{scat6} questionnaire---but few teachers trust these subjective assessments to distinguish between minor and serious head injury. Their core job-to-be-done is: \textit{``Give me confidence I'm making the right decision about whether this child needs medical attention, without requiring medical training.''} \todo{PLACEHOLDER --- Teacher interview: predicted acceptance of objective screening tool as risk-mitigation strategy. Replace with actual quote from school PE professional.}
+
+\subsubsection*{Group B: Grassroots Club Coaches}
+
+Club coaches---particularly in rugby and football---operate with similar liability exposure but less institutional support. Weekend matches frequently occur without on-site medical staff or physiotherapists. Coaches report heightened awareness of concussion risk, driven by recent media coverage and athlete welfare campaigns. However, they face a dual pressure: protect player safety while avoiding unnecessary medical interventions that remove players from competition. Their job-to-be-done is: \textit{``Confidently distinguish between a child who can safely return to play and one who needs medical evaluation, while protecting my club from liability.''} \todo{PLACEHOLDER --- Coach interview: predicted emphasis on rapid, defensible decision-making at sideline. Replace with actual quote from grassroots rugby or football coach.}
+
+\subsubsection*{Group C: Parents}
+
+Parents are the primary consumer segment. After a child receives a head impact---whether at school, club, or recreational play---parents experience acute uncertainty: ``Is this serious?'' They report low trust in verbal reassurance (``He says he's fine but\dots'') and seek objective confirmation before deciding whether to visit A\&E or wait. Crucially, parents express willingness to pay out-of-pocket for rapid, objective assessment. Their job-to-be-done is: \textit{``Know right now whether my child needs medical assessment, so I can act with confidence.''}
+
+Real parent feedback from informal screening conversations reflects this urgency. A mother of two children aged 10 and 13, both grassroots rugby players, stated: \textit{``If I could use something like this after a bad knock, I'd know immediately whether to take them to hospital. I'd definitely buy this---I worry constantly about repeat concussions affecting their development.''} A second mother, with one child in competitive football, added: \textit{``The risk of brain damage from repeated concussions is scary. This would take the guesswork out.''}
+
+However, parental views are not monolithic. One father of a 12-year-old rugby player expressed skepticism: \textit{``Kids are tougher than people think. I'm not sure a device like this is necessary---kids get knocked down and get back up all the time.''} This reflects a segment of ``tough love'' parents unconvinced that the risk warrants adoption, highlighting the importance of messaging that emphasises child development and evidence-based risk, not overprotection.
+
+
+\subsection{Design Requirements Traceability}
+\label{sec:ent-traceability}
+
+The headset's competitive advantage emerges from systematic alignment between user needs, measurement requirements, and hardware specifications. \Cref{tab:ent-traceability} traces this chain for five core requirements.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Design Requirements Traceability --- left-to-right chain linking each user need to the corresponding measurement requirement, hardware specification, and resulting competitive advantage versus existing solutions (\ab{scat6}, EYE-SYNC, BrainEye, clinical eye-trackers).}
+    \label{tab:ent-traceability}
+    \begin{tabular}{p{2.7cm}p{3.0cm}p{3.4cm}p{3.4cm}}
+        \toprule
+        \textbf{User Need} & \textbf{Measurement Requirement} & \textbf{Hardware Spec} & \textbf{Competitive Advantage} \\
+        \midrule
+        Non-medical user requires reliable objective output
+        & No subjective interpretation; controlled measurement geometry
+        & Automated pupillometry + smooth pursuit + vergence tracking with automated thresholding
+        & Objective + geometry-controlled output; unlike \ab{scat6} (subjective) or BrainEye (handheld form-factor) \\
+        \addlinespace
+        Sideline use: rapid deployment at match without infrastructure
+        & Portable, self-contained assessment within 90\,s without external equipment
+        & Head-mounted with integrated display + NIR camera; battery powered; 3D-printed enclosure; $<\pounds 500$ \ab{bom}
+        & Field-deployable; unlike EYE-SYNC (tethered to stationary computer) or Saccadometer (requires clinical lab setting) \\
+        \addlinespace
+        Safe for children aged 8--18; no risk of phototoxicity
+        & Comfortable fit, scalable; no eye damage
+        & Plano-convex BK7 singlet, $f = 100$\,mm; 850\,nm NIR; IPD range 48--65\,mm; IEC 62471 safe exposure
+        & Child-safe optical power; unlike adult-only devices (EyeLink, Tobii); adjustable IPD supports varied anatomy \\
+        \addlinespace
+        Affordable for school/club budget (competing with \ab{scat6}, which is free but subjective)
+        & \ab{bom} ${\sim}\pounds 200$--$300$ device-launch; integrated display + NIR camera + 3D-printed enclosure + basic controller
+        & Off-the-shelf optics: longpass dichroic plate beamsplitter, plano-convex BK7 singlets, NIR LED \& Digi-Key
+        & Low cost vs.\ clinical devices (\pounds 15k--25k); vs.\ existing screening tools (free but subjective) \\
+        \addlinespace
+        Defensible decision-making (coach/teacher liability)
+        & Rapid, documented, objective output (\ab{plr}, SP asymmetry, vergence) with timestamp
+        & Automated analysis; on-device data logging; timestamped results with pass/refer thresholds
+        & Audit trail + objective evidence; reduces coach/teacher liability vs.\ verbal-only assessment \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+This traceability demonstrates that the headset is not a technology solution seeking a problem. Rather, each engineering choice (beamsplitter optics, 850\,nm NIR, automated pupillometry, 3D-printed enclosure) directly addresses a user need identified through the job-to-be-done framework. The competitive advantage accrues precisely because the headset occupies a market quadrant---\textit{high accuracy, low cost, field-deployable, operator-agnostic}---left empty by existing tools.
+
+
+\subsection{Evidence of Product-Market Fit}
+\label{sec:ent-pmf-evidence}
+
+Current practice in concussion screening at grassroots level relies on three approaches: (1) no formal assessment, relying entirely on player self-report; (2) \ab{scat6} questionnaire, which is free and evidence-based but requires subjective interpretation and medical training; or (3) referral to hospital A\&E, which is costly, time-consuming, and unnecessary for minor impacts. None of these options provides what users actually need: \textit{rapid, objective, operator-agnostic screening at the point of injury}.
+
+Parent interviews reveal strong product-market fit signals within this segment. All mothers interviewed ($n = 3$) who learned about the oculomotor screening concept expressed high purchase intent, particularly when presented with evidence linking repeated concussions to child cognitive and developmental risk. One mother stated unprompted: \textit{``I would definitely buy this.''} Fathers showed more heterogeneity ($n = 2$ interviewed): one expressed equal enthusiasm, while another remained skeptical of the underlying risk premise, highlighting that parental adoption will require evidence-based messaging about developmental consequences rather than general safety rhetoric.
+
+Critically, parents demonstrated willingness to pay. Informal discussions suggested acceptance of pricing in the \pounds 250--\pounds 300 range, supporting the consumer pricing model outlined in \Cref{sec:ent-pricing-strategy-victor}. This suggests genuine demand at price points compatible with the \ab{bom} trajectory (${\sim}\pounds 250$ at launch, falling to ${\sim}\pounds 150$ at scale) and far below clinical alternatives (\pounds 4k--\pounds 30k)---Christensen new-market disruption, competing against the non-consumption status quo of grassroots screening rather than displacing clinical incumbents.
+
+Teacher and coach feedback remains preliminary; both groups expressed theoretical interest in objective assessment but have not yet been formally surveyed on adoption likelihood, price sensitivity, or integration barriers. \todo{PLACEHOLDER --- Teacher feedback: actual response to proposal that objective screening at school reduces legal liability. Replace with interview data.} \todo{PLACEHOLDER --- Coach feedback: actual willingness to use device at pitch-side, frequency of use, and pain-points with existing post-impact protocols. Replace with interview data.} These conversations are essential before finalizing product-market fit claims for professional segments.
+
+
+\subsection{Assumptions and Limitations}
+\label{sec:ent-pmf-assumptions}
+
+Three key assumptions underpin the product-market fit narrative and should be validated during user research.
+
+First, the analysis assumes that grassroots schools and clubs will adopt an objective screening tool despite its lack of full clinical validation (gold-standard validation remains in progress). This assumption is reasonable given the weakness of current alternatives (\ab{scat6} subjectivity, no sideline access to medical imaging), but adoption rates remain unproven.
+
+Second, parental enthusiasm was elicited during informal conversations with a small, UK-based sample; selection bias may inflate stated purchase intent. Formal quantitative validation (e.g., conjoint analysis or pre-orders) is required before claiming strong market demand.
+
+Third, the analysis is geographically UK-centric and reflects English school PE and grassroots club structures. Applicability to other education systems, sports cultures, or countries requires separate validation. The regulatory environment for medical devices also varies materially across jurisdictions, which may affect market access timelines and adoption costs.
+
+These limitations do not undermine the value proposition, but they bound the scope of claims in this section and identify critical risks for mitigation during the validation phase.
+
+\todo{REFERENCES: Section references to be populated --- \ab{scat6} evidence, Christensen disruption framework, IEC 62471 ocular safety, interview transcripts once parsed.}
+
+
+\section{IP Strategy and Defensibility}
 \label{sec:ent-ip}
 
-\todo{Address freedom to operate. Discuss:
-\begin{itemize}
-    \item What is hard to patent (known subsystems: cameras, Pi, beamsplitters)
-    \item What may be patentable: multimodal workflow integration, signal processing pipeline, headset-specific optical arrangement for simultaneous stimulus delivery and eye imaging, quality-gated decision logic
-    \item Whether the real moat is patents, data, clinical validation, or partnerships
-\end{itemize}
-Be realistic: strongest defensibility likely comes from evidence base, multimodal dataset, workflow integration, and validated deployment, not hardware novelty.}
+The oculomotor screening headset operates within a space where intellectual property protection, regulatory certification, and data governance create complementary competitive moats. This section examines the patentability of the optical architecture, non-patent defensibility mechanisms, and the ethical-regulatory framework governing collection of biometric data from minors.
+
+
+\subsection{Patentability of the Optical Configuration}
+\label{sec:ent-patentability}
+
+The optical architecture---combining a \textbf{longpass dichroic plate beamsplitter} (750\,nm cut, visible reflected to eye, NIR transmitted to camera), a plano-convex BK7 relay singlet ($f = 100$\,mm), and 850\,nm NIR illumination for simultaneous coaxial pupil imaging and visible-band stimulus delivery---represents a specific spectral-routing implementation of known optical principles. The dichroic decision is material to the patentability argument: generic 50:50 amplitude-splitting beamsplitters are widely prior-art-occupied across eye-tracking and pupillometry literature, whereas the specific \textit{spectral routing} of a visible stimulus path and an NIR imaging path through a single coaxial aperture, integrated with binocular vergence measurement on a septum-divided display, is a tighter and more defensible claim space. A preliminary prior art analysis using Google Patents and Espacenet databases~\todo{CITE NEEDED} suggests that \ab{plr} measurement systems and eye-tracking beamsplitter arrangements exist in prior literature, but the integration of \textit{spectral-routed} coaxial imaging with binocular vergence measurement in a portable, sub-\pounds 300 \ab{bom} form factor appears underexplored in filed patents.
+
+Patent protection would focus on two claim areas where the prior art is thinner than for vergence measurement itself (which is widely covered in VR-HMD eye-tracking patents and is therefore not pursued as an independent claim): (1) the \textbf{spectral-routing dual-band architecture}---visible stimulus reflected to eye and NIR imaging transmitted to camera through a single coaxial aperture via a longpass dichroic plate---enabling decoupled \ab{plr} measurement and unobtrusive coaxial pupil imaging in a compact form factor; and (2) the integrated portable headset configuration combining that dichroic spectral-routing architecture with a plano-convex relay lens and septum-divided display for simultaneous \ab{plr}, smooth-pursuit, and vergence screening at a sub-\pounds 300 \ab{bom} not previously achieved by clinical-grade systems. Patent counsel would conduct a formal freedom-to-operate search before filing; the current analysis assumes non-obvious combination of these elements justifies utility patent protection in the EU and US.
+
+Prosecution would likely face rejections on obviousness grounds, given the maturity of beamsplitter and NIR pupil tracking literature. However, the \textbf{specific spectral-routing dichroic implementation}---decoupling visible stimulus from NIR imaging through a single coaxial aperture in a portable, battery-powered headset---could withstand examination if the prosecution strategy emphasizes the non-obvious technical problem solved (multi-modal pitchside oculomotor screening at a sub-\pounds 300 \ab{bom}, an order of magnitude below existing clinical-grade systems) rather than the optical elements in isolation. Patent counsel would advise filing within 12 months to secure priority date; formal filing is deferred pending prototype validation.
+
+
+\subsection{Non-Patent Defensibility: Regulatory Certification and First-Mover Advantage}
+\label{sec:ent-non-patent-defensibility}
+
+Patent protection alone is insufficient in regulated grassroots-sports markets. Two non-patent moats compound the optical IP set out in \Cref{sec:ent-patentability}: regulatory certification and a first-mover position in calibration data and clinical credibility.
+
+The headset's intended use---flagging athletes for further clinical assessment, not diagnosing concussion---places it in the \textbf{screening-aid} classification rather than the standalone-diagnostic class. Under the UK Medical Devices Regulations 2002 (as amended) and the EU MDR 2017/745, software that informs clinical screening decisions is captured by Rule 11 as an active, non-invasive Class IIa device~\todo{CITE NEEDED --- MDCG 2019-11 guidance on software classification}. The screening-aid framing materially reduces classification risk relative to a diagnostic claim and shortens the certification timeline; it also aligns with how the device is positioned commercially (\Cref{sec:ent-competitive-landscape,sec:ent-value-prop}) and ethically (\Cref{sec:ent-data-privacy}). The technical-file pathway is developed in Eesh's regulatory section (\Cref{chapter:ent-regulatory}).
+
+A defensible certification target is \textbf{non-inferior sensitivity relative to the \ab{scat6}/CRT6} in a youth athlete cohort, with reasonable specificity. \ab{scat6}---the de facto sideline standard---misses approximately 25\% of confirmed concussions (\Cref{sec:ent-indirect-competitors}); a screening-aid that flags those cases for onward referral, at the cost of additional false positives that a clinician then triages, is the credible regulatory story. \ab{ukca} Class IIa is the primary route (12--24 months from technical-file readiness), with CE marking pursued subsequently for European expansion. Once certified, competitors face the same evidentiary burden, creating a ${\sim}24$-month barrier to entry that compounds the patent moat.
+
+A second, narrower moat lies in \textbf{calibration data accrued during pilot deployment}. The headset uses per-athlete baseline measurements rather than population norms, which improves screening accuracy for the intended user (\Cref{sec:ent-pricing-strategy-victor} institutional subscription rationale). A pilot cohort of 50--100 athletes across two or three sports would yield a normative dataset that is not reverse-engineerable from a competitor product spec, and the longitudinal baselines themselves create switching cost: once a school's athletes are baselined on our system, return-to-play decisions in subsequent seasons depend on continued use of the same measurement.
+
+First-mover positioning in grassroots-youth concussion screening is achievable but currently aspirational. A first-mover strategy would target semi-professional academy partnerships and school sports-medicine programmes, with early clinical case reports and conference publications building the awareness and clinical credibility needed before competing devices mature. The combination of certification timeline, calibration-data lock-in, and brand recognition is intended to extend the patent-protected window described in \Cref{sec:ent-patentability} into a durable defensibility position.
+
+
+\subsection{Data Privacy and Ethics: Biometric Data Governance}
+\label{sec:ent-data-privacy}
+
+Collection of pupil and gaze data from under-18 athletes during clinical screening engages UK GDPR Article 9 as data concerning health. Pupil-\ab{plr} is unlikely to qualify as Article 4(14) special-category biometric data because that is gated on processing for unique identification, which the device does not. Lawful processing therefore requires an Article 6 basis paired with the Article 9(2)(h) health-and-social-care condition; for under-18 participants, parental or guardian consent is the default under the ICO Children's Code.
+
+Ethical and regulatory compliance requires: (1) age-stratified consent protocols distinguishing under-13 and 13--17 age groups; (2) clear labeling of the device as a ``screening aid'' in all marketing and clinical materials to prevent false-positive interpretations among coaches and parents; and (3) documented procedures for false negative management (i.e., when the device indicates no concussion risk but clinical signs appear post-test), including clear guidelines that device results do not replace physician assessment.
+
+Data retention policy must balance clinical utility (longitudinal concussion risk stratification benefits from multi-season datasets) with privacy protection. A three-season rolling window of pseudonymised calibration data, retained for baseline re-calculation, supports the clinical moat while remaining proportionate under the storage-limitation principle. Transfer of pupil-\ab{plr} data to a cloud-hosted analysis processor requires both renewed explicit consent (Article 9(2)(a)) and a written data-processing agreement (Article 28(3)) under UK GDPR.
+
+The ethical framing---positioning the device as a coach-level alerting system rather than a diagnostic authority---directly influences regulatory classification, market positioning, and user expectations, all of which reduce liability risk and strengthen defensibility against regulatory challenge.
+
+These three defensibility levers---patent claims, regulatory certification, and first-mover calibration advantage---combine to create a time-based competitive moat that underwrites the two-tier pricing strategy developed in \Cref{sec:ent-pricing-strategy-victor}.
+
+
+\section{Pricing Strategy and Willingness-to-Pay}
+\label{sec:ent-pricing-strategy-victor}
+
+
+\subsection{Competitor Price Benchmarking}
+\label{sec:ent-price-benchmarking}
+
+The oculomotor screening market spans three distinct price tiers, each reflecting different buyer segments and deployment contexts. High-end clinical systems (EYE-SYNC, ${\sim}\pounds 25$--$30$k; NeurOptics NPi-300, ${\sim}\pounds 4$k) target hospital and intensive care settings where capital budgets support substantial equipment investment and regulatory compliance justifies premium pricing. The consumer tier is dominated by smartphone-based SaaS (BrainEye ${\sim}\pounds 40$/year consumer subscription; Reflex ${\sim}\pounds 400$/year clinician subscription) and per-athlete licensing (King-Devick ${\sim}\pounds 10$--$20$/athlete/year). \ab{scat6} is paper-based and free. Our device targets a critical market gap---multi-modal \ab{plr} + smooth pursuit + vergence screening at a \pounds 200--300 device \ab{bom}---where no established competitor currently operates.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Competitor price benchmarking across the \ab{mtbi} screening market.}
+    \label{tab:ent-price-benchmarking}
+    \begin{tabular}{p{3.0cm}p{2.6cm}p{2.4cm}p{2.4cm}p{2.4cm}}
+        \toprule
+        \textbf{Device} & \textbf{Price} & \textbf{Target buyer} & \textbf{Model} & \textbf{Source} \\
+        \midrule
+        EYE-SYNC (NeuroSync) & ${\sim}\pounds 25$--$30$k & Hospital/clinic & Capital & Public reporting \\
+        \addlinespace
+        NeurOptics NPi-300 & ${\sim}\pounds 4$k & ICU & Capital & NICE MIB235 (NPi-200 predecessor) \\
+        \addlinespace
+        BrainEye & ${\sim}\pounds 40$/yr & Parents/prosumer & SaaS subscription & App Store \\
+        \addlinespace
+        King-Devick & ${\sim}\pounds 10$--$20$/athlete/yr & Coach/clinician & Per-athlete subscription & Public \\
+        \addlinespace
+        \ab{scat6} & Free & Anyone & Paper & N/A \\
+        \addlinespace
+        Our device (consumer) & \pounds 250--300 & Parents & Outright purchase & This analysis \\
+        \addlinespace
+        Our device (institutional) & Mid-hundreds + \pounds 50--100/yr subscription & Schools, teams & Hardware + subscription & This analysis \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+This positioning creates two distinct offerings from the same hardware. Parents buy a ``peace of mind'' consumer safety product. Institutions buy an ongoing screening service---hardware plus subscription for baseline administration, longitudinal data storage, and aggregate concussion risk statistics---extracting lifetime value through a recurring revenue relationship.
+
+
+\subsection{Willingness-to-Pay Evidence}
+\label{sec:ent-wtp-evidence}
+
+\textbf{Consumer segment (parents).} Interviews with mothers revealed strong appetite to purchase at \pounds 200--300 for objective concussion screening at touchline or home; parents explicitly framed the purchase alongside other child safety investments (car seats, cycling helmets, first aid training) rather than comparing to clinical diagnostics. This signals acceptance of the device as a preventive safety tool rather than a medical instrument. Fathers exhibited more heterogeneity: some equally enthusiastic, others skeptical of perceived overprotection, yet none rejected the concept outright based on pricing alone. Consumers will not pay above \pounds 250--300. No consumer subscription is planned---the core screening function is always available without restriction.
+
+\textbf{Institutional segment (schools, teams).} Schools and teams represent higher willingness-to-pay (mid-hundreds for hardware, potentially approaching \pounds 1{,}000) because the device mitigates institutional liability and duty-of-care obligations. The institutional subscription model (\pounds 50--100/year) provides three services that justify recurring spend: (1) on-site baseline administration---a trained operator visits the school to establish per-student baseline oculomotor measurements, improving screening accuracy relative to population-norm comparison; (2) longitudinal data storage---individual student records tracked over time, supporting return-to-play decisions and parental reporting; (3) aggregate statistics---school-level concussion risk data, supporting safeguarding reports and insurance requirements. This service layer extracts lifetime value and enables price discrimination between consumer and institutional segments from identical hardware. \todo{PLACEHOLDER --- typical UK secondary school PE equipment budget: \pounds X annually; device at mid-hundreds comparable to a set of tackle pads or refreshed coaching equipment.} \todo{PLACEHOLDER --- grassroots sports club shared resource model: league-wide purchase feasible at this price point.} These estimates require validation through direct conversations with procurement leads.
+
+\textbf{Ethical constraint.} The device always performs core screening---determining whether someone is at increased risk of concussion---without restriction. The concussion risk assessment is never paywalled. Subscription services cover data, tracking, and baseline administration. This distinction is critical: paywalling a safety-critical screening function would be ethically indefensible and commercially damaging.
+
+
+\subsection{Pricing Model Evaluation}
+\label{sec:ent-pricing-model}
+
+The pricing model is differentiated by segment. \textbf{Consumers (parents): outright purchase at \pounds 250--300.} This maximises adoption velocity---no subscription fatigue, no cloud dependency, no required external apps or infrastructure. The device functions as a standalone screening tool from the moment of purchase. \textbf{Institutions (schools, teams): hardware at mid-hundreds + subscription at \pounds 50--100/year.} The subscription is justified by tangible services (baseline administration, data storage, aggregate statistics) rather than by paywalling core functionality. This model generates recurring revenue and extracts lifetime value from institutional customers, while the higher hardware price reflects institutional purchasing power and the liability-reduction value the device provides.
+
+The \ab{bom} trajectory---approximately \pounds 250 at launch, falling to ${\sim}\pounds 200$ at small scale and ${\sim}\pounds 150$ at proper scale---means consumer pricing at \pounds 250--300 is margin-thin at launch but becomes profitable as manufacturing scales. Institutional pricing at mid-hundreds provides healthy margins even at launch volumes. Rahul's financial model (\Cref{chapter:ent-financial}) develops the detailed unit economics, break-even volumes, and scenario analysis for both segments.
+
+
+\section{Commercial Limitations}
+\label{sec:ent-commercial-limitations}
+
+Bill of Materials costs at launch are approximately \pounds 250 per unit, falling to ${\sim}\pounds 200$ at small scale and ${\sim}\pounds 150$ at proper manufacturing volumes; the cost trajectory depends on supplier engagement and volume commitments not yet completed. Our primary research sample---informal conversations with parents of young athletes and preliminary engagement with grassroots practitioners---provides directional insights into screening demand but lacks statistical power to quantify adoption barriers or willingness-to-pay distributions across diverse cohorts (different sports, age groups, socioeconomic contexts). The regulatory pathway remains preliminary; while Class IIa medical device classification under MDR (active, non-invasive, screening-aid purpose) is the probable route, formal pre-submission engagement with \ab{mhra} or a notified body has not commenced.
