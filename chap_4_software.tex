@@ -13,7 +13,7 @@ To ensure that users can easily operate this system, a phone app controls the he
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{figures/app_design}
+    \includegraphics[width=0.6\textwidth]{figures/app_design}
     \caption{App design for controlling the headset.}
     \label{fig:app-design}
 \end{figure}
@@ -141,32 +141,40 @@ The filter is to preserve genuine pursuit deficits whilst rejecting noise-induce
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/filter_comparison}
-    \caption{Gaussian filter performance comparison.}
-    \label{fig:filter-comparison}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/gaussian_filter_optimisation}
-    \caption{General filter performance comparison.}
-    \label{fig:gaussian-optimisation}
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/filter_comparison}
+        \subcaption{Gaussian filter performance comparison.}
+        \label{fig:filter-comparison}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/gaussian_filter_optimisation}
+        \subcaption{General filter performance comparison.}
+        \label{fig:gaussian-optimisation}
+    \end{minipage}
+    \caption{Filter selection against synthetic pursuit data.}
+    \label{fig:filter-selection}
 \end{figure}
 
 \Cref{fig:filter-comparison} shows that the Gaussian filter performs the best as it has the lowest error in saccade predictions. However, it still required optimisation, so a grid search was performed of the better Gaussian filters, achieving the filter in \Cref{fig:gaussian-optimisation}. The original unoptimised parameters were sigma~$=$~1.5 and threshold~$=$~30\,deg/s, giving MAE~$=$~12.2. Raising threshold to 50\,deg/s caught the real saccades, modelled as 120--240\,deg/s velocity peaks. These test results are evidence of the validity of this methodology.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/optimal_gaussian_filter}
-    \caption{Optimal Gaussian filter performance.}
-    \label{fig:optimal-gaussian}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/filter_effects}
-    \caption{Filter effects on a noisy signal.}
-    \label{fig:filter-effects}
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/optimal_gaussian_filter}
+        \subcaption{Optimal Gaussian filter performance.}
+        \label{fig:optimal-gaussian}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/filter_effects}
+        \subcaption{Filter effects on a noisy signal.}
+        \label{fig:filter-effects}
+    \end{minipage}
+    \caption{Optimised Gaussian filter and its effect on a noisy signal.}
+    \label{fig:filter-optimised}
 \end{figure}
 
 \subsubsection*{Limitations and Future Improvements}
@@ -212,7 +220,7 @@ To validate that these are sensible choices for a machine learning architecture 
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/mpiigaze_per_subject_mae}
+    \includegraphics[width=0.55\textwidth]{figures/mpiigaze_per_subject_mae}
     \caption{Per-subject MAE across 15 LOPO folds for both optimisers on MPIIGaze, with published baselines shown as horizontal references.}
     \label{fig:mpiigaze-per-subject}
 \end{figure}

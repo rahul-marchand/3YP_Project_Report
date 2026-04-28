@@ -1,0 +1,48 @@
+\documentclass[tikz,border=4pt]{standalone}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usetikzlibrary{positioning, arrows.meta, calc, backgrounds}
+
+\definecolor{stemgrey}{RGB}{120,120,120}
+
+\begin{document}
+\begin{tikzpicture}[
+  viewnode/.style={inner sep=0pt, outer sep=0pt, anchor=center},
+  panellabel/.style={font=\large\sffamily, anchor=south west, inner sep=2pt},
+  callout/.style={-{Stealth[length=3.5pt,width=2.6pt]}, thin, black, shorten >=0.5pt},
+  calloutlabel/.style={font=\small\sffamily, color=black, inner sep=1pt},
+]
+
+% --- image placement (housing centred at image centre, anchor=center positions housing centre) ---
+\node[viewnode] (top)   at (0pt, 0pt)        {\includegraphics{housing/housing_top.png}};
+\node[viewnode] (side)  at (340pt, 0pt)      {\includegraphics{housing/housing_side.png}};
+\node[viewnode] (front) at (0pt, -160pt)     {\includegraphics{housing/housing_front.png}};
+\node[viewnode] (iso)   at (340pt, -160pt)   {\includegraphics[width=226pt]{housing/housing_iso.png}};
+
+% --- panel labels (Top label aligned horizontally with Front label) ---
+\node[panellabel] at (top.north -| front.north west) {Top};
+\node[panellabel] at (side.north west)               {Side};
+\node[panellabel] at (front.north west)              {Front};
+\node[panellabel] at (iso.north west)                {Isometric};
+
+% --- symmetry centreline on Front view ---
+\draw[thin, color=stemgrey,
+      dash pattern=on 5pt off 1.5pt on 1pt off 1.5pt]
+  ($(front.south) + (0, 3pt)$) -- ($(front.north) + (0, -3pt)$);
+
+% --- iso callouts (Grommet removed; slot2 shifted right) ---
+\coordinate (slot1)    at ($(iso.south west) + (38.9pt, 58.3pt)$);
+\coordinate (slot2)    at ($(iso.south west) + (84.4pt, 50.1pt)$);
+\coordinate (partline) at ($(iso.south west) + (149.6pt, 60.9pt)$);
+
+\node[calloutlabel, anchor=north] (lbl_slots)
+  at ($(iso.south west) + (60pt, -3pt)$) {Strap slots};
+\node[calloutlabel, anchor=west] (lbl_partline)
+  at ($(iso.east) + (5pt, 0pt)$) {Parting line};
+
+\draw[callout] (lbl_slots.north west) -- (slot1);
+\draw[callout] (lbl_slots.north east) -- (slot2);
+\draw[callout] (lbl_partline.west) -- (partline);
+
+\end{tikzpicture}
+\end{document}
