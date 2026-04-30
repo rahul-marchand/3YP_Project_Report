@@ -62,7 +62,7 @@ Smooth pursuit eye movement issues can occur with mTBI, as discussed in depth in
     \item \textbf{Latency:} a delay between when the object starts moving and when the eyes start to follow it.
 \end{enumerate}
 
-The software in this section implements the smooth pursuit assessment pipeline for the headset hardware. For this trial, the user must follow a moving marker on the display screen moving sinusoidally horizontally. The camera collects the images of the eye, and the gaze estimation is compared with the ground truth angle from the marker to develop a set of metrics to assess if there are underlying pursuit issues. If they have smooth pursuit issues, the latencies and saccadic jumps will appear. Gaze estimation models trained within 5\% of public benchmarks and filters that remove noise with 96\% accuracy during testing were developed so that truthful metrics can be extracted, producing results less affected by noise.
+The software in this section implements the smooth pursuit assessment pipeline for the headset hardware. For this trial, the user must follow a moving marker on the display screen moving sinusoidally horizontally. The camera collects the images of the eye, and the gaze estimation is compared with the ground truth angle from the marker to develop a set of metrics to assess if there are underlying pursuit issues. If they have smooth pursuit issues, the latencies and saccadic jumps will appear. Gaze estimation models trained within 5\% of public benchmarks and filters were developed so that truthful metrics and results could be delivered.
 
 \subsection{Smooth Pursuit Metrics}
 
@@ -75,14 +75,14 @@ The metrics that were chosen are:
 
     \item \textbf{RMS tracking error:} The root-mean-square difference between the measured eye angle and the expected target angle~\cite{kellar2018comparing}.
 
-    \item \textbf{Motion validity and signal confidence:} The module also outputs two quality-related quantities. Motion validity is derived from IMU-based gating logic and indicates whether excessive head movement compromised the trial. Signal confidence reflects the reliability of the eye-tracking signal, derived from analysis of blur, blinking, and glare.
-
     \item \textbf{Lag:} Calculated through the cross-correlation between the gaze estimation and ground truth signal, finding the time offset which maximises the correlation peak. This is consistent with prior work in which pursuit lag is treated as a key parameter~\cite{devillerssidani2023oculomotor}.
 \end{enumerate}
 
-These metrics are used to determine trial validity. The trial is disqualified if the IMU acceleration exceeds 1.5\,g for more than 300\,ms, or if more than 10\% of frames are rejected by the quality pipeline. These provisional thresholds will be revised against real headset data.
 
 Gain was decided as the core metric for the trial result as it is the most clinically established metric~\cite{leigh2015neurology}, with the other metrics passed as metadata. The gain threshold was set at 0.85. At low stimulus frequencies ($\leq$0.4\,Hz), healthy horizontal pursuit gain is 0.9--1.0~\cite{meyer2020smoothpursuit}; 0.85 sits just below this range, giving noise tolerance without sacrificing sensitivity to genuine deficits. Metadata is provided so that clinicians can make more well-informed decisions about next steps, ensuring ethical considerations protect against false results such as false negatives.
+
+The module also outputs two quality-related quantities. Motion validity is derived from IMU-based gating logic and indicates whether excessive head movement compromised the trial. Signal confidence reflects the reliability of the eye-tracking signal, derived from analysis of blur, blinking, and glare. The trial is disqualified if the IMU acceleration exceeds 1.5\,g for more than 300\,ms, or if more than 10\% of frames are rejected by the quality pipeline. These provisional thresholds will be revised against real headset data.
+
 
 \subsection{Data Collection Pipeline}
 
@@ -157,7 +157,7 @@ The filter is to preserve genuine pursuit deficits whilst rejecting noise-induce
     \label{fig:filter-selection}
 \end{figure}
 
-\Cref{fig:filter-comparison} shows that the Gaussian filter performs the best as it has the lowest error in saccade predictions. However, it still required optimisation, so a grid search was performed of the better Gaussian filters, achieving the filter in \Cref{fig:gaussian-optimisation}. The original unoptimised parameters were sigma~$=$~1.5 and threshold~$=$~30\,deg/s, giving MAE~$=$~12.2. Raising threshold to 50\,deg/s caught the real saccades, modelled as 120--240\,deg/s velocity peaks. These test results are evidence of the validity of this methodology.
+\Cref{fig:gaussian-optimisation} shows that the Gaussian filter performs the best as it has the lowest error in saccade predictions. However, it still required optimisation, so a grid search was performed of the better Gaussian filters, achieving the filter in \Cref{fig:optimal-gaussian}. The original unoptimised parameters were sigma~$=$~1.5 and threshold~$=$~30\,deg/s, giving MAE~$=$~12.2. Raising threshold to 50\,deg/s caught the real saccades, modelled as 120--240\,deg/s velocity peaks. These test results are evidence of the validity of this methodology.
 
 \begin{figure}[htbp]
     \centering
