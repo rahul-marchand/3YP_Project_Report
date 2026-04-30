@@ -38,11 +38,11 @@ At FP32 inference the literature is ambiguous. This was resolved through benchma
     \label{tab:runtime-benchmark}
     \begin{tabular}{lcccc}
         \toprule
-        \textbf{Runtime} & \textbf{Mean Latency} & \textbf{P95} & \textbf{FPS} & \textbf{Model Size} \\
+        \textbf{Runtime} & \textbf{Mean Latency} & \textbf{P95} & \textbf{FPS}\\
         \midrule
-        \textbf{LiteRT (TFLite)} & \textbf{2.68\,ms} & 2.85\,ms & 373 & 11.5\,MB \\
-        ONNX Runtime             & 3.23\,ms           & 3.82\,ms & 309 & 0.3\,MB \\
-        PyTorch                  & 22.35\,ms          & 23.71\,ms & 45 & 12.0\,MB \\
+        \textbf{LiteRT (TFLite)} & \textbf{2.68\,ms} & 2.85\,ms & 373\\
+        ONNX Runtime             & 3.23\,ms           & 3.82\,ms & 309 \\
+        PyTorch                  & 22.35\,ms          & 23.71\,ms & 45 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -62,7 +62,7 @@ Smooth pursuit eye movement issues can occur with mTBI, as discussed in depth in
     \item \textbf{Latency:} a delay between when the object starts moving and when the eyes start to follow it.
 \end{enumerate}
 
-The software in this section implements the smooth pursuit assessment pipeline for the headset hardware. For this trial, the user must follow a moving marker on the display screen moving sinusoidally horizontally. The camera collects the images of the eye, and the gaze estimation is compared with the ground truth angle from the marker to develop a set of metrics to assess if there are underlying pursuit issues. If they have smooth pursuit issues, the latencies and saccadic jumps will appear. Strong software was developed to use the data collected from the sensors to train a robust machine learning model and filter the outputs during testing so that truthful metrics can be extracted, producing meaningful and reliable results.
+The software in this section implements the smooth pursuit assessment pipeline for the headset hardware. For this trial, the user must follow a moving marker on the display screen moving sinusoidally horizontally. The camera collects the images of the eye, and the gaze estimation is compared with the ground truth angle from the marker to develop a set of metrics to assess if there are underlying pursuit issues. If they have smooth pursuit issues, the latencies and saccadic jumps will appear. Gaze estimation models trained within 5\% of public benchmarks and filters that remove noise with 96\% accuracy during testing were developed so that truthful metrics can be extracted, producing results less affected by noise.
 
 \subsection{Smooth Pursuit Metrics}
 
@@ -105,7 +105,7 @@ Sustainability, IP, and security: These decisions were more environmentally frie
 
 Both modes require synchronisation between the ground truth signal and the gaze estimation or image signal. In this prototype they are aligned through the monotonic software clock rather than by calibrating hardware latencies (sensor to CPU delay, screen render delay). Hardware calibration will be done in later hardware iterations.
 
-\subsection{Testing Technologies}
+\subsection{Signal Quality Filtering}
 
 When raw data is collected from the sensors and the gaze estimation model, it is important that it is cleaned so inference is accurate and the results are reliable. Regions of low confidence will exist in the gaze estimation due to blur, glare, and blinking. Removing these is important as they can poison metrics and give misleading results, carrying a risk of potential false negatives. Filtering is also necessary so that artifacts of noise which imitate poor pursuit performance are removed, letting us uncover the true gaze signal. This is predominantly saccade count as the noise imitates its characteristics, with catch-up saccade detection being the most noise-sensitive downstream metric~\cite{birawo2022review, leube2017sampling, cheng2026eye}. Unlike gain or RMS tracking error which are computed over longer temporal windows, the saccadic activity depends on brief high-velocity events and is therefore far more vulnerable to peaks. Simultaneously, over-filtering must be avoided as it can remove the original signal artifacts.
 
@@ -181,7 +181,7 @@ The filter is to preserve genuine pursuit deficits whilst rejecting noise-induce
 
 Saccades of 4--8 degrees of angular amplitude were injected for testing this filter, but there may be smaller ones that appear in future real headset data that would be harder to detect. This shows that the filter could be improved through using this same methodology further, iterating more in the future to provide the best filter for the end product. For now, this method has been proved and the parameters can be optimised later upon data collection, tuning noise and saccade amplitudes more appropriately. This is also the case for the glare, blurring, and IMU head shaking as further data collection is required to develop a more accurate threshold cutoff whilst using the same algorithms outlined in this section.
 
-\subsection{Training Specific Technology}
+\subsection{Model Architecture and Training}
 
 The CNN used for understanding the gaze estimation was the MobileNetV2 model as it is explicitly designed for mobile and embedded vision workloads where inference must be fast and memory-efficient. Architectural features such as linear bottlenecks, inverted residual blocks, and depthwise separable convolutions reduce parameter count and the number of multiply-accumulate operations in comparison with heavier CNN alternatives, whilst still preserving useful representational capacity for strong feature understanding~\cite{sandler2018mobilenetv2}. This makes it a good fit for the Raspberry Pi~5 where the model is executed on the CPU whilst having to run camera capture, display update, logging, and Bluetooth/WiFi handling simultaneously. A plausible alternative would have been ResNet-18 as it is used widely for computer vision tasks, but it is computationally heavier than the MobileNetV2. Since this extra compute cost and power was not needed and we are optimising for faster and more efficient edge deployment, the MobileNetV2 was preferred over ResNet-18~\cite{he2016deep}.
 
@@ -199,7 +199,7 @@ Adam~\cite{kingma2015adam} was selected as the optimiser with a learning rate of
 
 \subsubsection{Architecture Validation on MPIIGaze}
 
-To validate that these are sensible choices for a machine learning architecture independently of the headset hardware, the pipeline was evaluated on the MPIIGaze benchmark~\cite{zhang2015appearance}, a popular public dataset containing 213{,}659 normalised eye patches from 15 subjects with calibrated 3D gaze direction labels. Training was performed on NVIDIA A100 GPUs and a leave-one-person-out cross validation so that all the images from one subject are kept for testing whilst keeping the remaining 14 subjects for the training set. This is important as it ensures that the validation accuracy reflects true cross-subject generalisation. By showing a competitive accuracy on a known benchmark, this can show that errors in the headset model can be attributed to the headset domain-specific factors in its data collection such as camera resolution and viewing geometry, rather than issues with the model architecture and optimiser set out above. For robustness, both optimisers were used in this comparison.
+To validate that these are sensible choices for a machine learning architecture independently of the headset hardware, the pipeline was evaluated on the MPIIGaze benchmark~\cite{zhang2015appearance}, a popular public dataset containing 213{,}659 normalised eye patches from 15 subjects with calibrated 3D gaze direction labels..  Training was performed on NVIDIA A100 GPUs and a leave-one-person-out cross validation so that all the images from one subject are kept for testing whilst keeping the remaining 14 subjects for the training set. This is important as it ensures that the validation accuracy reflects true cross-subject generalisation. Performance within 0.27° of the best published baseline can show that errors in the headset model can be attributed to the headset domain-specific factors in its data collection such as camera resolution and viewing geometry, rather than issues with the model architecture and optimiser set out above. For robustness, both optimisers and a 3D instead of 1D output were used in this comparison .
 
 \begin{table}[htbp]
     \centering
