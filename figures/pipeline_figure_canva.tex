@@ -1,0 +1,89 @@
+\documentclass[border=8pt]{standalone}
+\usepackage{fontspec}
+\setmainfont{Carlito}
+\setsansfont{Carlito}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usetikzlibrary{positioning, arrows.meta, calc, backgrounds, spy}
+
+\definecolor{canvabg}{RGB}{246,244,241}
+\pagecolor{canvabg}
+
+% === SHARED STYLES ===
+\definecolor{stemgrey}{RGB}{120,120,120}
+\definecolor{regamber}{RGB}{200,150,50}
+\definecolor{segteal}{RGB}{50,140,140}
+\definecolor{lightfill}{RGB}{232,228,222}    % warm tint of canvabg, contrasts with page
+\definecolor{sharedfill}{RGB}{90,90,110}
+
+\tikzset{
+  img/.style={
+    rectangle, draw=stemgrey, line width=1.0pt,
+    minimum width=1.4cm, minimum height=1.1cm,
+    fill=lightfill, font=\scriptsize\sffamily, align=center
+  },
+  block/.style={
+    rectangle, rounded corners=2pt, line width=1.0pt,
+    minimum width=1.4cm, minimum height=0.75cm,
+    font=\scriptsize\sffamily, align=center
+  },
+  regblock/.style={block, draw=regamber!80!black, fill=regamber!18},
+  segblock/.style={block, draw=segteal!80!black, fill=segteal!18},
+  outlabel/.style={
+    rectangle, rounded corners=1.5pt,
+    minimum width=1.1cm, minimum height=0.4cm,
+    font=\tiny\sffamily, align=center, line width=0.9pt
+  },
+  regoutlabel/.style={outlabel, draw=regamber!80!black, fill=regamber!22},
+  segoutlabel/.style={outlabel, draw=segteal!80!black, fill=segteal!22},
+  sharedblock/.style={
+    block, draw=sharedfill!80!black, fill=sharedfill!15
+  },
+  arr/.style={-{Stealth[length=4pt,width=3pt]}, line width=0.9pt, color=stemgrey!70!black},
+  regarr/.style={arr, color=regamber!70!black},
+  segarr/.style={arr, color=segteal!70!black},
+  sharedarr/.style={arr, color=sharedfill!70!black},
+  panellabel/.style={font=\footnotesize\sffamily\bfseries},
+}
+
+% === GRID DIMENSIONS ===
+\newcommand{\panelW}{7.5}
+\newcommand{\panelH}{3.2}
+
+\begin{document}
+\begin{tikzpicture}
+
+  % === PANEL LABELS ===
+  \node[panellabel, text=stemgrey!70!black, anchor=north west]
+    at (-0.15, -0.1) {(a) Preprocessing};
+  \node[panellabel, text=regamber!70!black, anchor=north west]
+    at (\panelW+0.05, -0.1) {(b) Direct Regression};
+  \node[panellabel, text=segteal!70!black, anchor=north west]
+    at (-0.15, -\panelH-0.1) {(c) Semantic Segmentation};
+  \node[panellabel, text=sharedfill!70!black, anchor=north west]
+    at (\panelW+0.05, -\panelH-0.1) {(d) Biomarker Extraction};
+
+  \begin{scope}[shift={(0, 0)}]            \input{panel_a_preprocessing} \end{scope}
+  \begin{scope}[shift={(\panelW, 0)}]      \input{panel_b_regression}    \end{scope}
+  \begin{scope}[shift={(0, -\panelH)}]     \input{panel_c_segmentation}  \end{scope}
+  \begin{scope}[shift={(\panelW, -\panelH)}] \input{panel_d_extraction}  \end{scope}
+
+  % === CROSS-PANEL ARROWS ===
+  \tikzset{
+    bigarr/.style={
+      -{Triangle[length=8pt,width=6pt]},
+      line width=2.8pt, color=#1, opacity=0.5,
+    },
+  }
+
+  \draw[bigarr=regamber!80!black]
+    (\panelW - 0.6, -0.5*\panelH) -- (\panelW + 0.6, -0.5*\panelH);
+  \draw[bigarr=segteal!80!black]
+    (0.5*\panelW, -\panelH + 0.5) -- (0.5*\panelW, -\panelH - 0.5);
+  \draw[bigarr=segteal!80!black]
+    (\panelW - 0.6, -\panelH - 0.5*\panelH) -- (\panelW + 0.6, -\panelH - 0.5*\panelH);
+  \draw[bigarr=regamber!80!black]
+    (1.5*\panelW, -\panelH + 0.5) -- (1.5*\panelW, -\panelH - 0.5);
+
+\end{tikzpicture}
+\end{document}

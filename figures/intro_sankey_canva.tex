@@ -4,14 +4,18 @@
 \setsansfont{Carlito}
 \usepackage{sankey}
 \usepackage{graphicx}
+\usepackage{xcolor}
 \usetikzlibrary{positioning, arrows.meta, calc, decorations.pathreplacing}
+
+\definecolor{canvabg}{RGB}{246,244,241}
+\pagecolor{canvabg}
 
 \definecolor{flowblue}{RGB}{70,130,180}
 \definecolor{lostred}{RGB}{200,90,80}
 \definecolor{solutionteal}{RGB}{50,140,140}
 \definecolor{referredgreen}{RGB}{80,160,100}
 \definecolor{neutralgrey}{RGB}{100,100,110}
-\definecolor{tealfill}{RGB}{235,248,248}
+\definecolor{tealfill}{RGB}{225,240,238}
 
 \newcommand{\lostfill}{\sankeyset{fill/.style={line width=0pt,fill=lostred!45},draw/.style={draw=lostred!80!black,line width=1.1pt}}}
 \newcommand{\mainfill}{\sankeyset{fill/.style={line width=0pt,fill=flowblue!35},draw/.style={draw=flowblue!80!black,line width=1.1pt}}}

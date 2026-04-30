@@ -250,6 +250,7 @@
 
 \RequirePackage{makecell}
 \RequirePackage{multirow}
+\RequirePackage{multicol}
 \RequirePackage[table]{xcolor}
 \RequirePackage{array}
 
@@ -1099,13 +1100,17 @@
     \SingleSpacing
     \setlength{\parskip}{0pt}
     \setlength{\itemsep}{1pt plus 1ex}
+    \setlength{\bibsep}{2pt plus 0.3ex}
+    \setlength{\columnsep}{1.5em}
     
     % Fix hbox warnings on bibtex entries
     \apptocmd{\sloppy}{\hbadness 10000\relax}{}{} 
     
     \IfFileExists{\bibliographyfilename.bib}
     {
+        \begin{multicols}{2}
         \bibliography{\bibliographyfilename}
+        \end{multicols}
     }{}
 }
 

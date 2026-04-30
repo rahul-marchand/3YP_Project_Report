@@ -1,0 +1,102 @@
+\documentclass[border=8pt]{standalone}
+\usepackage{fontspec}
+\setmainfont{Carlito}
+\usepackage{unicode-math}
+\setmathfont{Latin Modern Math}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{patterns,positioning}
+
+\definecolor{canvabg}{RGB}{246,244,241}
+\pagecolor{canvabg}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{groupplot}[
+        group style={
+            group size=2 by 2,
+            horizontal sep=2.0cm,
+            vertical sep=2.0cm,
+        },
+        width=7.5cm,
+        height=5.2cm,
+        symbolic x coords={Y1,Y2,Y3,Y4,Y5,Y6,Y7},
+        xtick=data,
+        xlabel={Year},
+        grid=major,
+        grid style={line width=.3pt, draw=gray!45},
+        major grid style={line width=.4pt, draw=gray!55},
+        axis line style={line width=0.9pt, draw=gray!70},
+        tick style={line width=0.7pt, color=gray!70},
+        tick label style={font=\small},
+        label style={font=\normalsize},
+        title style={font=\small\bfseries, yshift=-2pt},
+        legend style={
+            font=\scriptsize,
+            cells={anchor=west},
+            inner sep=2pt,
+            row sep=-1pt,
+            fill=canvabg,
+            draw=gray!50,
+        },
+    ]
+
+    % --- Panel (a): Revenue mix ---
+    \nextgroupplot[
+        title={(a) Revenue mix (\pounds k)},
+        ylabel={Revenue},
+        ybar stacked,
+        bar width=8pt,
+        ymin=0,
+        legend pos=north west,
+        legend columns=1,
+    ]
+    \addplot+[ybar,fill=blue!60,draw=blue!85!black,line width=0.7pt] coordinates {(Y1,0.0) (Y2,0.0) (Y3,26.5) (Y4,79.4) (Y5,438.4) (Y6,927.3) (Y7,2227.1)};
+    \addplot+[ybar,fill=teal!60,draw=teal!85!black,line width=0.7pt] coordinates {(Y1,0.0) (Y2,0.0) (Y3,27.0) (Y4,132.3) (Y5,335.1) (Y6,796.6) (Y7,1751.9)};
+    \legend{Hardware, Subscription}
+
+    % --- Panel (b): Gross margin % ---
+    \nextgroupplot[
+        title={(b) Gross margin (\%)},
+        ylabel={GM \%},
+        ymin=30, ymax=80,
+    ]
+    \addplot[line width=1.4pt,blue!85!black,mark=*,mark size=2.5pt,mark options={solid,fill=blue!85!black}] coordinates {(Y1,0.0) (Y2,0.0) (Y3,44.4) (Y4,54.3) (Y5,60.0) (Y6,61.2) (Y7,60.3)};
+
+    % --- Panel (c): OpEx composition ---
+    \nextgroupplot[
+        title={(c) OpEx composition (\pounds k)},
+        ylabel={OpEx},
+        ybar stacked,
+        bar width=8pt,
+        ymin=0,
+        legend pos=north west,
+        legend columns=1,
+    ]
+    \addplot+[ybar,fill=blue!60,draw=blue!85!black,line width=0.7pt] coordinates {(Y1,184.0) (Y2,194.3) (Y3,286.8) (Y4,357.2) (Y5,422.7) (Y6,488.1) (Y7,553.6)};
+    \addplot+[ybar,fill=teal!60,draw=teal!85!black,line width=0.7pt] coordinates {(Y1,0.0) (Y2,185.5) (Y3,264.9) (Y4,218.6) (Y5,257.3) (Y6,262.3) (Y7,267.3)};
+    \addplot+[ybar,fill=orange!60,draw=orange!85!black,line width=0.7pt] coordinates {(Y1,5.0) (Y2,10.0) (Y3,90.2) (Y4,207.6) (Y5,399.9) (Y6,636.5) (Y7,950.0)};
+    \addplot+[ybar,fill=gray!50,draw=gray!75!black,line width=0.7pt] coordinates {(Y1,81.2) (Y2,121.8) (Y3,178.5) (Y4,291.1) (Y5,354.1) (Y6,417.1) (Y7,478.1)};
+    \legend{R\&D, Reg \& clinical, S\&M, G\&A}
+
+    % --- Panel (d): EBITDA trajectory with phase markers ---
+    \nextgroupplot[
+        title={(d) EBITDA (\pounds k)},
+        ylabel={EBITDA},
+        ymin=-900, ymax=1200,
+    ]
+    \draw[dashed,gray!60,line width=0.6pt] (axis cs:Y2,-900) -- (axis cs:Y2,1200);
+    \draw[dashed,gray!60,line width=0.6pt] (axis cs:Y4,-900) -- (axis cs:Y4,1200);
+    \node[anchor=north,font=\scriptsize\itshape,gray!85!black] at (axis cs:Y1,1180) {P1};
+    \node[anchor=north,font=\scriptsize\itshape,gray!85!black] at (axis cs:Y3,1180) {P2};
+    \node[anchor=north,font=\scriptsize\itshape,gray!85!black] at (axis cs:Y7,1180) {P3};
+    \addplot[line width=1.4pt,blue!85!black,mark=*,mark size=2.5pt,mark options={solid,fill=blue!85!black}] coordinates {(Y1,-270.1) (Y2,-511.6) (Y3,-796.7) (Y4,-959.6) (Y5,-970.3) (Y6,-748.4) (Y7,149.2)};
+    \draw[dashed,gray,line width=0.5pt] (axis cs:Y1,0) -- (axis cs:Y7,0);
+    \node[anchor=west,font=\scriptsize,gray!90!black] at (axis cs:Y1,80) {break-even};
+
+    \end{groupplot}
+\end{tikzpicture}
+
+\end{document}
