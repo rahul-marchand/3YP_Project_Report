@@ -98,8 +98,8 @@ Sustainability, IP, and security: These decisions were more environmentally frie
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{figures/data_pipeline}
-    \caption{Data flow in the smooth pursuit trial, showing the training and testing paths.}
+    \resizebox{\textwidth}{!}{\input{figures/data_pipeline_tikz}}
+    \caption{Software data flow in the smooth pursuit trial. Training mode retains raw eye images for model development, whereas testing mode performs on-device inference and discards images after gaze-angle extraction.}
     \label{fig:data-pipeline}
 \end{figure}
 
