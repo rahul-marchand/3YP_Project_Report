@@ -230,6 +230,28 @@ This introduces the following practical and safety system requirements. The syst
 
 From a design criteria perspective, the project requires the device to adhere to (i)~accessibility (ii)~accuracy and (iii)~convenience.
 
+\subsubsection{Prototype Scope}
+
+The stages of the prototype outlined in \Cref{tab:prototype-stages} highlight a progression of subsystem validation through to pre-production readiness. Within the scope of the 3YP, the electronics design is taken to the scope of Stage~1: subsystem validation. The following sections are therefore treated as an academic engineering exercise whose purpose is to isolate and determine the viability of the subsystems described. Subsequent stages introduce dependencies on user-feedback, regulatory constraints and manufacturing factors that require iterative testing and external input; meaningful assumptions are made for these but their limitations are highlighted explicitly~\cite{blanchard2011systems}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Prototype development stages for the headset electronics.}
+    \label{tab:prototype-stages}
+    \small
+    \begin{tabular}{p{2.6cm}p{2.4cm}p{3cm}p{3cm}p{3cm}}
+        \toprule
+        \textbf{Stage} & \textbf{Type} & \textbf{Primary purpose} & \textbf{Evaluation focus} & \textbf{Outcome / next step} \\
+        \midrule
+        \textbf{Stage 1: Subsystem validation (current)} & Functional technical prototype & Validate the core electronic functionality and sensing chain. & Verify sensor operation, signal acquisition, basic processing and subsystem interfacing. & Identify and correct hardware or interface issues; establish baseline functional performance. \\
+        \midrule
+        \textbf{Stage 2: Integrated system prototype (MVP)} & Functional technical prototype & Validate end-to-end integration including sensing, processing and inference. & Evaluate signal quality, synchronisation, motion robustness and initial inference performance. & Refine filtering, thresholds and system parameters; confirm measurement reliability. \\
+        \midrule
+        \textbf{Stage 3: Pre-deployment prototype} & High-fidelity functional prototype & Validate usability and system behaviour in representative use-case conditions. & Assess usability, repeatability, operator interaction and robustness in pitch-side scenarios. & Validate system-level performance prior to productisation or extended field testing. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
 
 \subsection{System Architecture and Data Flow}
 
@@ -309,27 +331,26 @@ Having established the required subsystem features, the next step is to compare 
 
 \begin{table}[htbp]
     \centering
-    \caption{Camera module comparison against design criteria. Scores are weighted by importance to the project. The Arducam OV9281 was selected as the best overall fit.}
+    \caption{Weighted camera module comparison. Project-fit scores are out of 3 (1 = poor, 3 = strong); weights reflect importance to the prototype's binocular-imaging requirement.}
     \label{tab:camera-comparison}
     \begin{tabular}{lcccc}
         \toprule
-        \textbf{Criterion} & \textbf{Weight} & \textbf{Arducam OV9281} & \textbf{\todo{Module 2}} & \textbf{\todo{Module 3}} \\
+        \textbf{Criterion} & \textbf{Weight} & \textbf{Arducam OV9281} & \textbf{Pi Cam 2 NoIR} & \textbf{Pi Cam 3 NoIR} \\
         \midrule
-        Resolution (VGA at 120\,Hz) & \todo{} & \todo{} & \todo{} & \todo{} \\
-        Global shutter              & \todo{} & \todo{} & \todo{} & \todo{} \\
-        Fixed focus                 & \todo{} & \todo{} & \todo{} & \todo{} \\
-        Embedded interface (MIPI/CSI) & \todo{} & \todo{} & \todo{} & \todo{} \\
-        Power consumption           & \todo{} & \todo{} & \todo{} & \todo{} \\
-        Physical size               & \todo{} & \todo{} & \todo{} & \todo{} \\
-        Cost                        & \todo{} & \todo{} & \todo{} & \todo{} \\
-        Pi~5 compatibility          & \todo{} & \todo{} & \todo{} & \todo{} \\
+        High-frame-rate suitability                 & 4 & 3 & 2 & 3 \\
+        IR / pupillometry suitability               & 4 & 3 & 3 & 3 \\
+        Shutter suitability for dynamic eye imaging & 4 & 3 & 1 & 1 \\
+        Compact wearable integration                & 3 & 3 & 3 & 2 \\
+        Embedded-interface suitability              & 3 & 3 & 3 & 3 \\
+        Ecosystem maturity / implementation simplicity & 3 & 2 & 3 & 3 \\
+        Prototype proportionality                   & 3 & 2 & 3 & 2 \\
         \midrule
-        \textbf{Weighted total}     &        & \todo{} & \todo{} & \todo{} \\
+        \textbf{Weighted total}                     &   & \textbf{56} & 46 & 45 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\todo{Add selection justification text explaining why the Arducam OV9281 was chosen based on the weighted comparison.}
+The Arducam OV9281 is selected on weighted score. The decision is dominated by shutter type: the OV9281 is the only candidate offering a global shutter, which is essential for capturing rapid eye motion without intra-frame skew (\Cref{fig:shutter-comparison}). Its monochrome sensor is also natively well matched to 850\,nm IR illumination at the 120\,Hz frame rate established in \Cref{sec:electronics-requirements}. The Pi Camera Module variants score higher on ecosystem maturity but their rolling shutters disqualify them from pupil and saccade tracking at the temporal fidelity required.
 
 
 \subsection{Illumination and Driver Electronics}
@@ -473,9 +494,47 @@ The headset will also include battery-state monitoring via a fuel-gauge IC conne
 
 \subsection{Control Electronics and IMU}
 
-\subsubsection{Role of Compute Subsystem}
+\subsubsection{Role of the Compute Subsystem}
 
-\todo{Complete: this section was incomplete in the original document.}
+The control electronics provide the central supervisory function of the headset and impose three distinct classes of requirement. The first comprises binocular video acquisition, local session storage, post-capture inference and wireless communication, which collectively demand the highest compute capability, memory and interface support, as set out in \Cref{sec:electronics-requirements}. The second comprises supervisory control: stimulus-state sequencing, IMU sampling, illumination enable and event logging. The third comprises independent low-level control, including back-up safety actions in the event of hazardous faults and hardware-triggered synchronisation. The control subsystem therefore requires direct compatibility with the sensing, power and communication subsystems, alongside sufficient timing fidelity for inference and data collection.
+
+\subsubsection{Role of the IMU}
+
+Although the IMU formally falls under the sensing subsystem (\Cref{sec:electronics-requirements}), its principal purpose is to validate trials based on motion detection, which makes it natural to group with the control electronics. When excessive head movement is detected by the IMU, the active session is interrupted and rejected.
+
+\subsubsection{Control Architecture}
+
+The control subsystem requirement could be fulfilled by two main architectural types: a single SBC (Single Board Computer) architecture, or a split architecture in which an SBC performs high-level acquisition and inference while an MCU (Microcontroller Unit) handles low-level control. The Class 1 requirement already establishes the need for an SBC, since general-purpose CPU, memory, microSD storage, Wi-Fi and Bluetooth integration are centred around it~\cite{blanchard2011systems}. The Class 2 requirements are supervisory rather than real-time, so they are already compatible with the SBC dictated by the dominant workload. The Class 3 requirements would be satisfied by introducing a separate MCU, but this would add inter-processor communication and timestamp alignment. Since the 3YP scope is restricted to Stage 1 of the prototype (\Cref{tab:prototype-stages}), the goal is to validate base subsystem functionality. The Class 3 requirements go beyond base functionality, so satisfying them does not fall within the scope of this academic exercise. The single-SBC architecture is therefore the proportionate choice for the constraints of the prototype.
+
+\subsubsection{SBC Selection}
+
+Three candidate SBC platforms were shortlisted for comparison: the Raspberry Pi~5, the Jetson Orin Nano Developer Kit and the Radxa ROCK 5B. The comparison criteria reflect the actual system requirements rather than headline compute performance alone. Dual-camera and wireless/storage integration were weighted most heavily as they directly constrain the feasibility of binocular capture, local-first operation and pitch-side use. Local inference capability remains important but is not the sole deciding criterion, because the baseline workflow performs inference after capture rather than within a tightly bounded real-time loop. Software maturity, power and thermal suitability and prototype practicality are also included because the platform must remain buildable, testable and supportable within 3YP scope.
+
+\begin{table}[htbp]
+    \centering
+    \caption{SBC decision matrix for the supervisory compute platform. Project-fit scores: 1 = poor, 5 = strong.}
+    \label{tab:sbc-comparison}
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Criterion} & \textbf{Weight} & \textbf{Raspberry Pi~5} & \textbf{Jetson Orin Nano} & \textbf{ROCK 5B} \\
+        \midrule
+        Dual-camera integration                       & 0.25 & 5 & 4 & 4 \\
+        Wireless / storage integration                & 0.20 & 5 & 3 & 4 \\
+        Local inference capability                    & 0.20 & 3 & 5 & 4 \\
+        Software maturity / development risk          & 0.20 & 5 & 4 & 3 \\
+        Power / thermal suitability for wearable use  & 0.10 & 4 & 2 & 3 \\
+        Accessibility / prototype practicality        & 0.05 & 5 & 2 & 3 \\
+        \midrule
+        \textbf{Weighted total}                       & 1.00 & \textbf{4.55} & 3.70 & 3.75 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The Raspberry Pi~5 is selected. It dominates on the integration-led criteria that bound the prototype's binocular pipeline and on the software-maturity axis that determines how quickly the rest of the headset can be brought up. The Jetson Orin Nano scores highest on local inference but loses ground on wireless integration, power and thermal suitability for a wearable form factor, and on the development overhead of its CUDA-centred toolchain. The ROCK 5B is competitive on raw performance but its less mature ecosystem increases delivery risk for a Stage 1 prototype.
+
+\subsubsection{IMU Selection}
+
+The IMU is integrated to detect headset motion severe enough to invalidate the capture session. Head movement changes the relative geometry between the eye and the imaging system and is known to degrade eye-tracking accuracy, particularly in unconstrained or wearable settings~\cite{farivar2016eyetracker}. A 6-axis accelerometer-gyroscope device sampled at approximately 200\,Hz is sufficient because the requirement is gross-motion detection rather than full inertial tracking. This prevents corrupted measurements from entering feature extraction and inference while keeping the control logic simple, interpretable and compatible with the single-SBC architecture.
 
 
 \section{Ergonomics and Assembly}

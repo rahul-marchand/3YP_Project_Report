@@ -3,30 +3,61 @@
 
 % Owner: Eesh
 
-This chapter addresses how the capital requirement identified in \Cref{chapter:ent-financial} is bridged: how much to raise, with what staging, from which sources, and on what terms.
-
-\todo{Eesh: Draft this chapter.}
+This chapter addresses how the capital requirement identified in \Cref{chapter:ent-financial} is bridged: how much to raise, with what staging, and from which sources. The plan is built directly on the unfunded cash trajectory of \Cref{sec:ent-cash-flow} and on the venture-stage classification of MedTech start-ups in the literature.
 
 
-\section{Development Cost Estimate}
-\label{sec:ent-dev-cost}
-
-\todo{Estimate total development costs across phases.}
-
-
-\section{Funding Requirements}
+\section{Funding Envelope}
 \label{sec:ent-fund-req}
 
-\todo{Total capital required to reach breakeven, timing and staging of funding rounds.}
+The unfunded cash-flow projection of \Cref{sec:ent-cash-flow} reaches a peak trough of approximately \pounds3.75\,m in Y6, which sets the minimum funding required before the business is self-financing. Although NeuroScreen is a hardware MedTech venture, a sector notorious for high capex requirements~\cite{meridian_medtech_capex}, the model does not show a primarily capex-driven capital need. Manufacturing capex totals only \pounds112\,k across the seven-year horizon (approximately 3\% of the unfunded trough), reflecting the partial-turnkey arrangement of \Cref{sec:ent-mfg-sourcing}. The binding capital requirement is instead negative operating cash flow from payroll, regulatory work, software and hardware iteration, and early commercial execution: average operating burn between Y1 and Y6 is approximately \pounds610\,k/yr, peaking at \pounds849\,k in Y4 and \pounds869\,k in Y5 (\Cref{sec:ent-projection}).
+
+A prudent but capital-efficient funding envelope is therefore approximately \pounds4.2\,m, providing a roughly 12\% aggregate buffer above the modelled trough and preserving one to two quarters of cash runway around the highest-burn periods.
+
+
+\section{Timing and Size of Funding Rounds}
+\label{sec:ent-fund-timing}
+
+The next step is to determine the cash-injection timeline. Carta's UK guide to raising capital recommends sizing each round from burn rate, runway and fundable milestones, and closing each round before the next operating burn begins~\cite{carta_fundraising}. This timing discipline is particularly important in MedTech, where start-ups face a well-documented \emph{valley of death} between initial investment and MVP, worsened by regulatory, reimbursement and commercialisation risk~\cite{advamed_valley}.
+
+The cash-flow trajectory therefore supports three financing events (\Cref{tab:funding-rounds}), aligned with the transitions into Phase~1 (evidence generation, Y1--Y2), Phase~2 (pilot deployment, Y3--Y4) and Phase~3 (scale preparation, Y5--Y7).
+
+\begin{table}[htbp]
+    \centering
+    \caption{Indicative fundraising rounds and cash-flow rationale.}
+    \label{tab:funding-rounds}
+    \begin{tabular}{lllrp{6cm}}
+        \toprule
+        \textbf{Round} & \textbf{Target close} & \textbf{Practical window} & \textbf{Amount} & \textbf{Cash-flow rationale} \\
+        \midrule
+        \textbf{Pre-seed / Phase 1} & Y1 Q1 & Y0 Q4--Y1 Q2 & \pounds1.0\,m  & Expected Y1--Y2 burn \textasciitilde\pounds685\,k. Closing buffer after Y2 \textasciitilde\pounds315\,k. \\
+        \midrule
+        \textbf{Seed / Phase 2}     & Y3 Q1 & Y2 Q4--Y3 Q2 & \pounds1.75\,m & Expected Y3--Y4 burn \textasciitilde\pounds1.61\,m. Closing buffer after Y4 \textasciitilde\pounds460\,k. \\
+        \midrule
+        \textbf{Seed-2 / Phase 3}   & Y5 Q1 & Y4 Q4--Y5 Q2 & \pounds1.45\,m & Expected Y5--Y6 burn \textasciitilde\pounds1.43\,m. Closing buffer after Y6 \textasciitilde\pounds454\,k. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The Pre-seed round closes at Y1 Q1 having raised \pounds1.0\,m, which the NYU Entrepreneurial Institute identifies as an adequate 24-month runway~\cite{nyu_runway}. The round is intentionally not oversized: NeuroScreen is still evidence-light, and a larger round would lead to unnecessary early dilution~\cite{carta_fundraising}.
+
+The Seed round closes at Y3 Q1 having raised \pounds1.75\,m at a higher valuation, after Phase~1 milestones have been hit and just before Phase~2 cost burden is incurred. Phase~2 is the major value-inflection point: a working prototype, an early dataset, research-site engagement and a clearer regulatory pathway can be presented to specialist investors. This is consistent with medical-device SME guidance, which identifies regulatory compliance, technical documentation and notified-body engagement as major burdens for small medical-device companies~\cite{bsi_sme_roadmap}.
+
+The Seed-2 round closes at Y5 Q1 having raised \pounds1.45\,m, ahead of the high-burn Phase~3 deployment. The three rounds total \pounds4.2\,m and bridge the \pounds3.75\,m trough.
 
 
 \section{Funding Sources}
 \label{sec:ent-fund-sources}
 
-\todo{Evaluate candidate funding sources: grants, angel, VC, non-dilutive.}
+As the rounds progress, NeuroScreen is progressively de-risked, and the funding sources should align with both the timing and the size of each capital injection.
+
+\textbf{Pre-seed (Y1).} The Pre-seed round should rely primarily on non-dilutive translational funding, supplemented by a limited amount of sector-aware angel or university-linked capital to fill any deficit. This step is vital because it reduces cap-table risk from founders being over-diluted by expensive early capital~\cite{svb_dilution}. Non-dilutive sources such as Innovate UK's Biomedical Catalyst, NIHR i4i and SBRI Healthcare~\cite{ukri_biomedical_catalyst,nihr_i4i,sbri_healthcare} all provide grants sized between \pounds500\,k and \pounds1.5\,m to prove feasibility and route to market.
+
+\textbf{Seed (Y3).} The Seed round should shift to specialist MedTech seed investors, MedTech funds and clinically informed angels. NeuroScreen values investor quality as much as cheque size, since specialist VC investors provide managerial expertise, industry networks and strategic regulatory and clinical guidance beyond capital itself~\cite{oecd_vc_smes,pulse_angels}. This aligns with the regulatory preparation, quality-system implementation, technical documentation and pilot deployment associated with Phase~2.
+
+\textbf{Seed-2 (Y5).} The Seed-2 round should focus on scale-oriented MedTech investors. If the Phase 1 and Phase 2 milestones are hit, the investment case shifts away from device functionality and toward scalability and product--market fit. Strategic investors such as sports-health organisations, insurers, club networks or established medical-device companies become useful at this stage as they can provide distribution access and brand credibility~\cite{jjdc_innovation}.
 
 
 \section{Investor Proposition}
 \label{sec:ent-investor-prop}
 
-\todo{Summarise the investment case: return profile, value inflection points, comparable exits.}
+The combined effect of the financial profile in \Cref{chapter:ent-financial} and the funding plan above is an unusually capital-efficient MedTech investment case. The \pounds3.75\,m peak unfunded trough is small by sector standards (\Cref{sec:ent-strengths}), and the staged-round structure means each subsequent round is priced after a demonstrable de-risking event: regulatory entry, pilot evidence and commercial scale. The combination of hardware sales as an acquisition channel for institutional subscription revenue, annual-in-advance billing creating a working-capital tailwind, and a Class~IIa rather than higher-class regulatory pathway makes the venture suitable for specialist MedTech investors looking for a hardware-software hybrid with software-grade unit economics.

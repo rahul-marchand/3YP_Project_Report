@@ -25,7 +25,9 @@ The UK was selected as the ideal location for Phase 1 of the GTM strategy. Austr
 
 \subsection{NHS Research Approval Pathway}
 
-The route by which data can be collected from concussion clinics is the NHS Research Approval Pathway. Our study should be framed as a \emph{formally governed medical-device research study} rather than a \emph{prototype test} in order to support later commercialisation. The Health Research Authority (HRA) states that ethical approval is required for a clinical investigation undertaken by a commercial company to demonstrate the safety and performance of a non-UKCA/CE marked medical device~\cite{hra_medical_devices}. To achieve approval from the Research Ethics Committee (REC), our study must be submitted through the Integrated Research Application System (IRAS). The REC will then evaluate the study on patient involvement, scientific and social value, and confidentiality before allowing it to start. This process allows NeuroScreen to demonstrate its ethics-oriented approach throughout product iteration.
+The route by which data can be collected from concussion clinics is the NHS Research Approval Pathway. Our study should be framed as a \emph{formally governed medical-device research study} rather than a \emph{prototype test} in order to support later commercialisation. To preserve the international reusability of the resulting evidence, the clinical study is designed to meet the ISO 14155 Good Clinical Practice (GCP) standard for clinical investigation of medical devices~\cite{iso14155}. Generating evidence to this internationally recognised level makes the same package much more likely to be carried forward into the EU MDR conformity assessment described in \Cref{sec:ent-regulatory-eu}, avoiding duplicate trials in Phase 2.
+
+The Health Research Authority (HRA) states that ethical approval is required for a clinical investigation undertaken by a commercial company to demonstrate the safety and performance of a non-UKCA/CE marked medical device~\cite{hra_medical_devices}. To achieve approval from the Research Ethics Committee (REC), our study must be submitted through the Integrated Research Application System (IRAS). The REC will then evaluate the study on patient involvement, scientific and social value, and confidentiality before allowing it to start. This process allows NeuroScreen to demonstrate its ethics-oriented approach throughout product iteration.
 
 As the parallel data collection from a university sports facility supports the same device investigation, the HRA requires a non-NHS/HSC Site Assessment Form to be provided within the IRAS application~\cite{hra_uk_governance}. This allows the suitability of the non-NHS site to be evaluated by the same REC, which is advantageous for Phase 1: both data-collection venues are assessed and approved through a single regulatory pathway, reducing the administrative cost associated with the process.
 
@@ -50,20 +52,17 @@ To sell the device in the 32 member states of the EU, a Conformit\'{e} Europ\'{e
 Following classification, a conformity assessment is required. A limitation of the EU route is that the pathway requires more than a functioning prototype: the European Commission requires manufacturers to maintain a quality management system and risk management system as set out in Article 9 of the MDR, alongside a clinical evaluation and post-market clinical follow-up~\cite{eu_md_manufacturers}. Although these requirements are demanding, they force NeuroScreen to build robust internal structures at seed stage, future-proofing the business while simultaneously meeting regulatory needs. Detailed quality control, risk assessment, and lifecycle and environmental impact assessment workflows would be developed as part of the Phase 2 entry plan.
 
 
-\section{Claims Language}
+\section{Cross-border Validity and Data Privacy}
+\label{sec:ent-regulatory-cross-border}
+
+It is important to stress that executing Phase 1 in the UK does not foreclose Phase 2 in the EU. To preserve cross-border validity, Phase 1 is designed so that the data collection and model training generate \emph{internationally reusable regulatory evidence}. This is the practical reason for aligning the formally governed medical-device research study with ISO 14155 GCP guidelines~\cite{iso14155}: an evidence package built to that standard maximises reusability inside the EU conformity assessment of \Cref{sec:ent-regulatory-eu}, avoiding the cost and delay of repeating clinical work after migration.
+
+A second concern is the data-privacy regime governing UK-collected eye video and other health-related data being accessed, annotated, stored or analysed outside the UK. The ICO classifies any remote access of UK \emph{special category data} as a \emph{restricted transfer}~\cite{ico_restricted_transfer}, which would otherwise require an additional transfer risk assessment. Choosing the EU as the Phase 2 jurisdiction simplifies this materially: the UK has an adequacy regulation in place for the EEA, recognising that the EU provides an essentially equivalent level of data protection to that of the UK~\cite{ico_adequacy_eea}. Phase 1 data can therefore be processed in the EU without additional safeguards being imposed, and the regulatory specificity of this evidence pipeline becomes an additional defensive moat alongside the device IP itself.
+
+
+\section{Claims Language and Prototype Status}
 \label{sec:ent-claims}
 
-\todo{This is critical. Discuss what the product can and cannot claim:
-\begin{itemize}
-    \item ``Supports assessment'' --- lower regulatory burden
-    \item ``Screening aid'' --- moderate
-    \item ``Decision support'' --- moderate
-    \item ``Diagnoses concussion'' --- not permissible without full clinical trial evidence and Class IIa/IIb clearance
-\end{itemize}
-Recommend claims language for each phase of the roadmap in \Cref{sec:ent-mvp}.}
+The classification analysis in \Cref{sec:ent-classification} fixes the device as a screening aid rather than a diagnostic device, and the language used in marketing, documentation and operator-facing UI must be consistent with that positioning. Permissible language includes \emph{supports assessment of suspected mTBI}, \emph{screening aid}, and \emph{decision support}; impermissible language includes any claim that the device \emph{diagnoses} or \emph{rules out} concussion, which would require a full Class IIa/IIb clinical trial evidence base. The same constraint applies to the result wording surfaced to the operator during Phase 1 data collection (\Cref{sec:ent-regulatory-uk}); conservative language is part of the safety case discussed further in \Cref{sec:ent-risk-mgmt}.
 
-
-\section{Prototype vs Commercial Device}
-\label{sec:ent-prototype-vs-commercial}
-
-\todo{Clarify what is permissible for a student/research prototype vs what changes for a commercial device. The current prototype operates under university research ethics approval --- what additional requirements apply for commercial deployment?}
+The current 3YP prototype operates under research ethics approval rather than as a commercially marketed device, which is what permits its use in the data-collection studies described above. Transitioning to a commercial deployment introduces the additional obligations summarised in \Cref{sec:ent-regulatory-eu}: a Class IIa CE-mark conformity assessment, an ISO~13485-aligned quality management system, an ISO~14971-aligned risk management file, clinical evaluation and post-market clinical follow-up~\cite{iso13485,iso14971,eu_md_manufacturers}. These are non-trivial obligations, but each is a deliberate prerequisite of the Phase 2 plan rather than an unforeseen burden, and the maturity progression is captured directly in the quality and risk plans of \Cref{chapter:ent-risk}.
