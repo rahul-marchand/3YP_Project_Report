@@ -58,13 +58,15 @@ NOTES_COL = 13   # column M
 LAST_COL = 13    # for section header merges and total-row fills
 
 # Scenarios tab — active multiplier cell references (section 3 of Scenarios)
-S_ADOPTION  = "Scenarios!$B$18"
-S_BOM       = "Scenarios!$B$19"
-S_CHURN     = "Scenarios!$B$20"
-S_PAYROLL   = "Scenarios!$B$21"
-S_MARKETING = "Scenarios!$B$22"
-S_REG       = "Scenarios!$B$23"
-S_REG_DELAY = "Scenarios!$B$24"
+S_ADOPTION  = "Scenarios!$B$20"
+S_BOM       = "Scenarios!$B$21"
+S_CHURN     = "Scenarios!$B$22"
+S_PAYROLL   = "Scenarios!$B$23"
+S_MARKETING = "Scenarios!$B$24"
+S_REG       = "Scenarios!$B$25"
+S_REG_DELAY = "Scenarios!$B$26"
+S_ASP       = "Scenarios!$B$27"
+S_ARPU      = "Scenarios!$B$28"
 
 FMT_TEXT = '@'
 
@@ -270,8 +272,8 @@ def build_assumptions(wb):
     s.years(31, [0, 0, 0, 0, 100000, 225000, 400000], fmt=GBP, prov=True)
 
     s.label(32, "Subscription ARPU per headset", units="£/sub/yr", total=True,
-            source="= $B$27 (single-tier per-headset pricing)")
-    s.year_formulas(32, lambda col, i: f"=$B$27", fmt=GBP, total=True)
+            source="= $B$27 × ARPU scenario multiplier")
+    s.year_formulas(32, lambda col, i: f"=$B$27 * {S_ARPU}", fmt=GBP, total=True)
     s.label(33, "Subscription attach (per institutional headset)",
             units="% of inst. headsets",
             source="100% by construction; DTC excluded in row 17 by using delayed_inst")
@@ -507,8 +509,8 @@ def build_assumptions(wb):
     # ---- Section 14: Equity injections ----
     s.section(125, "14. EQUITY INJECTIONS   [PLUG]")
     s.label(126, "Equity injections", units="£",
-            source="Mechanical plug — sized to keep closing cash ≥ buffer at all times")
-    s.years(126, [900000, 0, 1500000, 0, 1500000, 0, 0], fmt=GBP)
+            source="Pre-seed Y1 / Seed Y3 / Seed-2 Y5 per ch.12 §12.2 (total £4.2M, 12% buffer over £3.75M trough)")
+    s.years(126, [1000000, 0, 1750000, 0, 1450000, 0, 0], fmt=GBP)
     s.label(127, "Minimum cash buffer", units="£")
     s.scalar(127, 100000, fmt=GBP)
 
@@ -755,9 +757,9 @@ def build_pnl(wb):
     # ---- Section 1: Revenue ----
     s.section(8, "1. REVENUE")
     s.label(9, "Hardware revenue", units="£",
-            source="delay-shifted new units × adoption scenario × ASP × (1 − returns allowance)")
+            source="delay-shifted new units × adoption × ASP × ASP scenario × (1 − returns allowance)")
     s.year_formulas(9,
-        lambda col, i: f"={delayed_units(col, A)} * {S_ADOPTION} * {A}{col}22 * (1 - {A}$B$23)",
+        lambda col, i: f"={delayed_units(col, A)} * {S_ADOPTION} * {A}{col}22 * {S_ASP} * (1 - {A}$B$23)",
         fmt=GBP)
     s.label(10, "Subscription revenue", units="£",
             source="average subscribers × blended ARPU")
@@ -1258,6 +1260,8 @@ def build_scenarios(wb):
     ws.column_dimensions['C'].width = 14
     ws.column_dimensions['D'].width = 14
     ws.column_dimensions['E'].width = 14
+    ws.column_dimensions['F'].width = 14
+    ws.column_dimensions['G'].width = 14
     ws.column_dimensions['L'].width = 16
     ws.column_dimensions['M'].width = 50
 
@@ -1273,12 +1277,12 @@ def build_scenarios(wb):
 
     # ---- Section 1: Scenario selector ----
     s.section(4, "1. SCENARIO SELECTOR")
-    s.label(5, "Active scenario  (1 = Base, 2 = Downside, 3 = Upside, 4 = Reg Delay)")
+    s.label(5, "Active scenario  (1=Base, 2=Downside, 3=Upside, 4=RegDelay, 5=Best, 6=Worst)")
     s.cell(5, 2, 1, font=font_input, fmt=INT,
            fill=PatternFill("solid", start_color="FFF2CC"))
     s.label(6, "Active scenario name")
     s.cell(6, 2,
-           '=CHOOSE($B$5, "Base", "Downside", "Upside", "Reg Delay")',
+           '=CHOOSE($B$5, "Base", "Downside", "Upside", "Reg Delay", "Best", "Worst")',
            font=font_formula)
 
     # ---- Section 2: Scenario definition table ----
@@ -1288,57 +1292,68 @@ def build_scenarios(wb):
     s.cell(9, 3, "Downside",  font=font_subheader, align=Alignment(horizontal="center"))
     s.cell(9, 4, "Upside",    font=font_subheader, align=Alignment(horizontal="center"))
     s.cell(9, 5, "Reg Delay", font=font_subheader, align=Alignment(horizontal="center"))
+    s.cell(9, 6, "Best",      font=font_subheader, align=Alignment(horizontal="center"))
+    s.cell(9, 7, "Worst",     font=font_subheader, align=Alignment(horizontal="center"))
     s.cell(9, NOTES_COL, "Interpretation", font=font_subheader)
 
     drivers = [
-        # (label, base, downside, upside, reg_delay, notes)
-        ("Adoption ramp multiplier",            1.00, 0.50, 1.30, 1.00,
-         "Slow ramp (0.5×) vs fast ramp (1.3×); delay shifts curve separately"),
-        ("BOM unit cost multiplier",            1.00, 1.30, 0.85, 1.00,
-         "Component price spike vs improved sourcing"),
-        ("Subscription churn multiplier",       1.00, 1.50, 0.70, 1.00,
-         "15% churn vs 7% churn"),
-        ("Headcount / payroll multiplier",      1.00, 1.10, 0.95, 1.05,
-         "Reg Delay: team runs longer, +5% cumulative payroll"),
-        ("Marketing spend multiplier",          1.00, 1.20, 0.80, 1.00,
-         "Less efficient acquisition vs better channels"),
-        ("Regulatory & clinical multiplier",    1.00, 1.50, 0.80, 1.40,
-         "Reg Delay: more NB fees, extra clinical data (+40%)"),
-        ("Regulatory delay  (years shifted)",   0,    0,    0,    1,
-         "Shifts commercial adoption curve right by N years"),
+        # (label, base, downside, upside, reg_delay, best, worst, notes)
+        ("Adoption ramp multiplier",            1.00, 0.50, 1.30, 1.00, 1.20, 0.80,
+         "ch.13 Best/Worst: ±20% adoption around base"),
+        ("BOM unit cost multiplier",            1.00, 1.30, 0.85, 1.00, 0.90, 1.25,
+         "ch.13 Worst: cost-down slips, +20-30% (use 25%); Best: -10%"),
+        ("Subscription churn multiplier",       1.00, 1.50, 0.70, 1.00, 0.80, 1.50,
+         "ch.13: Best 8% (×0.8), Worst 15% (×1.5) from 10% base"),
+        ("Headcount / payroll multiplier",      1.00, 1.10, 0.95, 1.05, 1.00, 1.10,
+         "ch.13 Worst: burn +10% via payroll lever (dominant cost)"),
+        ("Marketing spend multiplier",          1.00, 1.20, 0.80, 1.00, 1.00, 1.00,
+         "ch.13 Best/Worst hold marketing flat; effect routed via payroll"),
+        ("Regulatory & clinical multiplier",    1.00, 1.50, 0.80, 1.40, 1.00, 1.20,
+         "Worst: extra NB / clinical cost from delay (+20%)"),
+        ("Regulatory delay  (years shifted)",   0,    0,    0,    1,    0,    1,
+         "ch.13 Worst: 12-month MDR slip"),
+        ("Hardware ASP multiplier",             1.00, 1.00, 1.00, 1.00, 1.10, 0.875,
+         "ch.13: Best +10%, Worst -12.5% (mid of -10/-15%)"),
+        ("Subscription ARPU multiplier",        1.00, 1.00, 1.00, 1.00, 1.10, 0.875,
+         "ch.13: Best +10%, Worst -12.5% (mid of -10/-15%)"),
     ]
-    for i, (lbl, base, dn, up, rd, note) in enumerate(drivers):
+    for i, (lbl, base, dn, up, rd, best, worst, note) in enumerate(drivers):
         r = 10 + i
         s.cell(r, 1, lbl, font=font_default)
-        # integer formatting for the last row (delay years), 0.00 for multipliers
-        fmt_here = INT if i == len(drivers) - 1 else '0.00'
-        s.cell(r, 2, base, font=font_input, fmt=fmt_here)
-        s.cell(r, 3, dn,   font=font_input, fmt=fmt_here)
-        s.cell(r, 4, up,   font=font_input, fmt=fmt_here)
-        s.cell(r, 5, rd,   font=font_input, fmt=fmt_here)
+        # integer formatting for delay-years row (index 6), 0.00 for multipliers
+        fmt_here = INT if i == 6 else '0.00'
+        s.cell(r, 2, base,  font=font_input, fmt=fmt_here)
+        s.cell(r, 3, dn,    font=font_input, fmt=fmt_here)
+        s.cell(r, 4, up,    font=font_input, fmt=fmt_here)
+        s.cell(r, 5, rd,    font=font_input, fmt=fmt_here)
+        s.cell(r, 6, best,  font=font_input, fmt=fmt_here)
+        s.cell(r, 7, worst, font=font_input, fmt=fmt_here)
         s.cell(r, NOTES_COL, note, font=font_note)
 
     # ---- Section 3: Active multipliers (referenced by Assumptions and P&L) ----
-    s.section(17, "3. ACTIVE MULTIPLIERS  (live values used by Assumptions and P&L)")
+    s.section(19, "3. ACTIVE MULTIPLIERS  (live values used by Assumptions and P&L)")
     active = [
-        ("Adoption multiplier (active)",            10, '0.00'),
-        ("BOM unit cost multiplier (active)",       11, '0.00'),
-        ("Subscription churn multiplier (active)",  12, '0.00'),
-        ("Headcount / payroll multiplier (active)", 13, '0.00'),
-        ("Marketing spend multiplier (active)",     14, '0.00'),
+        ("Adoption multiplier (active)",              10, '0.00'),
+        ("BOM unit cost multiplier (active)",         11, '0.00'),
+        ("Subscription churn multiplier (active)",    12, '0.00'),
+        ("Headcount / payroll multiplier (active)",   13, '0.00'),
+        ("Marketing spend multiplier (active)",       14, '0.00'),
         ("Regulatory & clinical multiplier (active)", 15, '0.00'),
-        ("Regulatory delay  (years, active)",       16, INT),
+        ("Regulatory delay  (years, active)",         16, INT),
+        ("Hardware ASP multiplier (active)",          17, '0.00'),
+        ("Subscription ARPU multiplier (active)",     18, '0.00'),
     ]
     for i, (lbl, src_row, fmt) in enumerate(active):
-        r = 18 + i
+        r = 20 + i
         s.cell(r, 1, lbl, font=font_subheader)
         s.cell(r, 2,
-               f"=CHOOSE($B$5, $B${src_row}, $C${src_row}, $D${src_row}, $E${src_row})",
+               f"=CHOOSE($B$5, $B${src_row}, $C${src_row}, $D${src_row}, "
+               f"$E${src_row}, $F${src_row}, $G${src_row})",
                font=font_formula, fmt=fmt,
                fill=fill_subsection)
 
     # ---- Section 4: Active scenario headline outputs ----
-    s.section(26, "4. ACTIVE SCENARIO HEADLINE OUTPUTS  (live, recomputes when selector changes)")
+    s.section(30, "4. ACTIVE SCENARIO HEADLINE OUTPUTS  (live, recomputes when selector changes)")
     headlines = [
         ("Active scenario name",                              "=$B$6", FMT_TEXT),
         ("Y7 total revenue",                                  "='P&L'!I14", GBP),
@@ -1351,18 +1366,18 @@ def build_scenarios(wb):
         ("Total equity raised through Y7",                    "='Cash flow'!B49", GBP),
     ]
     for i, (lbl, formula, fmt) in enumerate(headlines):
-        r = 27 + i
+        r = 31 + i
         s.cell(r, 1, lbl, font=font_subheader)
         s.cell(r, 2, formula, font=font_link, fmt=fmt if fmt != FMT_TEXT else None,
                fill=fill_subsection)
 
     # ---- Section 5: Tornado sensitivity ----
-    s.section(37, "5. APPROXIMATE TORNADO SENSITIVITY  (Y7 EBITDA delta vs base, linear approx)")
-    s.cell(38, 1, "Driver", font=font_subheader)
-    s.cell(38, 2, "Down delta", font=font_subheader, align=Alignment(horizontal="center"))
-    s.cell(38, 3, "Up delta",   font=font_subheader, align=Alignment(horizontal="center"))
-    s.cell(38, 4, "Magnitude",  font=font_subheader, align=Alignment(horizontal="center"))
-    s.cell(38, NOTES_COL, "Approximation basis", font=font_subheader)
+    s.section(41, "5. APPROXIMATE TORNADO SENSITIVITY  (Y7 EBITDA delta vs base, linear approx)")
+    s.cell(42, 1, "Driver", font=font_subheader)
+    s.cell(42, 2, "Down delta", font=font_subheader, align=Alignment(horizontal="center"))
+    s.cell(42, 3, "Up delta",   font=font_subheader, align=Alignment(horizontal="center"))
+    s.cell(42, 4, "Magnitude",  font=font_subheader, align=Alignment(horizontal="center"))
+    s.cell(42, NOTES_COL, "Approximation basis", font=font_subheader)
 
     # Tornado entries: (label, down_formula, up_formula, notes)
     # Refined set covering all four driver families: top-line (volume, price-hardware,
@@ -1395,7 +1410,7 @@ def build_scenarios(wb):
          "±10% × Y7 total people cost"),
     ]
     for i, (lbl, dn, up, note) in enumerate(tornado):
-        r = 39 + i
+        r = 43 + i
         s.cell(r, 1, lbl, font=font_default)
         s.cell(r, 2, dn,   font=font_formula, fmt=GBP)
         s.cell(r, 3, up,   font=font_formula, fmt=GBP)
@@ -1405,14 +1420,14 @@ def build_scenarios(wb):
         s.cell(r, NOTES_COL, note, font=font_note)
 
     # Header note for the section
-    s.label(46, "Read this:", subheader=True)
-    s.cell(47, 1,
+    s.label(50, "Read this:", subheader=True)
+    s.cell(51, 1,
            "The driver with the largest magnitude is the most binding sensitivity. "
            "Adoption and BOM are typically the top two for hardware-led medtech. "
            "These are linear approximations — for second-order effects (and for the reg delay structural shift), "
            "toggle the scenario selector above.",
            font=font_note)
-    ws.merge_cells("A47:M47")
+    ws.merge_cells("A51:M51")
 
     ws.freeze_panes = "C8"
 
