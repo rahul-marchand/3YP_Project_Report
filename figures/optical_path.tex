@@ -158,11 +158,16 @@
   \draw[visiblec, -{Stealth[length=2.3mm, width=1.8mm]}, line width=\lwVisible, opacity=0.95]
     ({\bsCx + 6}, 0) -- ({(\bsCx + \lensX)/2 + 4}, 0);
 
-  % --- IR illumination: LED stubs -> eye pupil (arrows indicate light direction) ---
-  \draw[nirc, -{Stealth[length=2.3mm, width=1.8mm]}, line width=\lwIR, opacity=0.85]
+  % --- IR illumination: LED stubs -> eye pupil ---
+  \draw[nirc, line width=\lwIR, opacity=0.85]
     (\irRingX,  \irRingY) -- (\pupilXcoord, 0);
-  \draw[nirc, -{Stealth[length=2.3mm, width=1.8mm]}, line width=\lwIR, opacity=0.85]
+  \draw[nirc, line width=\lwIR, opacity=0.85]
     (\irRingX, -\irRingY) -- (\pupilXcoord, 0);
+  % Midpoint direction indicators (arrow centred at halfway point, pointing into eye)
+  \draw[nirc, -{Stealth[length=2.3mm, width=1.8mm]}, line width=\lwIR, opacity=0.85]
+    ($(\irRingX, \irRingY)!0.42!(\pupilXcoord,0)$) -- ($(\irRingX, \irRingY)!0.58!(\pupilXcoord,0)$);
+  \draw[nirc, -{Stealth[length=2.3mm, width=1.8mm]}, line width=\lwIR, opacity=0.85]
+    ($(\irRingX,-\irRingY)!0.42!(\pupilXcoord,0)$) -- ($(\irRingX,-\irRingY)!0.58!(\pupilXcoord,0)$);
 
   % --- NIR imaging return: pupil -> lens -> through bs -> camera ---
   \draw[nirc, line width=\lwIR, opacity=0.92]
