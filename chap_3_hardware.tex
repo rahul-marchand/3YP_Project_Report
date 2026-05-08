@@ -21,7 +21,7 @@ These four requirements drive the hardware specification:
 \subsection{Architecture Evaluation: Pugh Decision Matrix}
 \label{sec:hw-pugh-matrix}
 
-We evaluated five candidate architectures against these four requirements (\todo{FIGURE: Pugh decision matrix described below}).
+We evaluated five candidate architectures against these four requirements (\Cref{fig:pugh-matrix}).
 
 \textbf{Handheld smartphone} (handheld smartphone with custom app): Requires the user to hold the device perfectly steady while performing oculomotor tasks, which is an impossible ergonomic demand. Ambient light contaminates the \ab{plr} signal. Stimulus presentation is uncontrolled because no mechanical fixture ensures consistent geometry between sessions, and a single screen cannot deliver independent stimulus paths to each eye. This architecture fails requirements 1, 2, and 3.
 
@@ -33,7 +33,39 @@ We evaluated five candidate architectures against these four requirements (\todo
 
 \textbf{Lensed headset with beamsplitter (proposed):} A beamsplitter at $45^{\circ}$ to the display axis reflects the display image into the user's eyes while transmitting the light from the eye back through the element to a camera positioned behind it. This architecture decouples the camera viewing path from the user's viewing path geometrically: a single camera per eye sits coaxial with the user's line of sight, neither obstructing the display nor occupying the magnified virtual-image plane. The visible stimulus reaches the eye via the display path, while the NIR imaging illumination reaches the eye along the camera's optical axis; the two illumination sources can therefore be controlled independently of each other (requirement~1). The optical assembly is rigidly mounted within a compact enclosure (requirement~2). Independent left and right stimuli can be presented by partitioning the display, with each half routed through its own optical channel to its respective eye (requirement~3). The single-camera-per-eye design keeps unit cost within the \pounds 500 envelope (requirement~4). All four requirements are simultaneously satisfied.
 
-\todo{FIGURE: Pugh decision matrix (table) evaluating five architectures against four requirements. Rows: handheld smartphone, headset no optics, lensed headset no beamsplitter, multi-camera near-eye array, beamsplitter headset. Columns: controlled illumination, fixed geometry, binocular disparity, compact/low-cost. Marks: ``fails'', ``partial/compromised'', ``satisfies''. Multi-camera near-eye array satisfies illumination, fixed geometry, and binocular disparity but fails on cost. Beamsplitter row is all ``satisfies''. This is the only architecture satisfying all requirements.}
+\begin{figure}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{>{\raggedright\arraybackslash}p{5.6cm} *{4}{>{\centering\arraybackslash}p{1.9cm}}}
+        \toprule
+         & \textcolor{pughheader}{\textbf{Controlled}}
+         & \textcolor{pughheader}{\textbf{Fixed}}
+         & \textcolor{pughheader}{\textbf{Binocular}}
+         & \textcolor{pughheader}{\textbf{Compact /}} \\
+         & \textcolor{pughheader}{\textbf{illumination}}
+         & \textcolor{pughheader}{\textbf{geometry}}
+         & \textcolor{pughheader}{\textbf{disparity}}
+         & \textcolor{pughheader}{\textbf{low-cost}} \\
+        \midrule
+        Handheld smartphone                  & \hbnone & \hbnone & \hbnone & \hbfull \\
+        Headset, direct viewing (no optics)  & \hbfull & \hbfull & \hbfull & \hbnone \\
+        Lensed headset (no beamsplitter)     & \hbfull & \hbfull & \hbhalf & \hbfull \\
+        Multi-camera near-eye array          & \hbfull & \hbfull & \hbfull & \hbnone \\
+        \rowcolor{pughproprow}
+        \textcolor{pughmeets}{\textbf{Beamsplitter headset (proposed)}}
+                                             & \hbfull & \hbfull & \hbfull & \hbfull \\
+        \bottomrule
+    \end{tabular}
+    \renewcommand{\arraystretch}{0.95}
+
+    \smallskip
+    {\small \hbfull~Meets requirement \hspace{1.5em}
+            \hbhalf~Partially meets \hspace{1.5em}
+            \hbnone~Does not meet}
+
+    \caption{Pugh decision matrix evaluating five candidate headset architectures against the four requirements derived in \Cref{sec:hw-biomarkers-requirements}. Each non-proposed architecture fails (or partially fails) exactly one requirement; only the beamsplitter architecture satisfies all four simultaneously. The partial mark on the lensed-headset row reflects the camera-obstruction confound discussed above: independent left/right stimulus paths are deliverable, but the resulting binocular vergence measurement is undermined by the camera's stationary depth cue in the magnified virtual image plane.}
+    \label{fig:pugh-matrix}
+\end{figure}
 
 
 \subsection{The Beamsplitter Principle}

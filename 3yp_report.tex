@@ -22,6 +22,22 @@
 \usepackage[numbers]{natbib}
 \usepackage{wrapfig}
 
+% Pugh-matrix Harvey-ball symbology (Figure~\ref{fig:pugh-matrix}, \S3.1.2).
+% xcolor with [table] option already loaded by oxengthesis.cls; tikz and
+% booktabs are added here. Both are idempotent if loaded elsewhere.
+\usepackage{tikz}
+\usepackage{booktabs}
+\definecolor{pughmeets}{RGB}{43,143,72}
+\definecolor{pughpartial}{RGB}{216,164,40}
+\definecolor{pughnomeet}{RGB}{210,140,140}
+\definecolor{pughproprow}{RGB}{223,242,228}
+\definecolor{pughheader}{RGB}{47,77,131}
+\newcommand{\hbfull}{\tikz[baseline=-0.6ex]{\fill[pughmeets] (0,0) circle (0.22cm);}}
+\newcommand{\hbhalf}{\tikz[baseline=-0.6ex]{%
+  \draw[pughpartial,line width=1pt] (0,0) circle (0.22cm);%
+  \fill[pughpartial] (0,-0.22) arc[start angle=-90,end angle=90,radius=0.22cm] -- cycle;}}
+\newcommand{\hbnone}{\tikz[baseline=-0.6ex]{\draw[pughnomeet,line width=1.4pt] (0,0) circle (0.22cm);}}
+
 
 %
 % Global table tightening: mild row-height and column-gap compression applied
