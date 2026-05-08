@@ -158,10 +158,10 @@
   \draw[visiblec, -{Stealth[length=2.3mm, width=1.8mm]}, line width=\lwVisible, opacity=0.95]
     ({\bsCx + 6}, 0) -- ({(\bsCx + \lensX)/2 + 4}, 0);
 
-  % --- IR illumination: LED stubs -> eye pupil ---
-  \draw[nirc, line width=\lwIR, opacity=0.85]
+  % --- IR illumination: LED stubs -> eye pupil (arrows indicate light direction) ---
+  \draw[nirc, -{Stealth[length=2.3mm, width=1.8mm]}, line width=\lwIR, opacity=0.85]
     (\irRingX,  \irRingY) -- (\pupilXcoord, 0);
-  \draw[nirc, line width=\lwIR, opacity=0.85]
+  \draw[nirc, -{Stealth[length=2.3mm, width=1.8mm]}, line width=\lwIR, opacity=0.85]
     (\irRingX, -\irRingY) -- (\pupilXcoord, 0);
 
   % --- NIR imaging return: pupil -> lens -> through bs -> camera ---
@@ -183,8 +183,8 @@
   \node[labelC, anchor=west, font=\sffamily\footnotesize] at ({\irRingX + 3}, {\irRingY}) {IR LED ring};
   \node[labelC, anchor=south, font=\sffamily\small] at (\eyeX, {\eyeR + 2}) {eye};
 
-  % Legend
-  \begin{scope}[shift={(70, -65)}]
+  % Legend (top-right, above the eye, top in line with the headset frame top)
+  \begin{scope}[shift={(112.5, 44)}]
     \draw[visiblec, line width=\lwVisible] (0, 6) -- (10, 6);
     \node[labelC, anchor=west, font=\sffamily\footnotesize] at (11, 6) {visible};
     \draw[nirc, line width=\lwIR] (0, 0) -- (10, 0);
