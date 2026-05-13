@@ -31,7 +31,43 @@ Oculogica (EyeBOX) is a high-end binocular eye-tracking research system. It offe
 
 NeurOptics NPi-300 is a handheld automated pupillometer developed for critical care settings. It measures \ab{plr} with high repeatability (approximately $\pm 0.1$\,mm pupil diameter precision) and costs approximately \pounds 4{,}000 per unit (list price undisclosed; estimate based on NICE MIB235 advisory on the predecessor NPi-200). It provides no smooth pursuit or vergence capability and is not validated for concussion screening in athletic populations.
 
-\todo{TABLE: Competitor Feature Comparison --- \ab{plr}, Smooth Pursuit, Vergence, Repeatability, Cost, Portability, Typical Setting.}
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{
+        >{\raggedright\arraybackslash}p{2.6cm}
+        *{5}{>{\centering\arraybackslash}p{0.9cm}}
+        >{\centering\arraybackslash}p{1.5cm}
+        >{\raggedright\arraybackslash}p{2.1cm}
+    }
+        \toprule
+         & \textcolor{pughheader}{\textbf{\ab{plr}}}
+         & \textcolor{pughheader}{\textbf{Smooth pursuit}}
+         & \textcolor{pughheader}{\textbf{Vergence}}
+         & \textcolor{pughheader}{\textbf{Repeat- ability}}
+         & \textcolor{pughheader}{\textbf{Port- ability}}
+         & \textcolor{pughheader}{\textbf{Indicative cost}}
+         & \textcolor{pughheader}{\textbf{Typical setting}} \\
+        \midrule
+        BrainEye (smartphone app)            & \hbfull & \hbfull & \hbfull & \hbnone & \hbfull & $\sim$\pounds 40/yr           & Consumer / parent \\
+        King-Devick test                     & \hbnone & \hbhalf & \hbnone & \hbhalf & \hbhalf & $\sim$\pounds 400/yr (team)   & Clinical adjunct \\
+        Reflex (Brightlamp)                  & \hbfull & \hbnone & \hbnone & \hbfull & \hbfull & $\sim$\pounds 400/yr          & Clinical \\
+        NeurOptics NPi-300                   & \hbfull & \hbnone & \hbnone & \hbfull & \hbhalf & $\sim$\pounds 4k              & ICU / critical care \\
+        EYE-SYNC (NeuroSync)                 & \hbnone & \hbfull & \hbfull & \hbfull & \hbnone & $\sim$\pounds 25--30k         & Elite sports medicine \\
+        Oculogica EyeBOX                     & \hbhalf & \hbfull & \hbfull & \hbfull & \hbnone & $\sim$\pounds 25--30k         & Research laboratory \\
+        \ab{scat6} / CRT6                    & \hbnone & \hbnone & \hbnone & \hbnone & \hbfull & Free                          & Sideline / clinical \\
+        \bottomrule
+    \end{tabular}
+    \renewcommand{\arraystretch}{0.95}
+
+    \smallskip
+    {\small \hbfull~Capability present / high \hspace{1.5em}
+            \hbhalf~Partial / qualified \hspace{1.5em}
+            \hbnone~Absent / low}
+
+    \caption{Competitor feature comparison across the major dedicated oculomotor and concussion-screening tools. Binary columns (\ab{plr}, smooth pursuit, vergence) mark whether the device measures the biomarker at all; repeatability and portability are scored qualitatively (high / partial / low). Indicative cost reflects the most-publicly-cited list or subscription price; see \Cref{tab:ent-price-benchmarking} for full sourcing. Our device is intentionally excluded from this table because its capability claims are pre-clinical-validation; its design-target position is shown separately in \Cref{fig:ent-positioning-matrix}.}
+    \label{tab:ent-competitor-features}
+\end{table}
 
 
 \subsection{Indirect Competitors and the Status Quo}
