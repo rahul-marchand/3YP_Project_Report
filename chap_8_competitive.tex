@@ -35,19 +35,20 @@ NeurOptics NPi-300 is a handheld automated pupillometer developed for critical c
     \centering
     \renewcommand{\arraystretch}{1.5}
     \begin{tabular}{
-        >{\raggedright\arraybackslash}p{2.6cm}
-        *{5}{>{\centering\arraybackslash}p{0.9cm}}
-        >{\centering\arraybackslash}p{1.5cm}
-        >{\raggedright\arraybackslash}p{2.1cm}
+        >{\raggedright\arraybackslash}p{2.4cm}
+        *{3}{>{\centering\arraybackslash}p{1.15cm}}
+        *{2}{>{\centering\arraybackslash}p{1.35cm}}
+        >{\centering\arraybackslash}p{1.4cm}
+        >{\raggedright\arraybackslash}p{1.9cm}
     }
         \toprule
          & \textcolor{pughheader}{\textbf{\ab{plr}}}
-         & \textcolor{pughheader}{\textbf{Smooth pursuit}}
+         & \makecell[c]{\textcolor{pughheader}{\textbf{Smooth}}\\\textcolor{pughheader}{\textbf{pursuit}}}
          & \textcolor{pughheader}{\textbf{Vergence}}
-         & \textcolor{pughheader}{\textbf{Repeat- ability}}
-         & \textcolor{pughheader}{\textbf{Port- ability}}
-         & \textcolor{pughheader}{\textbf{Indicative cost}}
-         & \textcolor{pughheader}{\textbf{Typical setting}} \\
+         & \textcolor{pughheader}{\textbf{Repeatability}}
+         & \textcolor{pughheader}{\textbf{Portability}}
+         & \makecell[c]{\textcolor{pughheader}{\textbf{Indicative}}\\\textcolor{pughheader}{\textbf{cost}}}
+         & \makecell[l]{\textcolor{pughheader}{\textbf{Typical}}\\\textcolor{pughheader}{\textbf{setting}}} \\
         \midrule
         BrainEye (smartphone app)            & \hbfull & \hbfull & \hbfull & \hbnone & \hbfull & $\sim$\pounds 40/yr           & Consumer / parent \\
         King-Devick test                     & \hbnone & \hbhalf & \hbnone & \hbhalf & \hbhalf & $\sim$\pounds 400/yr (team)   & Clinical adjunct \\
@@ -114,27 +115,27 @@ Informal parental feedback (collected during preliminary design work) revealed s
         \node[below, font=\scriptsize] at (9.0, -0.15) {$\sim$\pounds 25k+};
 
         % Y-axis label and tick annotations
-        \node[rotate=90, font=\small\bfseries] at (-3.0, 5) {Measurement Fidelity $\rightarrow$};
+        \node[rotate=90, font=\small\bfseries] at (-4.6, 5) {Measurement Fidelity $\rightarrow$};
         \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 1.0) {Subjective /\\ symptom-report};
-        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 3.0) {Limited objective\\ (1 modality, low control)};
-        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 5.5) {Single-modal high control\\ \emph{or} multi-modal uncontrolled};
-        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 8.5) {Multi-modal under\\ controlled geometry};
+        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 3.0) {Limited objective\\ (1 modality,\\ low control)};
+        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 5.5) {Single-modal,\\ controlled \emph{or}\\ multi-modal,\\ uncontrolled};
+        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 8.5) {Multi-modal,\\ controlled\\ geometry};
 
         % Quadrant tags (italic, subtle)
-        \node[font=\itshape\scriptsize, gray!75] at (1.5, 9.6) {empty quadrant};
-        \node[font=\itshape\scriptsize, gray!75] at (8.5, 9.6) {clinical-grade};
+        \node[font=\itshape\scriptsize, gray!75] at (1.5, 9.85) {empty quadrant};
+        \node[font=\itshape\scriptsize, gray!75] at (7.5, 9.85) {clinical-grade};
         \node[font=\itshape\scriptsize, gray!75] at (1.5, 0.4) {consumer};
         \node[font=\itshape\scriptsize, gray!75] at (8.5, 0.4) {(no offering)};
 
         % Competitor points
         \node[comp, label={[font=\scriptsize]below right:SCAT6/CRT6}] at (0.3, 1.0) {};
         \node[comp, label={[font=\scriptsize]right:Symptom apps}] at (0.7, 1.6) {};
-        \node[comp, label={[font=\scriptsize]above:King-Devick}] at (2.6, 2.8) {};
-        \node[comp, label={[font=\scriptsize]right:Reflex}] at (3.0, 3.3) {};
+        \node[comp, label={[font=\scriptsize]left:King-Devick}] at (2.4, 2.4) {};
+        \node[comp, label={[font=\scriptsize]right:Reflex}] at (3.7, 3.7) {};
         \node[comp, label={[font=\scriptsize]above right:BrainEye}] at (1.4, 5.4) {};
         \node[comp, label={[font=\scriptsize]above:NPi-300}] at (6.0, 5.5) {};
-        \node[comp, label={[font=\scriptsize]below right:EYE-SYNC}] at (8.8, 8.4) {};
-        \node[comp, label={[font=\scriptsize]above:Oculogica}] at (9.0, 9.0) {};
+        \node[comp, label={[font=\scriptsize]below right:EYE-SYNC}] at (8.5, 7.8) {};
+        \node[comp, label={[font=\scriptsize]left:Oculogica}] at (9.0, 9.0) {};
 
         % Our headset: dashed ellipse in the empty quadrant
         \draw[device] (2.5, 8.5) ellipse (1.6 and 0.9);
