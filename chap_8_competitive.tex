@@ -55,9 +55,62 @@ Informal parental feedback (collected during preliminary design work) revealed s
 \subsection{Competitive Positioning Matrix}
 \label{sec:ent-positioning-matrix}
 
-\todo{FIGURE: $2 \times 2$ Competitive Positioning Matrix --- X-axis: Cost/Accessibility (low to high); Y-axis: Measurement Accuracy/Fidelity (low to high).}
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        every node/.style={font=\scriptsize},
+        comp/.style={circle, fill=black!85, inner sep=1.7pt},
+        device/.style={dashed, very thick, draw=black},
+    ]
+        % Axes
+        \draw[->, thick] (0,0) -- (10.2,0);
+        \draw[->, thick] (0,0) -- (0,10.2);
 
-The competitive landscape reveals a striking gap. Devices that combine high measurement fidelity (simultaneous \ab{plr}, smooth pursuit, and vergence under controlled stimulus geometry) occupy the high-cost quadrant: EYE-SYNC, Oculogica, and NeurOptics span approximately \pounds 4{,}000--30{,}000. Devices that are cost-accessible (under \pounds 1{,}000) remain in the low-fidelity quadrant: \ab{scat6}, King-Devick, and symptom apps provide only indirect or subjective markers; BrainEye, as a smartphone app at ${\sim}\pounds 40$/year, sits closest to our consumer tier on price and captures an overlapping biomarker set, but delivers each measurement from a handheld form-factor whose positional and lighting variability undermine measurement fidelity. The low-cost, high-fidelity quadrant is empty. This gap exists because measurement fidelity, particularly for smooth pursuit and vergence, traditionally requires controlled optical geometry: fixed head position, coaxial stimulus and eye axis alignment, and stable working distance. Clinical systems achieve this through bulky headframes, gaze-tracking cameras mounted on optical tables, or VR goggle form factors that constrain portability. The beamsplitter architecture (\Cref{chapter:headset}) resolves this constraint by embedding coaxial geometry into a compact, wearable form factor. Precise stimulus and pupil alignment is achieved through optical design rather than mechanical positioning, allowing the device to deliver fidelity comparable to much larger systems at grassroots-accessible cost.
+        % Quadrant divider (subtle)
+        \draw[dotted, gray!60] (5,0) -- (5,10);
+        \draw[dotted, gray!60] (0,5) -- (10,5);
+
+        % X-axis label and tick annotations
+        \node[below, font=\small\bfseries] at (5, -1.4) {Cost / Inaccessibility $\rightarrow$};
+        \node[below, font=\scriptsize] at (0.3, -0.15) {Free};
+        \node[below, font=\scriptsize] at (3.0, -0.15) {$\sim$\pounds 400/yr};
+        \node[below, font=\scriptsize] at (6.0, -0.15) {$\sim$\pounds 4k};
+        \node[below, font=\scriptsize] at (9.0, -0.15) {$\sim$\pounds 25k+};
+
+        % Y-axis label and tick annotations
+        \node[rotate=90, font=\small\bfseries] at (-3.0, 5) {Measurement Fidelity $\rightarrow$};
+        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 1.0) {Subjective /\\ symptom-report};
+        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 3.0) {Limited objective\\ (1 modality, low control)};
+        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 5.5) {Single-modal high control\\ \emph{or} multi-modal uncontrolled};
+        \node[left, font=\scriptsize, align=right, anchor=east] at (-0.15, 8.5) {Multi-modal under\\ controlled geometry};
+
+        % Quadrant tags (italic, subtle)
+        \node[font=\itshape\scriptsize, gray!75] at (1.5, 9.6) {empty quadrant};
+        \node[font=\itshape\scriptsize, gray!75] at (8.5, 9.6) {clinical-grade};
+        \node[font=\itshape\scriptsize, gray!75] at (1.5, 0.4) {consumer};
+        \node[font=\itshape\scriptsize, gray!75] at (8.5, 0.4) {(no offering)};
+
+        % Competitor points
+        \node[comp, label={[font=\scriptsize]below right:SCAT6/CRT6}] at (0.3, 1.0) {};
+        \node[comp, label={[font=\scriptsize]right:Symptom apps}] at (0.7, 1.6) {};
+        \node[comp, label={[font=\scriptsize]above:King-Devick}] at (2.6, 2.8) {};
+        \node[comp, label={[font=\scriptsize]right:Reflex}] at (3.0, 3.3) {};
+        \node[comp, label={[font=\scriptsize]above right:BrainEye}] at (1.4, 5.4) {};
+        \node[comp, label={[font=\scriptsize]above:NPi-300}] at (6.0, 5.5) {};
+        \node[comp, label={[font=\scriptsize]below right:EYE-SYNC}] at (8.8, 8.4) {};
+        \node[comp, label={[font=\scriptsize]above:Oculogica}] at (9.0, 9.0) {};
+
+        % Our headset: dashed ellipse in the empty quadrant
+        \draw[device] (2.5, 8.5) ellipse (1.6 and 0.9);
+        \node[font=\bfseries\small] at (2.5, 8.5) {Our headset};
+        \node[font=\scriptsize, align=center] at (2.5, 7.2) {(target position;\\ pre-clinical validation)};
+
+    \end{tikzpicture}
+    \caption{Competitive positioning chart for grassroots \ab{mtbi} oculomotor screening. Established competitors are plotted at their published cost and capability tiers. The dashed ellipse represents the headset's design target position: the high-fidelity claim derives from multi-modal capture (\ab{plr} + smooth pursuit + vergence) under controlled NIR illumination and head-mounted coaxial geometry (\Cref{tab:ent-traceability}; \Cref{chapter:headset}), rather than from clinical validation data, which is a Phase 1 deliverable (\Cref{chapter:ent-adoption-roadmap}). The low-cost, high-fidelity region is currently unoccupied by validated commercial devices.}
+    \label{fig:ent-positioning-matrix}
+\end{figure}
+
+The competitive landscape reveals a striking gap (\Cref{fig:ent-positioning-matrix}). Devices that combine high measurement fidelity (simultaneous \ab{plr}, smooth pursuit, and vergence under controlled stimulus geometry) occupy the high-cost quadrant: EYE-SYNC, Oculogica, and NeurOptics span approximately \pounds 4{,}000--30{,}000. Devices that are cost-accessible (under \pounds 1{,}000) remain in the low-fidelity quadrant: \ab{scat6}, King-Devick, and symptom apps provide only indirect or subjective markers; BrainEye, as a smartphone app at ${\sim}\pounds 40$/year, sits closest to our consumer tier on price and captures an overlapping biomarker set, but delivers each measurement from a handheld form-factor whose positional and lighting variability undermine measurement fidelity. The low-cost, high-fidelity quadrant is empty. This gap exists because measurement fidelity, particularly for smooth pursuit and vergence, traditionally requires controlled optical geometry: fixed head position, coaxial stimulus and eye axis alignment, and stable working distance. Clinical systems achieve this through bulky headframes, gaze-tracking cameras mounted on optical tables, or VR goggle form factors that constrain portability. The beamsplitter architecture (\Cref{chapter:headset}) resolves this constraint by embedding coaxial geometry into a compact, wearable form factor. Precise stimulus and pupil alignment is achieved through optical design rather than mechanical positioning, allowing the device to deliver fidelity comparable to much larger systems at grassroots-accessible cost.
 
 
 \subsection{Assumptions and Limitations}
